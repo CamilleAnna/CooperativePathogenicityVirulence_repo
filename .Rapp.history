@@ -1,0 +1,1329 @@
+system(command=paste0("head -n 1 ", GENOME, ".PATRIC.spgene.tab > tmp.1"))#
+system(command=paste0("cat tmp.* > ", GENOME, ".PATRIC.spgene.tab"))
+system(command=paste0("mv ", GENOME, ".PATRIC.spgene.tab ", sps[i],".vf") )
+sps='Campylobacter_ureolyticus_62430'#
+GENOME='883165.3'#
+system(command=paste0('wget -N "ftp://ftp.patricbrc.org/genomes/', GENOME, '/', GENOME, '.PATRIC.spgene.tab"'))#
+system(command=paste0("grep 'Virulence Factor' ", GENOME, ".PATRIC.spgene.tab > tmp.2")) #
+system(command=paste0("head -n 1 ", GENOME, ".PATRIC.spgene.tab > tmp.1"))#
+system(command=paste0("cat tmp.* > ", GENOME, ".PATRIC.spgene.tab"))#
+system(command=paste0("mv ", GENOME, ".PATRIC.spgene.tab ", sps[i],".vf") )
+GENOME = midas.sps[midas.sps$V1 == sps[i],2]#
+#
+system(command=paste0('wget -N "ftp://ftp.patricbrc.org/genomes/', GENOME, '/', GENOME, '.PATRIC.spgene.tab"'))#
+system(command=paste0("grep 'Virulence Factor' ", GENOME, ".PATRIC.spgene.tab > tmp.2")) #
+system(command=paste0("head -n 1 ", GENOME, ".PATRIC.spgene.tab > tmp.1"))#
+system(command=paste0("cat tmp.* > ", GENOME, ".PATRIC.spgene.tab"))#
+system(command=paste0("mv ", GENOME, ".PATRIC.spgene.tab ", sps[i],".vf") )
+getwd()
+cat GENOME
+GENOME
+sps
+sps='Acinetobacter_baylyi_46310'
+i=1
+GENOME='1221291.3'
+system(command=paste0('wget -N "ftp://ftp.patricbrc.org/genomes/', GENOME, '/', GENOME, '.PATRIC.spgene.tab"'))#
+system(command=paste0("grep 'Virulence Factor' ", GENOME, ".PATRIC.spgene.tab > tmp.2")) #
+system(command=paste0("head -n 1 ", GENOME, ".PATRIC.spgene.tab > tmp.1"))#
+system(command=paste0("cat tmp.* > ", GENOME, ".PATRIC.spgene.tab"))#
+system(command=paste0("mv ", GENOME, ".PATRIC.spgene.tab ", sps[i],".vf") )
+dvf<- read.csv(paste0(sps[i],'.vf'), header=TRUE, sep = '\t', colClasses = 'character') %>%#
+  select(genome_id, patric_id, gene, product, source) %>%#
+  rename(qpid = patric_id) %>%#
+  filter(source == 'Victors')
+library(dplyr)
+dvf<- read.csv(paste0(sps[i],'.vf'), header=TRUE, sep = '\t', colClasses = 'character') %>%#
+  select(genome_id, patric_id, gene, product, source) %>%#
+  rename(qpid = patric_id) %>%#
+  filter(source == 'Victors')
+head(dvf)
+dvf %>%#
+  mutate(species = sps[i]) %>%#
+  rename(peg = qpid) %>%#
+  select(species, peg, gene, product, source)
+source("~/Documents/PhD/Research/background_scripts/basic_packages.R")#
+library(ape)#
+library(MCMCglmm)#
+midas.info<- read.table('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/species_info_files/species_info.txt', header=TRUE)#
+head(midas.info)#
+midas.info[grep('55206',midas.info$species_id), ]#
+spos<- read.table('~/Documents/PhD/Research/HamiltonRuleMicrobiome/HamiltonRuleMicrobiome_work/output/SPORULATION_SCORES_all_midas_species.txt', header=TRUE, sep = '\t') %>%#
+  rename(species_id = species)#
+vt<- read_excel('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/Midas_transmission_data.xls') %>%#
+  filter(tax_level == 'species',#
+         time_point == '12M') %>%#
+  mutate(species_id = gsub(')', '', fixed = TRUE, gsub('._', '_', fixed = TRUE, gsub('(id:', '', gsub(' ', '_', tax_group), fixed = TRUE)))) %>%#
+  select(species_id, prop1) %>%#
+  rename(vt = prop1)#
+#
+vt$species_id[grep('55206', vt$species_id)]<- midas.info[grep('55206',midas.info$species_id), 1]#
+vt<- left_join(vt, spos, by ='species_id')#
+vt$spcol<-ifelse(vt$species_id =='Escherichia_coli_58110', 'Ecoli', 'other')#
+ggplot(vt, aes(x = sporulation_score, y =  vt,  col = spcol))+#
+  geom_point()#
+#
+lm1<- lm(vt~sporulation_score, data = vt)#
+summary(lm1)#
+tree<- read.tree('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/species_info_files/midas_tree_renamed.newick')#
+tree<- drop.tip(tree, tree$tip.label[!tree$tip.label %in% vt$species_id])#
+phylogeny<- chronopl(tree, lambda = 0)#
+phylogeny<- makeNodeLabel(phylogeny)#
+Ainv<-inverseA(phylogeny, scale=FALSE)$Ainv
+prior.1<- list(R=list(R1 = list(V=diag(1), nu = 0.002)),  # a single residual variance#
+               G=list(G1 = list(V=diag(1), nu = 0.002)))  # a single random effect#
+div = 1#
+nitt = 10500000/div#
+burnin = 500000/div#
+thin = ceiling(5000/div)#
+nitt#
+(nitt-burnin)/thin#
+#
+vt<- as.data.frame(vt)
+m.vt<- MCMCglmm(vt  ~ 1 + sporulation_score,#
+                random = ~species_id,#
+                ginverse = list(species_id=Ainv),#
+                 data = vt,#
+                 prior = prior.1,#
+                 family=c("gaussian"),#
+                 start=list(QUASI=FALSE),#
+                 #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+                 DIC = TRUE,#
+                 nitt=nitt, thin=thin, burnin=burnin)
+summary(m.vt)
+plot(m.vt)
+vt<- read_excel('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/Midas_transmission_data.xls') %>%#
+  filter(tax_level == 'species',#
+         time_point == '12M') %>%#
+  mutate(species_id = gsub(')', '', fixed = TRUE, gsub('._', '_', fixed = TRUE, gsub('(id:', '', gsub(' ', '_', tax_group), fixed = TRUE)))) %>%#
+  filter(n1 > 3) %>%#
+  select(species_id, prop1) %>%#
+  rename(vt = prop1)#
+#
+vt$species_id[grep('55206', vt$species_id)]<- midas.info[grep('55206',midas.info$species_id), 1]#
+vt<- left_join(vt, spos, by ='species_id')
+vt$genus<- do.call('rbind', strsplit(vt$species_id, '_'))[,1]#
+ggplot(vt, aes(x = sporulation_score, y =  vt, col = genus))+#
+  ylim(0,1)+#
+  geom_point(size = 2)+#
+  scale_color_brewer(palette = 'Set1')
+tree<- read.tree('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/species_info_files/midas_tree_renamed.newick')#
+tree<- drop.tip(tree, tree$tip.label[!tree$tip.label %in% vt$species_id])#
+phylogeny<- chronopl(tree, lambda = 0)#
+phylogeny<- makeNodeLabel(phylogeny)#
+Ainv<-inverseA(phylogeny, scale=FALSE)$Ainv#
+prior.1<- list(R=list(R1 = list(V=diag(1), nu = 0.002)),  # a single residual variance#
+               G=list(G1 = list(V=diag(1), nu = 0.002)))  # a single random effect
+phylogeny
+div = 1#
+nitt = 10500000/div#
+burnin = 500000/div#
+thin = ceiling(5000/div)#
+nitt#
+(nitt-burnin)/thin#
+#
+vt<- as.data.frame(vt)
+m.vt.n3<- MCMCglmm(vt  ~ 1 + sporulation_score,#
+                random = ~species_id,#
+                ginverse = list(species_id=Ainv),#
+                data = vt,#
+                prior = prior.1,#
+                family=c("gaussian"),#
+                start=list(QUASI=FALSE),#
+                #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+                DIC = TRUE,#
+                nitt=nitt, thin=thin, burnin=burnin)
+summary(m.vt.n3)
+summary(m.vt)
+summary(m.vt.n3)
+save.image('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/output/model_output/verticalTransmission_SporulationScores.RData')
+midas.info<- read.table('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/species_info_files/species_info.txt', header=TRUE)#
+head(midas.info)#
+midas.info[grep('55206',midas.info$species_id), ]#
+spos<- read.table('~/Documents/PhD/Research/HamiltonRuleMicrobiome/HamiltonRuleMicrobiome_work/output/SPORULATION_SCORES_all_midas_species.txt', header=TRUE, sep = '\t') %>%#
+  rename(species_id = species)#
+vt<- read_excel('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/Midas_transmission_data.xls') %>%#
+  filter(tax_level == 'species',#
+         time_point == '12M') %>%#
+  mutate(species_id = gsub(')', '', fixed = TRUE, gsub('._', '_', fixed = TRUE, gsub('(id:', '', gsub(' ', '_', tax_group), fixed = TRUE)))) %>%#
+  select(species_id, prop1) %>%#
+  rename(vt = prop1)#
+#
+vt$species_id[grep('55206', vt$species_id)]<- midas.info[grep('55206',midas.info$species_id), 1]#
+vt<- left_join(vt, spos, by ='species_id')#
+lm1<- lm(vt~sporulation_score, data = vt)#
+summary(lm1)#
+tree<- read.tree('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/species_info_files/midas_tree_renamed.newick')#
+tree<- drop.tip(tree, tree$tip.label[!tree$tip.label %in% vt$species_id])#
+phylogeny<- chronopl(tree, lambda = 0)#
+phylogeny<- makeNodeLabel(phylogeny)#
+Ainv<-inverseA(phylogeny, scale=FALSE)$Ainv#
+prior.1<- list(R=list(R1 = list(V=diag(1), nu = 0.002)),  # a single residual variance#
+               G=list(G1 = list(V=diag(1), nu = 0.002)))  # a single random effect#
+div = 1#
+nitt = 10500000/div#
+burnin = 500000/div#
+thin = ceiling(5000/div)#
+nitt#
+(nitt-burnin)/thin#
+#
+vt<- as.data.frame(vt)
+vt$logvtp1<- log(vt$vt+1)
+m.logvtp1<- MCMCglmm(logvtp1  ~ 1 + sporulation_score,#
+                random = ~species_id,#
+                ginverse = list(species_id=Ainv),#
+                data = vt,#
+                prior = prior.1,#
+                family=c("gaussian"),#
+                start=list(QUASI=FALSE),#
+                #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+                DIC = TRUE,#
+                nitt=nitt, thin=thin, burnin=burnin)
+summary(m.logvtp1)
+save.image('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/output/model_output/verticalTransmission_SporulationScores.RData')
+summary(m.vt)
+ggplot(vt, aes(x = sporulation_score, y =  vt,  col = genus))+#
+  geom_point()
+vt$genus<- do.call('rbind', strsplit(vt$species_id, '_'))[,1]#
+ggplot(vt, aes(x = sporulation_score, y =  vt,  col = genus))+#
+  geom_point()
+x1<- c(1.4.2.7.8.3.9.10.11.14)
+x1<- c(1,3,2,8,4,10,45,2,4,28,22)
+length(x1+1)
+0.25*11
+0.5*11
+0.75*11
+x1.sort<- sort(x1)
+0.75*(x1.sort[2])
+(0.75*(x1.sort[2]))+(0.25*x1.sort[3])
+mean(x1.sort[2:3])
+median(x1)
+summary(median)
+summary(x1)
+x1.sort[2:3]
+x1.sort
+length(x1)
+0.25*11
+summary(x1, split=)
+quantiles(x1)
+quantile(x1)
+quantile(x1, type = 3)
+x2 = randn(10)
+sample(1:100, 1)
+sample(1:100, 16)
+x1<- sample(1:100, 16)
+length(x1)
+0.25*17
+0.5*17
+0.75*17
+x1[4]
+x1[13]
+mean(x1[8:9])
+quantiles(x1, type = 3)
+quantile(x1, type = 3)
+x1.sort<- sort(x1)
+x1.sort[c(4,8,9,13)]
+mean(c(46,47))
+length(x1)
+0.75*17
+x1.sort[13]
+x1.sort[12]
+0.3*4
+x1<- c(3,5,7,8,9,23)
+summary(x1)
+quantiles(x1)
+quantile(x1)
+quantile(x1, type = 3)
+0.25*(7)
+0.5*(7)
+0.75*(7)
+0.5/6
+1.5/6
+(3*0.5)/0.25
+(3*0.75)/0.25
+x1<- c(1,3,6,7,9,12)
+summary(x1)
+1/6
+2/6
+0.333 - 0.1666
+library(dplyr)#
+library(ggplot2)#
+library(lme4)#
+library(nlme)#
+#
+# data from Glynn et al, with age classes combined. And cooperation data for those species#
+glynn.combinedAge<- read_excel('~/Desktop/my_cfr/cfr_data_cases.xlsx', sheet = 'glynn_cfr_CombinedAge')#
+glynn.coop<- read_excel('~/Desktop/my_cfr/cfr_data_cases.xlsx', sheet = 'coop_data_for_retained_species', na = 'NA')#
+d<- left_join(glynn.coop, glynn.combinedAge)#
+d<- d[!is.na(d$nb_extracellular),]#
+d$total_alive<- d$total_cases - d$total_deaths#
+ggplot(d, aes(x = quorum_sensing, y = total_deaths/total_cases, col = as.factor(numbers_estimated_and_population_data)))+#
+  geom_point()+#
+  geom_text(aes(label=glynn_species),hjust=0, vjust=0)
+glynn.combinedAge<- read_excel('~/Desktop/my_cfr/cfr_data_cases.xlsx', sheet = 'glynn_cfr_CombinedAge')
+library(dplyr)#
+library(ggplot2)#
+library(lme4)#
+library(nlme)#
+library(readxl)#
+library(ape)#
+library(MCMCglmm)
+glynn.combinedAge<- read_excel('~/Desktop/my_cfr/cfr_data_cases.xlsx', sheet = 'glynn_cfr_CombinedAge')#
+glynn.coop<- read_excel('~/Desktop/my_cfr/cfr_data_cases.xlsx', sheet = 'coop_data_for_retained_species', na = 'NA')#
+d<- left_join(glynn.coop, glynn.combinedAge)#
+d<- d[!is.na(d$nb_extracellular),]#
+d$total_alive<- d$total_cases - d$total_deaths
+ggplot(d, aes(x = quorum_sensing, y = total_deaths/total_cases, col = as.factor(numbers_estimated_and_population_data)))+#
+  geom_point()+#
+  geom_text(aes(label=glynn_species),hjust=0, vjust=0)
+m<- glm(cbind(total_deaths, total_alive) ~ nb_cds + nb_extracellular , family = 'binomial', data = d) # ***#
+m<- glmer(cbind(total_deaths, total_alive) ~ nb_cds + nb_extracellular + (1|cohort), family = 'binomial', data = d) # ***#
+m<- glmer(cbind(total_deaths, total_alive) ~ nb_cds + nb_extracellular + (1|species), family = 'binomial', data = d) # ns#
+summary(m)
+d.trim<- d[d$numbers_estimated_and_population_data == 0,]#
+m<- glmer(cbind(total_deaths, total_alive) ~ nb_cds + nb_extracellular + (1|species), family = 'binomial', data = d.trim) # *#
+summary(m)
+tree<- read.tree('./data/species_info_files/glynn.newick')#
+tree$tip.label#
+unique(d$supfam_id) %in% tree$tip.label#
+# tree for full dataset#
+tree<- drop.tip(tree, tree$tip.label[!tree$tip.label %in% d$supfam_id])#
+phylogeny<- chronopl(tree, lambda = 1)#
+plot(phylogeny) # ultrametricised tree#
+phylogeny<-makeNodeLabel(phylogeny)#
+Ainv<-inverseA(phylogeny, scale=FALSE)$Ainv#
+#
+# tree for trimmed dataset#
+tree.trim<- drop.tip(tree, tree$tip.label[!tree$tip.label %in% d.trim$supfam_id])#
+phylogeny.trim<- chronopl(tree.trim, lambda = 1)#
+plot(phylogeny.trim) # ultrametricised tree#
+phylogeny.trim<-makeNodeLabel(phylogeny.trim)#
+Ainv.trim<-inverseA(phylogeny.trim, scale=FALSE)$Ainv
+tree<- read.tree('/Users/s1687811/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/species_info_files/glynn.newick')#
+tree$tip.label#
+unique(d$supfam_id) %in% tree$tip.label#
+# tree for full dataset#
+tree<- drop.tip(tree, tree$tip.label[!tree$tip.label %in% d$supfam_id])#
+phylogeny<- chronopl(tree, lambda = 1)#
+plot(phylogeny) # ultrametricised tree#
+phylogeny<-makeNodeLabel(phylogeny)#
+Ainv<-inverseA(phylogeny, scale=FALSE)$Ainv#
+#
+# tree for trimmed dataset#
+tree.trim<- drop.tip(tree, tree$tip.label[!tree$tip.label %in% d.trim$supfam_id])#
+phylogeny.trim<- chronopl(tree.trim, lambda = 1)#
+plot(phylogeny.trim) # ultrametricised tree#
+phylogeny.trim<-makeNodeLabel(phylogeny.trim)#
+Ainv.trim<-inverseA(phylogeny.trim, scale=FALSE)$Ainv
+prior.2 <- list(R = list(R1 = list(V = diag(1), nu = 0.002)), # residual, for binomial (not binary!) data, it can be estimated, I think#
+                G = list(G1 = list(V = diag(1), nu = 1000, alpha.mu = rep(0,1), alpha.V = diag(1)),  # phylo#
+                         G2 = list(V = diag(1), nu = 1000, alpha.mu = rep(0,1), alpha.V = diag(1)))) # non-phylo#
+                        #G3 = list(V = diag(1), nu = 1000, alpha.mu = rep(0,1), alpha.V = diag(1)))) # cohort#
+#
+div = 10#
+nitt = 10500000/div#
+burnin = 500000/div#
+thin = ceiling(5000/div)#
+nitt#
+(nitt-burnin)/thin#
+#
+d<- as.data.frame(d)#
+d.trim<- as.data.frame(d.trim)
+m3.binomial.coop_only <-function(df, focal_trait, prior){#
+  d.tmp<- df#
+  colnames(d.tmp)[which(colnames(d.tmp) == focal_trait)]<- 'focal_trait'#
+#
+  m<- MCMCglmm(cbind(total_deaths, total_alive)  ~ 1 + nb_cds + focal_trait ,#
+                          random = ~supfam_id+species,#+cohort, supfam used for the Ainv matrix, #
+                          ginverse = list(supfam_id=Ainv),#
+                          data = d.tmp,#
+                          prior = prior,#
+                          family=c("multinomial2"), trunc=T,#
+                          start=list(QUASI=FALSE),#
+                          #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+                          DIC = TRUE,#
+                          nitt=nitt, thin=thin, burnin=burnin)#
+#
+  return(m)#
+}
+# UNIVARIATE, FUL DATA#
+m3.binomial.coop_only.fulldata.bio<- m3.binomial.coop_only(df = d, focal_trait = 'biofilm', prior = prior.2)#
+m3.binomial.coop_only.fulldata.qs<- m3.binomial.coop_only(df = d, focal_trait = 'quorum_sensing', prior = prior.2)#
+m3.binomial.coop_only.fulldata.ab<- m3.binomial.coop_only(df = d, focal_trait = 'ab_degradation', prior = prior.2)#
+m3.binomial.coop_only.fulldata.sid<- m3.binomial.coop_only(df = d, focal_trait = 'siderophores', prior = prior.2)#
+m3.binomial.coop_only.fulldata.ssy<- m3.binomial.coop_only(df = d, focal_trait = 'secretion_system', prior = prior.2)#
+m3.binomial.coop_only.fulldata.sec<- m3.binomial.coop_only(df = d, focal_trait = 'nb_extracellular', prior = prior.2)#
+#
+# UNIVARIATE, TRIMMED DATA#
+m3.binomial.coop_only.fulldata.bio<- m3.binomial.coop_only(df = d.trim, focal_trait = 'biofilm', prior = prior.2)#
+m3.binomial.coop_only.fulldata.qs<- m3.binomial.coop_only(df = d.trim, focal_trait = 'quorum_sensing', prior = prior.2)#
+m3.binomial.coop_only.fulldata.ab<- m3.binomial.coop_only(df = d.trim, focal_trait = 'ab_degradation', prior = prior.2)#
+m3.binomial.coop_only.fulldata.sid<- m3.binomial.coop_only(df = d.trim, focal_trait = 'siderophores', prior = prior.2)#
+m3.binomial.coop_only.fulldata.ssy<- m3.binomial.coop_only(df = d.trim, focal_trait = 'secretion_system', prior = prior.2)#
+m3.binomial.coop_only.fulldata.sec<- m3.binomial.coop_only(df = d.trim, focal_trait = 'nb_extracellular', prior = prior.2)
+summary(m3.binomial.coop_only.fulldata.sec)
+summary(m3.binomial.coop_only.fulldata.ssy)
+summary(m3.binomial.coop_only.fulldata.sid)
+summary(m3.binomial.coop_only.fulldata.ab)
+summary(m3.binomial.coop_only.fulldata.qs)
+summary(m3.binomial.coop_only.fulldata.bio)
+save.image('~/Desktop/my_cfr_09022021.RData')
+m3.binomial.coop_only.trimdata.bio<- m3.binomial.coop_only.fullata.bio#
+m3.binomial.coop_only.trimdata.qs<- m3.binomial.coop_onlyfulldata.qs#
+m3.binomial.coop_only.trimdata.ab<- m3.binomial.coop_onlyfulldata.ab#
+m3.binomial.coop_only.trimdata.sid<- m3.binomial.coop_only.fullata.sid#
+m3.binomial.coop_only.trimdata.ssy<- m3.binomial.coop_only.fullata.ssy#
+m3.binomial.coop_only.trimdata.sec<- m3.binomial.coop_only.fullata.sec
+m3.binomial.coop_only.trimdata.bio<- m3.binomial.coop_only.fulldata.bio#
+m3.binomial.coop_only.trimdata.qs<- m3.binomial.coop_only.fulldata.qs#
+m3.binomial.coop_only.trimdata.ab<- m3.binomial.coop_only.fulldata.ab#
+m3.binomial.coop_only.trimdata.sid<- m3.binomial.coop_only.fulldata.sid#
+m3.binomial.coop_only.trimdata.ssy<- m3.binomial.coop_only.fulldata.ssy#
+m3.binomial.coop_only.trimdata.sec<- m3.binomial.coop_only.fulldata.sec
+rm(m3.binomial.coop_only.fulldata.bio)#
+rm(m3.binomial.coop_only.fulldata.qs)#
+rm(m3.binomial.coop_only.fulldata.ab)#
+rm(m3.binomial.coop_only.fulldata.sid)#
+rm(m3.binomial.coop_only.fulldata.ssy)#
+rm(m3.binomial.coop_only.fulldata.sec)
+save.image('~/Desktop/my_cfr_09022021.RData')
+m3.binomial.coop_only.fulldata.bio<- m3.binomial.coop_only(df = d, focal_trait = 'biofilm', prior = prior.2)#
+m3.binomial.coop_only.fulldata.qs<- m3.binomial.coop_only(df = d, focal_trait = 'quorum_sensing', prior = prior.2)#
+m3.binomial.coop_only.fulldata.ab<- m3.binomial.coop_only(df = d, focal_trait = 'ab_degradation', prior = prior.2)#
+m3.binomial.coop_only.fulldata.sid<- m3.binomial.coop_only(df = d, focal_trait = 'siderophores', prior = prior.2)#
+m3.binomial.coop_only.fulldata.ssy<- m3.binomial.coop_only(df = d, focal_trait = 'secretion_system', prior = prior.2)#
+m3.binomial.coop_only.fulldata.sec<- m3.binomial.coop_only(df = d, focal_trait = 'nb_extracellular', prior = prior.2)
+save.image('~/Desktop/my_cfr_09022021.RData')
+summary(m3.binomial.coop_only.fulldata.bio)
+summary(m3.binomial.coop_only.trimdata.bio)
+summary(m3.binomial.coop_only.fulldata.bio)
+summary(m3.binomial.coop_only.trimdata.bio)
+summary(m3.binomial.coop_only.fulldata.bio)
+summary(m3.binomial.coop_only.trimdata.bio)
+summary(m3.binomial.coop_only.fulldata.qs)
+summary(m3.binomial.coop_only.fulldata.ab)
+summary(m3.binomial.coop_only.fulldata.sid)
+summary(m3.binomial.coop_only.fulldata.ssy)
+summary(m3.binomial.coop_only.fulldata.sec)
+summary(m3.binomial.coop_only.fulldata.sid)
+summary(m3.binomial.coop_only.trimdata.sid)
+summary(m3.binomial.coop_only.trimdata.ssy)
+save.image('~/Desktop/my_cfr_09022021.RData')
+z.transform<- function(x){(x - mean(x))/sd(x)}#
+#
+d$z_nb_cds<- z.transform(d$nb_cds)#
+d$z_biofilm<- z.transform(d$biofilm)#
+d$z_quorum_sensing<- z.transform(d$quorum_sensing)#
+d$z_ab_degradation<- z.transform(d$ab_degradation)#
+d$z_secretion_system<- z.transform(d$secretion_system)#
+d$z_siderophores<- z.transform(d$siderophores)#
+d$z_nb_extracellular<- z.transform(d$nb_extracellular)
+m3.binomial.coop_only.fulldata.multi<- MCMCglmm(cbind(total_deaths, total_alive)  ~ 1 + z_nb_cds + z_biofilm + z_quorum_sensing + z_ab_degradation + z_secretion_system + z_siderophores + z_nb_extracellular,#
+                        random = ~supfam_id+species,#+cohort,#
+                        ginverse = list(supfam_id=Ainv),#
+                        data = d,#
+                        prior = prior.2,#
+                        family=c("multinomial2"), trunc=T,#
+                        start=list(QUASI=FALSE),#
+                        #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+                        DIC = TRUE,#
+                        nitt=nitt, thin=thin, burnin=burnin)#
+m3.binomial.coop_only.trimdata.multi<- MCMCglmm(cbind(total_deaths, total_alive)  ~ 1 + z_nb_cds + z_biofilm + z_quorum_sensing + z_ab_degradation + z_secretion_system + z_siderophores + z_nb_extracellular,#
+                                                random = ~supfam_id+species,#+cohort,#
+                                                ginverse = list(supfam_id=Ainv),#
+                                                data = d.trim,#
+                                                prior = prior.2,#
+                                                family=c("multinomial2"), trunc=T,#
+                                                start=list(QUASI=FALSE),#
+                                                #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+                                                DIC = TRUE,#
+                                                nitt=nitt, thin=thin, burnin=burnin)
+d.trim$z_nb_cds<- z.transform(d.trim$nb_cds)#
+d.trim$z_biofilm<- z.transform(d.trim$biofilm)#
+d.trim$z_quorum_sensing<- z.transform(d.trim$quorum_sensing)#
+d.trim$z_ab_degradation<- z.transform(d.trim$ab_degradation)#
+d.trim$z_secretion_system<- z.transform(d.trim$secretion_system)#
+d.trim$z_siderophores<- z.transform(d.trim$siderophores)#
+d.trim$z_nb_extracellular<- z.transform(d.trim$nb_extracellular)
+m3.binomial.coop_only.trimdata.multi<- MCMCglmm(cbind(total_deaths, total_alive)  ~ 1 + z_nb_cds + z_biofilm + z_quorum_sensing + z_ab_degradation + z_secretion_system + z_siderophores + z_nb_extracellular,#
+                                                random = ~supfam_id+species,#+cohort,#
+                                                ginverse = list(supfam_id=Ainv),#
+                                                data = d.trim,#
+                                                prior = prior.2,#
+                                                family=c("multinomial2"), trunc=T,#
+                                                start=list(QUASI=FALSE),#
+                                                #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+                                                DIC = TRUE,#
+                                                nitt=nitt, thin=thin, burnin=burnin)
+nitt
+summary(m3.binomial.coop_only.fulldata.multi)
+summary(m3.binomial.coop_only.trimdata.multi)
+save.image('~/Desktop/my_cfr_09022021.RData')
+head(d)
+my.cfr<- read_excel('~/Desktop/my_cfr/cfr_data_cases.xlsx', sheet = 'my_cfr',#
+                    col_types = c('text', 'text', 'numeric', 'numeric', 'numeric', 'text', 'numeric'))#
+#
+my.cfr.coop<- read_excel('~/Desktop/my_cfr/cfr_data_cases.xlsx', sheet = 'coop_data_for_my_cfr') %>%#
+  select(species2, genome_name, supfam_id, gram_profile, nb_extracellular, nb_cds, biofilm, ab_degradation, quorum_sensing, siderophores, secretion_system, vf) %>%#
+  rename(species = species2)#
+my.cfr2<- left_join(my.cfr, my.cfr.coop, by = 'species')
+tree<- read.tree('/Users/s1687811/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/species_info_files/hm_supfam_tree_129.newick')#
+tree#
+#
+unique(my.cfr2$supfam_id)[!unique(my.cfr2$supfam_id) %in% tree$tip.label]#
+#View(my.cfr2[my.cfr2$supfam_id == 'fz',])#
+#
+# drop the species "fz", for which I don't have the supfam id in the tree#
+my.cfr2<- my.cfr2[my.cfr2$supfam_id != 'fz',]
+tree$tip.label#
+tree<- drop.tip(tree, tree$tip.label[!tree$tip.label %in% my.cfr2$supfam_id])#
+phylogeny<- chronopl(tree, lambda = 1)#
+plot(phylogeny) # ultrametricised tree#
+phylogeny<-makeNodeLabel(phylogeny)#
+Ainv<-inverseA(phylogeny, scale=FALSE)$Ainv
+my.cfr2$alive<- my.cfr2$cases - my.cfr2$death#
+#
+my.cfr2<-my.cfr2 %>%#
+  rename(total_alive = alive,#
+         total_deaths = death,#
+         total_cases =  cases)#
+#
+my.cfr2.trim<- my.cfr2 %>%#
+  filter(numbers_estimated_and_population_data == 0) # same number of species, just some  studies removed#
+#
+ggplot(my.cfr2, aes(x = quorum_sensing, y = total_deaths/total_cases, col = as.factor(numbers_estimated_and_population_data)))+#
+  geom_point()#
+  geom_jitter(width = 0.1, height = 0.1)#+#
+  #geom_text(aes(label=species),hjust=0, vjust=0)
+m<- glm(cbind(total_deaths, total_alive) ~ nb_cds + nb_extracellular , family = 'binomial', data = my.cfr2) # ***, negative#
+m<- glmer(cbind(total_deaths, total_alive) ~ nb_cds + nb_extracellular + (1|source), family = 'binomial', data = my.cfr2) # ***, pos#
+m<- glmer(cbind(total_deaths, total_alive) ~ nb_cds + nb_extracellular + (1|species), family = 'binomial', data = my.cfr2) # ns#
+summary(m)
+prior.3 <- list(R = list(R1 = list(V = diag(1), nu = 0.002)), # residual, for binomial (not binary!) data, it can be estimated, I think#
+                G = list(G1 = list(V = diag(1), nu = 1000, alpha.mu = rep(0,1), alpha.V = diag(1)),  # phylo#
+                         G2 = list(V = diag(1), nu = 1000, alpha.mu = rep(0,1), alpha.V = diag(1)),  # non-phylo#
+                         G3 = list(V = diag(1), nu = 1000, alpha.mu = rep(0,1), alpha.V = diag(1)))) # cohort#
+#
+div = 10#
+nitt = 10500000/div#
+burnin = 500000/div#
+thin = ceiling(5000/div)#
+nitt#
+(nitt-burnin)/thin#
+my.cfr2<- as.data.frame(my.cfr2)#
+my.cfr2.trim<- as.data.frame(my.cfr2.trim)
+m3.binomial.mycfr.coop_only <-function(df, focal_trait, prior){#
+  d.tmp<- df#
+  colnames(d.tmp)[which(colnames(d.tmp) == focal_trait)]<- 'focal_trait'#
+  m<- MCMCglmm(cbind(total_deaths, total_alive)  ~ 1 + nb_cds + focal_trait ,#
+               random = ~supfam_id+species+source, #supfam used for the Ainv matrix, #
+               ginverse = list(supfam_id=Ainv),#
+               data = d.tmp,#
+               prior = prior,#
+               family=c("multinomial2"), trunc=T,#
+               start=list(QUASI=FALSE),#
+               #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+               DIC = TRUE,#
+               nitt=nitt, thin=thin, burnin=burnin)#
+  return(m)#
+}
+# UNIVARIATE, FUL DATA ----#
+m3.binomial.coop_only.mycfr.fulldata.bio<- m3.binomial.mycfr.coop_only(df = my.cfr2, focal_trait = 'biofilm', prior = prior.3)#
+m3.binomial.coop_only.mycfr.fulldata.qs<- m3.binomial.mycfr.coop_only(df = my.cfr2, focal_trait = 'quorum_sensing', prior = prior.3)#
+m3.binomial.coop_only.mycfr.fulldata.ab<- m3.binomial.mycfr.coop_only(df = my.cfr2, focal_trait = 'ab_degradation', prior = prior.3)#
+m3.binomial.coop_only.mycfr.fulldata.sid<- m3.binomial.mycfr.coop_only(df = my.cfr2, focal_trait = 'siderophores', prior = prior.3)#
+m3.binomial.coop_only.mycfr.fulldata.ssy<- m3.binomial.mycfr.coop_only(df = my.cfr2, focal_trait = 'secretion_system', prior = prior.3)#
+m3.binomial.coop_only.mycfr.fulldata.sec<- m3.binomial.mycfr.coop_only(df = my.cfr2, focal_trait = 'nb_extracellular', prior = prior.3)#
+# UNIVARIATE, TRIMMED DATA ----#
+m3.binomial.coop_only.mycfr.trimdata.bio<- m3.binomial.mycfr.coop_only(df = my.cfr2.trim, focal_trait = 'biofilm', prior = prior.3)#
+m3.binomial.coop_only.mycfr.trimdata.qs<- m3.binomial.mycfr.coop_only(df = my.cfr2.trim, focal_trait = 'quorum_sensing', prior = prior.3)#
+m3.binomial.coop_only.mycfr.trimdata.ab<- m3.binomial.mycfr.coop_only(df = my.cfr2.trim, focal_trait = 'ab_degradation', prior = prior.3)#
+m3.binomial.coop_only.mycfr.trimdata.sid<- m3.binomial.mycfr.coop_only(df = my.cfr2.trim, focal_trait = 'siderophores', prior = prior.3)#
+m3.binomial.coop_only.mycfr.trimdata.ssy<- m3.binomial.mycfr.coop_only(df = my.cfr2.trim, focal_trait = 'secretion_system', prior = prior.3)#
+m3.binomial.coop_only.mycfr.trimdata.sec<- m3.binomial.mycfr.coop_only(df = my.cfr2.trim, focal_trait = 'nb_extracellular', prior = prior.3)#
+save.image('~/Desktop/my_cfr_09022021.RData')
+z.transform<- function(x){(x - mean(x))/sd(x)}#
+#
+my.cfr2$z_nb_cds<- z.transform(my.cfr2$nb_cds)#
+my.cfr2$z_biofilm<- z.transform(my.cfr2$biofilm)#
+my.cfr2$z_quorum_sensing<- z.transform(my.cfr2$quorum_sensing)#
+my.cfr2$z_ab_degradation<- z.transform(my.cfr2$ab_degradation)#
+my.cfr2$z_secretion_system<- z.transform(my.cfr2$secretion_system)#
+my.cfr2$z_siderophores<- z.transform(my.cfr2$siderophores)#
+my.cfr2$z_nb_extracellular<- z.transform(my.cfr2$nb_extracellular)#
+my.cfr2.trim$z_nb_cds<- z.transform(my.cfr2.trim$nb_cds)#
+my.cfr2.trim$z_biofilm<- z.transform(my.cfr2.trim$biofilm)#
+my.cfr2.trim$z_quorum_sensing<- z.transform(my.cfr2.trim$quorum_sensing)#
+my.cfr2.trim$z_ab_degradation<- z.transform(my.cfr2.trim$ab_degradation)#
+my.cfr2.trim$z_secretion_system<- z.transform(my.cfr2.trim$secretion_system)#
+my.cfr2.trim$z_siderophores<- z.transform(my.cfr2.trim$siderophores)#
+my.cfr2.trim$z_nb_extracellular<- z.transform(my.cfr2.trim$nb_extracellular)
+m3.binomial.coop_only.mycfr.fulldata.multi<- MCMCglmm(cbind(total_deaths, total_alive)  ~ 1 + z_nb_cds + z_biofilm + z_quorum_sensing + z_ab_degradation + z_secretion_system + z_siderophores + z_nb_extracellular,#
+                                                random = ~supfam_id+species+source,#
+                                                ginverse = list(supfam_id=Ainv),#
+                                                data = my.cfr2,#
+                                                prior = prior.3,#
+                                                family=c("multinomial2"), trunc=T,#
+                                                start=list(QUASI=FALSE),#
+                                                #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+                                                DIC = TRUE,#
+                                                nitt=nitt, thin=thin, burnin=burnin)#
+m3.binomial.coop_only.mycfr.trimdata.multi<- MCMCglmm(cbind(total_deaths, total_alive)  ~ 1 + z_nb_cds + z_biofilm + z_quorum_sensing + z_ab_degradation + z_secretion_system + z_siderophores + z_nb_extracellular,#
+                                                random = ~supfam_id+species+source,#
+                                                ginverse = list(supfam_id=Ainv),#
+                                                data = my.cfr2.trim,#
+                                                prior = prior.3,#
+                                                family=c("multinomial2"), trunc=T,#
+                                                start=list(QUASI=FALSE),#
+                                                #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+                                                DIC = TRUE,#
+                                                nitt=nitt, thin=thin, burnin=burnin)
+save.image('~/Desktop/my_cfr_09022021.RData')
+library(readxl)#
+library(dplyr)#
+library(tidyr)#
+library(ggplot2)#
+#
+# Sanity check on reads processing#
+logs<- read_excel('~/Desktop/CASECONTROL/data_CC_04Feb/pipeline_processing.xlsx', sheet = 'hosts_with_SNPS_output')#
+logs2<- logs %>% gather('step', 'nb_reads', 2:3)#
+head(logs2)#
+ggplot(logs2, aes(x = step, y = nb_reads))+#
+  geom_boxplot()#
+summary(logs$nb_reads_processed)#
+#
+logs<- rename(logs, host = host_with_SNPS_output)#
+#
+cohorts<- do.call('rbind', strsplit(logs$host, '_'))[,1]#
+table(cohorts)
+logs$cohort<- cohorts#
+logs[logs$cohort == 'KAZAK',]#
+# METADATA ----#
+#
+md<- read.table('~/Desktop/CASECONTROL/data_CC_04Feb/assembled_CC_SRA.txt', header=TRUE, sep = '\t',#
+                na.strings = c('NA', 'N/A'),#
+                colClasses = c(rep('character', 6), 'character', 'character', rep('character', 3))) %>%#
+  select(-run, -BioSample, -BioProject) %>%#
+  unique()#
+#
+is.numeric(md$age)#
+is.numeric(md$bmi)#
+# Recode gender#
+md$gender<- gsub('Female', 'female', md$gender)#
+md$gender<- gsub('Male', 'male', md$gender)#
+md$gender<- gsub('F', 'female', md$gender)#
+md$gender<- gsub('M', 'male', md$gender)#
+md$gender<- gsub('N/A', NA, md$gender, fixed = TRUE)#
+unique(md$gender)#
+# Recorde country#
+unique(md$country)#
+md$country<- gsub('ESP', 'SPA', md$country)#
+md$country<- gsub('spanish', 'SPA', md$country)#
+md$country<- gsub('Kazakhstan', 'KZA', md$country)#
+md$country<- gsub('Chinese', 'CHN', md$country)#
+md$country<- gsub('China', 'CHN', md$country)#
+md$country<- gsub('china', 'CHN', md$country)#
+md$country<- gsub('Gothenburg', 'SWE', md$country)#
+md$country<- gsub('Germany', 'GER', md$country)#
+md$country<- gsub('France', 'FRA', md$country)#
+unique(md$country)#
+# Record BMI and Age and set back to numeric#
+unique(md$bmi)#
+md$bmi<- gsub('N/A', 'NA', md$bmi)#
+md$bmi<- gsub('>30', '31', md$bmi)#
+md$bmi<- gsub('<23', '22', md$bmi)#
+md$bmi<- as.numeric(md$bmi)#
+#
+md$age<- gsub('Adult', 'NA', md$age)#
+md$age<- gsub('N/A', 'NA', md$age)#
+md$age<- as.numeric(md$age)#
+# Record phenotypes#
+unique(md$phenotype)#
+md$phenotype<- gsub('Ulcerative colitis', 'UC', md$phenotype)#
+md$phenotype<- gsub('Crohns disease', 'CD', md$phenotype)#
+md$phenotype<- gsub('Healthy relative', 'Healthy', md$phenotype)#
+md$phenotype<- gsub('hypertension', 'HYPER', md$phenotype)#
+md$phenotype<- gsub('pre-hypertension', 'preHYPER', md$phenotype)#
+md$phenotype<- gsub('cirrhosis', 'LC', md$phenotype)#
+md$phenotype<- gsub('Obesity', 'OBE', md$phenotype)#
+md$phenotype<- gsub('rheumatoid_arthritis', 'RA', md$phenotype)#
+#
+# MH richness only healthy, classify BMI > 30 as obese#
+md[which(md$cohort == 'MHRICH' & md$bmi > 30), 'phenotype'] <- 'OBE'#
+#
+# Make binary caseControl variable#
+md$caseControl<- ifelse(md$phenotype == 'Healthy', 1, 0)#
+#
+# Filter out the healthy which are actually obese#
+md<- md[-which(md$phenotype == 'Healthy' & md$bmi > 30), ]#
+length(unique(md$host))
+length(unique(md$host))
+# RELATEDNESS AND SPORULATION ----#
+r.df<- read.table('~/Desktop/CASECONTROL/data_CC_04Feb/relatednes_sporulation.txt', header = TRUE, sep = '\t')#
+nrow(r.df) # 101 species#
+# Load abundance tablee#
+prob.df<- read.table('~/Desktop/CASECONTROL/data_CC_04Feb/assembled_species_profiles.txt', header=FALSE, sep = '\t', colClasses = c('character', 'numeric', 'numeric', 'numeric', 'character'))#
+colnames(prob.df)<- c('species_id', 'count_reads', 'coverage', 'within_host_relative_abundance', 'host')#
+prob.df<-  prob.df[,c('species_id','within_host_relative_abundance', 'host')]#
+# Adding MetS samples from old batch#
+# MetS missing for now, use my old output for those instead#
+old<- read.table('~/Desktop/CASECONTROL/data_CC_04Feb/OLD_assembled_species_profiles.txt', sep = '\t')#
+colnames(old)<- c('species_id', 'count_reads', 'coverage', 'within_host_relative_abundance', 'host')#
+old.kza<- old[which(substr(old$host, 1, 4) %in% c('713A', '713B')), ]#
+old.kza$host<- paste0('KAZAK_', old.kza$host, '1100')#
+old.kza<- old.kza %>% select(species_id, within_host_relative_abundance,  host)#
+head(old.kza)#
+head(prob.df)#
+#
+# remove the one kazak sample from mew prob.df, then append old kazaks to prob.df#
+length(unique(prob.df$host)) # 3074 for which I had an output#
+prob.df<- prob.df[prob.df$host != 'KAZAK_713A0331100',]#
+length(unique(prob.df$host)) # 3073 now#
+prob.df<- rbind(prob.df, old.kza)#
+# Check that table is complete#
+length(unique(prob.df$host))  # 3074-1+86 = 3159 host for which we have an SNPS output#
+length(unique(prob.df$host)) * length(unique(prob.df$species_id)) # nbrows ok#
+# Assemble relative abundance and metadata#
+d<- inner_join(prob.df, md, by = 'host')
+# Select subset of focal 101 species#
+d.101<- d %>% filter(species_id %in% r.df$species_id)#
+length(unique(d.101$species_id)) # 101 species#
+length(unique(d.101$host))       # 3159 hosts , actually 3103 when filtering out the Healthy obese#
+# Check number of species found in hosts, filter out host with suspicioulsy low number of species#
+check<- d.101 %>%#
+  select(host, cohort, species_id, within_host_relative_abundance, phenotype) %>%#
+  spread(species_id, within_host_relative_abundance)#
+rowSums(check[,4:104])#
+check$nb_sp<- rowSums(check[,4:104] > 0)#
+check<- check[,c(1:3, 105)]#
+check<- arrange(check, nb_sp)#
+check<- left_join(check, logs, by = 'host')#
+ggplot(check, aes(x = nb_reads_processed, y = nb_sp))+#
+  geom_point()
+md.select<- unique(d.101[,3:11]) # coding: '1' is healthy, '0' is sick#
+table(md.select$caseControl)
+table(md.select$phenotype, md.select$cohort) # Some studies have 2 disease phenotypes
+# filter out adenoma and prehyper#
+d.101.trim<- d.101 %>% filter(!phenotype %in% c('adenoma', 'pre-HYPER'))#
+# filter out CD from MHMGS#
+d.101.trim<- d.101.trim[-which(d.101.trim$phenotype == 'CD' & d.101.trim$cohort == 'MHMGS'),]#
+# filter out UC from iHMPIBD#
+d.101.trim<- d.101.trim[-which(d.101.trim$phenotype == 'UC' & d.101.trim$cohort == 'iHMPIBD'),]#
+# filter out T2D from MHIGC#
+d.101.trim<- d.101.trim[-which(d.101.trim$phenotype == 'T2D' & d.101.trim$cohort == 'MHIGC'),]#
+# filter out T2D from SWEDISH#
+d.101.trim<- d.101.trim[-which(d.101.trim$phenotype == 'T2D' & d.101.trim$cohort == 'SWEDISH'),]#
+# Set disease variable#
+#
+d.101.trim$disease = NA#
+#
+d.101.trim$disease[d.101.trim$cohort %in% c('CHINAJIEZ', 'SWEDACVD')]<- 'ACVD'#
+d.101.trim$disease[d.101.trim$cohort %in% c('CHINAYEZ')]<- 'BD'#
+d.101.trim$disease[d.101.trim$cohort %in% c('CHINACRCYU', 'ITCRC', 'USCRC', 'AUTCRCFENG', 'FGCRC')]<- 'CRC'#
+d.101.trim$disease[d.101.trim$cohort %in% c('CHINAHYPER')]<- 'HYPER'#
+d.101.trim$disease[d.101.trim$cohort %in% c('MHMGS')]<- 'UC'#
+d.101.trim$disease[d.101.trim$cohort %in% c('CHINAIBD', 'iHMPIBD')]<- 'CD'#
+d.101.trim$disease[d.101.trim$cohort %in% c('CHINALC')]<- 'LC'#
+d.101.trim$disease[d.101.trim$cohort %in% c('CHINAOB', 'MHRICH')]<- 'OBE'#
+d.101.trim$disease[d.101.trim$cohort %in% c('CHINARA')]<- 'RA'#
+d.101.trim$disease[d.101.trim$cohort %in% c('MHIGC')]<- 'T1D'#
+d.101.trim$disease[d.101.trim$cohort %in% c('CHINAQINJ')]<- 'T2D'#
+d.101.trim$disease[d.101.trim$cohort %in% c('SWEDISH')]<- 'IGT'#
+d.101.trim$disease[d.101.trim$cohort %in% c('KAZAK')]<- 'MetS'#
+md.select.trim<- unique(d.101.trim[,3:12]) # coding: '1' is healthy, '0' is sick#
+nrow(md.select.trim) # 2768, i.e. : 3103 - 10 (CD from MHMGS) - 35 (UC from iHMPIBD) - 73 (T2D from MHIGC) - 51 (T2D from SWEDISH) - 110 (adenoma) - 56 (preHYPER) = 2768#
+table(md.select.trim$caseControl)
+head(check)
+table(md.select.trim$phenotype, md.select.trim$cohort) # Now all studies have a single disease
+# COMPUTE GUT COMMUNITY RELATEDNESS AND SPORULATION#
+# Make abundance matrix: one column per species, one row per host#
+prob<- d.101.trim %>%#
+  select(host, species_id, within_host_relative_abundance) %>%#
+  spread(species_id, within_host_relative_abundance) %>%#
+  select(r.df$species_id) %>% # Order columns in same order as relatedness dataframe#
+  as.matrix()#
+# Cumulative relative abundance covered by these 101 species#
+dim(prob)#
+cum.101<- rowSums(prob)#
+hist(cum.101, xlab = 'Cumulative abundance of our 101 species') # some hosts microbiomes is poorly covered by this set of 101 species #
+#
+# Rescale the relative abundance over that  set of 101 species#
+prob.rescaled<- prob/cum.101#
+#
+# Multiply the rescaled relative abundance matrix by  the vectors of Relatedness, Sporulation and Relatedness*Sporulation#
+probr.rescaled<- t(t(prob.rescaled)*r.df$mean_relatedness)    # mean R#
+probspo.rescaled<- t(t(prob.rescaled)*r.df$sporulation_score) # mean SPO#
+probrspo.rescaled<- t(t(prob.rescaled)*(r.df$mean_relatedness*r.df$sporulation_score)) # mean (R*SPO)#
+# Final data assembly#
+dat.rescaled<- d.101.trim %>%#
+  select(host, cohort, disease, phenotype, species_id, within_host_relative_abundance, caseControl) %>%#
+  spread(species_id, within_host_relative_abundance) %>%#
+  select(host, cohort, disease, phenotype, caseControl)#
+#
+# Append the mean gut relatedness predictor variables#
+dat.rescaled$NR = rowSums(probr.rescaled)     # mean R#
+dat.rescaled$NSPO = rowSums(probspo.rescaled) # mean SPO#
+dat.rescaled$NRSPO = rowSums(probrspo.rescaled) # mean (R*SPO)#
+dat.rescaled$nb_sp = rowSums(prob.rescaled != 0)#
+dat.rescaled$cum.101 = cum.101#
+range(dat.rescaled$nb_sp) # 5-92 species in hosts
+# Append the relative abundance matrix (prob) and relative abundance matrix  * R (probr) to dataframe#
+dat.rescaled$prob = prob.rescaled#
+dat.rescaled$probr =  probr.rescaled#
+#d
+save('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/output/model_output/M4_11022021_V2_dataPreps.RData')
+save.image('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/output/model_output/M4_11022021_V2_dataPreps.RData')
+prior.u1<-list(R=list(V=1, fix=1),#
+               G=list(G1=list(V=1, nu=1, alpha.mu=0, alpha.V=100)))#
+#
+prior.u2<-list(R=list(V=1, fix=1),#
+              G=list(G1=list(V=1, nu=1, alpha.mu=0, alpha.V=100),#
+                     G2=list(V=1, nu=1, alpha.mu=0, alpha.V=100)))
+div = 100#
+nitt = 10500000/div#
+burnin = 500000/div#
+thin = ceiling(5000/div)#
+nitt#
+(nitt-burnin)/thin#
+prior.u1<-list(R=list(V=1, fix=1),#
+               G=list(G1=list(V=1, nu=1, alpha.mu=0, alpha.V=100)))#
+#
+prior.u2<-list(R=list(V=1, fix=1),#
+              G=list(G1=list(V=1, nu=1, alpha.mu=0, alpha.V=100),#
+                     G2=list(V=1, nu=1, alpha.mu=0, alpha.V=100)))
+m.fan.prob<-MCMCglmm(caseControl~1,#
+                     random=~idv(prob),#
+                     data=dat.rescaled,#
+                     family="threshold",#
+                     prior=prior.u1,#
+                     nitt = nitt, burnin =  burnin, thin = thin)
+library(MCMCglmm)
+m.fan.prob<-MCMCglmm(caseControl~1,#
+                     random=~idv(prob),#
+                     data=dat.rescaled,#
+                     family="threshold",#
+                     prior=prior.u1,#
+                     nitt = nitt, burnin =  burnin, thin = thin)
+save('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/output/model_output/M4_11022021_V2.RData')
+save.image('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/output/model_output/M4_11022021_V2.RData')
+m.fan.prob.probr<-MCMCglmm(caseControl~1,#
+                     random=~idv(prob)+idv(probr),#
+                     data=dat.rescaled,#
+                     family="threshold",#
+                     prior=prior.u2,#
+                     nitt = nitt, burnin =  burnin, thin = thin)
+save.image('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/output/model_output/M4_11022021_V2.RData')
+m.fan.prob.NR<-MCMCglmm(caseControl~1+NR,#
+                     random=~idv(prob),#
+                     data=dat.rescaled,#
+                     family="threshold",#
+                     prior=prior.u1,#
+                     nitt = nitt, burnin =  burnin, thin = thin)
+save.image('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/output/model_output/M4_11022021_V2.RData')#
+#
+m.fan.prob.probr.NR<-MCMCglmm(caseControl~1+NR,#
+                     random=~idv(prob)+idv(probr),#
+                     data=dat.rescaled,#
+                     family="threshold",#
+                     prior=prior.u2,#
+                     nitt = nitt, burnin =  burnin, thin = thin)#
+#
+save.image('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/output/model_output/M4_11022021_V2.RData')
+library(readxl)#
+library(dplyr)#
+library(tidyr)#
+library(ggplot2)
+library(MCMCglmm)
+load('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/output/model_output/M4_11022021_V2.RData')
+summary(m.fan.prob.probr.NR)
+summary(m.fan.prob.NR)
+summary(m.fan.prob)
+prior.r<-list(R=list(V=1, fix=1))
+m.multi<-MCMCglmm(caseControl~-1+disease+NR:disease+NRSPO:disease,#
+                #random=~idv(prob),#
+                data=dat.rescaled,#
+                family="threshold",#
+                prior=prior.r,#
+                nitt = nitt, burnin =  burnin, thin = thin)
+plot(m.multi)
+rm(m.multi)
+div = 1#
+nitt = 10500000/div#
+burnin = 500000/div#
+thin = ceiling(5000/div)#
+nitt#
+(nitt-burnin)/thin#
+prior.r<-list(R=list(V=1, fix=1))
+nitt
+m.multi<-MCMCglmm(caseControl~-1+disease+NR:disease+NRSPO:disease,#
+                #random=~idv(prob),#
+                data=dat.rescaled,#
+                family="threshold",#
+                prior=prior.r,#
+                nitt = nitt, burnin =  burnin, thin = thin)
+save.image('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/output/model_output/M4_11022021_V2_dataPreps.RData')
+nitt
+div = 100#
+nitt = 10500000/div#
+burnin = 500000/div#
+thin = ceiling(5000/div)#
+nitt#
+(nitt-burnin)/thin#
+prior.r<-list(R=list(V=1, fix=1))
+m.across<-MCMCglmm(caseControl~1+NR+NRSPO,#
+                  #random=~idv(prob),#
+                  data=dat.rescaled,#
+                  family="threshold",#
+                  prior=prior.r,#
+                  nitt = nitt, burnin =  burnin, thin = thin)
+save.image('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/output/model_output/M4_11022021_V2_dataPreps.RData')
+summary(m.across)
+prior.u1<-list(R=list(V=1, fix=1),#
+               G=list(G1=list(V=1, nu=1, alpha.mu=0, alpha.V=100)))
+m.across.2<-MCMCglmm(caseControl~1+NR+NRSPO,#
+                   random=~cohort#
+                   data=dat.rescaled,#
+                   family="threshold",#
+                   prior=prior.u1,#
+                   nitt = nitt, burnin =  burnin, thin = thin)
+m.across.2<-MCMCglmm(caseControl~1+NR+NRSPO,#
+                   random=~cohort,#
+                   data=dat.rescaled,#
+                   family="threshold",#
+                   prior=prior.u1,#
+                   nitt = nitt, burnin =  burnin, thin = thin)
+summary(m.across.2)
+save.image('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/output/model_output/M4_11022021_V2_dataPreps.RData')
+library(vegan)
+m<- matrix(c(0.8, 0.7, 0, 0.1, 0, 0, 0, 1, 0), ncol = 3, byrow = TRUE)
+m
+specnumber(m)
+library(dplyr)#
+library(ggplot2)#
+library(lme4)#
+library(nlme)#
+library(readxl)#
+library(ape)#
+library(MCMCglmm)
+load('~/Desktop/my_cfr_09022021.RData')
+summary(m3.binomial.coop_growth_route.mycfr.fulldata.sec)
+head(my.cfr2[!is.na(my.cfr2$generation_time_h),])
+nitt
+m3.binomial.coop_growth_route.mycfr.fulldata.vf<- m3.binomial.mycfr.coop_growth_route(df = my.cfr2[!is.na(my.cfr2$generation_time_h),], focal_trait = 'vf', prior = prior.3)
+summary(binomial.coop_growth_route.mycfr.fulldata.vf)
+summary(m3.binomial.coop_growth_route.mycfr.fulldata.vf)
+plot(m3.binomial.coop_growth_route.mycfr.fulldata.vf)
+m3.binomial.coop_only.mycfr.trimdata.multi.with_vf<- MCMCglmm(cbind(total_deaths, total_alive)  ~ 1 + z_nb_cds + z_biofilm + z_quorum_sensing + z_ab_degradation + z_secretion_system + z_siderophores + z_nb_extracellular + z_vf,#
+                                                random = ~supfam_id+species+source,#
+                                                ginverse = list(supfam_id=Ainv),#
+                                                data = my.cfr2.trim,#
+                                                prior = prior.3,#
+                                                family=c("multinomial2"), trunc=T,#
+                                                start=list(QUASI=FALSE),#
+                                                #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+                                                DIC = TRUE,#
+                                                nitt=nitt, thin=thin, burnin=burnin)
+my.cfr2.2<- my.cfr2[!is.na(my.cfr2$generation_time_h),]
+my.cfr2.2$z_nb_cds<- z.transform(my.cfr2.2$nb_cds)#
+my.cfr2.2$z_biofilm<- z.transform(my.cfr2.2$biofilm)#
+my.cfr2.2$z_quorum_sensing<- z.transform(my.cfr2.2$quorum_sensing)#
+my.cfr2.2$z_ab_degradation<- z.transform(my.cfr2.2$ab_degradation)#
+my.cfr2.2$z_secretion_system<- z.transform(my.cfr2.2$secretion_system)#
+my.cfr2.2$z_siderophores<- z.transform(my.cfr2.2$siderophores)#
+my.cfr2.2$z_nb_extracellular<- z.transform(my.cfr2.2$nb_extracellular)#
+my.cfr2.2$z_generation_time_h<- z.transform(my.cfr2.2$generation_time_h)#
+my.cfr2.2$z_vf<- z.transform(my.cfr2.2$vf)#
+my.cfr2.2.trim<- my.cfr2.trim[!is.na(my.cfr2.trim$generation_time_h),]#
+my.cfr2.2.trim$z_nb_cds<- z.transform(my.cfr2.2.trim$nb_cds)#
+my.cfr2.2.trim$z_biofilm<- z.transform(my.cfr2.2.trim$biofilm)#
+my.cfr2.2.trim$z_quorum_sensing<- z.transform(my.cfr2.2.trim$quorum_sensing)#
+my.cfr2.2.trim$z_ab_degradation<- z.transform(my.cfr2.2.trim$ab_degradation)#
+my.cfr2.2.trim$z_secretion_system<- z.transform(my.cfr2.2.trim$secretion_system)#
+my.cfr2.2.trim$z_siderophores<- z.transform(my.cfr2.2.trim$siderophores)#
+my.cfr2.2.trim$z_nb_extracellular<- z.transform(my.cfr2.2.trim$nb_extracellular)#
+my.cfr2.2.trim$z_generation_time_h<- z.transform(my.cfr2.2.trim$generation_time_h)#
+my.cfr2.2.trim$z_vf<- z.transform(my.cfr2.2.trim$vf)
+m3.binomial.coop_growth_route.mycfr.fulldata.multi.with_vf<- MCMCglmm(cbind(total_deaths, total_alive)  ~ 1 + infection_route + z_generation_time_h + z_nb_cds + z_biofilm + z_quorum_sensing + z_ab_degradation + z_secretion_system + z_siderophores + z_nb_extracellular + z_vf,#
+                                                              random = ~supfam_id+species+source,#
+                                                              ginverse = list(supfam_id=Ainv),#
+                                                              data = my.cfr2.2,#
+                                                              prior = prior.3,#
+                                                              family=c("multinomial2"), trunc=T,#
+                                                              start=list(QUASI=FALSE),#
+                                                              #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+                                                              DIC = TRUE,#
+                                                              nitt=nitt, thin=thin, burnin=burnin)
+summary(m3.binomial.coop_growth_route.mycfr.fulldata.ab)
+summary(m3.binomial.coop_growth_route.mycfr.fulldata.ssy)
+summary(m3.binomial.coop_growth_route.mycfr.fulldata.sec)
+summary(m3.binomial.coop_growth_route.mycfr.fulldata.ab)
+summary(m3.binomial.coop_growth_route.mycfr.fulldata.vf)
+summary(m3.binomial.coop_growth_route.mycfr.fulldata.multi.with_vf)
+summary(summary(m3.binomial.coop_growth_route.mycfr.fulldata.multi))
+summary(m3.binomial.coop_growth_route.mycfr.fulldata.multi)
+summary(m3.binomial.coop_growth_route.mycfr.trimdata.multi)
+summary(m3.binomial.coop_growth_route.mycfr.fulldata.multi.with_vf)
+plot(m3.binomial.coop_growth_route.mycfr.fulldata.multi.with_vf)
+m3.binomial.coop_growth_route.mycfr.fulldata.multi<- MCMCglmm(cbind(total_deaths, total_alive)  ~ 1 + infection_route + z_generation_time_h + z_nb_cds + z_biofilm + z_quorum_sensing + z_ab_degradation + z_secretion_system + z_siderophores + z_nb_extracellular,#
+                                                              random = ~supfam_id+species+source,#
+                                                              ginverse = list(supfam_id=Ainv),#
+                                                              data = my.cfr2.2,#
+                                                              prior = prior.3,#
+                                                              family=c("multinomial2"), trunc=T,#
+                                                              start=list(QUASI=FALSE),#
+                                                              #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+                                                              DIC = TRUE,#
+                                                              nitt=nitt, thin=thin, burnin=burnin)
+summary(m3.binomial.coop_growth_route.mycfr.fulldata.multi)
+nitt
+div = 1#
+nitt = 10500000/div#
+burnin = 500000/div#
+thin = ceiling(5000/div)#
+nitt#
+(nitt-burnin)/thin
+m3.binomial.coop_growth_route.mycfr.fulldata.multi.with_vf<- MCMCglmm(cbind(total_deaths, total_alive)  ~ 1 + infection_route + z_generation_time_h + z_nb_cds + z_biofilm + z_quorum_sensing + z_ab_degradation + z_secretion_system + z_siderophores + z_nb_extracellular + z_vf,#
+                                                              random = ~supfam_id+species+source,#
+                                                              ginverse = list(supfam_id=Ainv),#
+                                                              data = my.cfr2.2,#
+                                                              prior = prior.3,#
+                                                              family=c("multinomial2"), trunc=T,#
+                                                              start=list(QUASI=FALSE),#
+                                                              #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+                                                              DIC = TRUE,#
+                                                              nitt=nitt, thin=thin, burnin=burnin)
+summary(m3.binomial.coop_growth_route.mycfr.fulldata.multi.with_vf)
+save.image('~/Desktop/my_cfr_09022021.RData')
+sir_npi_quick_sd <- function(time, state, parameters, npi) {#
+  with(as.list(c(state, parameters)), {#
+    dSn = -b*(In + (1/a)*Ic)*Sn#
+    dSc = -b*(In + (1/a)*Ic)*(1/a)*Sc#
+    dIn = b*(In + (1/a)*Ic)*Sn - g * In#
+    dIc = b*(In + (1/a)*Ic)*(1/a)*Sc - g * Ic#
+    dRn = g * In#
+    dRc = g * Ic#
+    return(list(c(dSn, dSc, dIn, dIc, dRn, dRc)))})#
+}#
+sir_npi_quick_tti <- function(time, state, parameters, npi) {#
+  with(as.list(c(state, parameters)), {#
+    qtest  = (g*tau)/(1 + (g*tau))#
+    qtrace = (g*tau)/(2 + (g*tau))#
+    # ODE, with replicator dynamic for the S "activated" if x > 1              #
+    dSn = -b*(In + Ic  + qtest*Ic_test + qtest*In_test + qtrace*Ic_trace)*Sn#
+    dSc = -b*(In + Ic  + qtest*Ic_test + qtest*In_test + qtrace*Ic_trace)*Sc#
+    dIn = (1-p_test)*(b*(In + Ic  + qtest*Ic_test + qtest*In_test + qtrace*Ic_trace)*Sn)- g * In#
+    dIn_test = (p_test)*(b*(In + Ic  + qtest*Ic_test + qtest*In_test + qtrace*Ic_trace)*Sn)- g * In_test#
+    dIc = (1-p_test)*(b*(In + Ic  + qtest*In_test)*Sc)- g * Ic#
+    dIc_test = (p_test)*(b*(In + Ic  + qtest*In_test)*Sc)- g * Ic_test#
+    dIc_trace = b*(qtest*Ic_test + qtrace*Ic_trace)*Sc - g*Ic_trace#
+    dRn  = g * (In + In_test)#
+    dRc  = g * (Ic + Ic_test + Ic_trace)#
+    return(list(c(dSn, dSc, dIn, dIn_test, dIc, dIc_test, dIc_trace, dRn, dRc)))})#
+}#
+integral<- function(x, strains){ #
+  out<- as.data.frame(x)#
+  out_sum<- data.frame(time = out$time, sum = rowSums(as.data.frame(out[,strains])))#
+  sum(diff(out_sum$time) * (head(out_sum$sum,-1)+tail(out_sum$sum,-1)))/2#
+}#
+#
+# Epidemic parameters#
+r0 = 3   # (reproduction number)#
+g = 1/14 # (recovery rate)#
+b = r0*g # (transmission rate estimated from R0)#
+N = 67886004 # used to define initial condition#
+nb_cases_ini = 60000 # number of cases on March 16th when PM first announce to limit contacts = 58286#
+#
+# Simulation parameters#
+time_sim = 800#
+timestep = 0.1#
+times.run <- seq(0, time_sim, by = timestep)
+reductions<- c(0.05, 0.1, 0.25,0.5, 0.75, 0.9, 0.95)#
+alphas<- 1/(1-reductions) # corresponds to reduction of beta of 5%, 10%, 25%, 50%, 75%, 90%, 95%#
+#
+df.sd.list<- vector('list', length = length(alphas))#
+#
+names(df.sd.list)<- paste0('alpha_', round(alphas, 2))#
+#
+# Simulation#
+#
+for(j in 1:length(alphas)){#
+  print(j)#
+  # redefine a new parameter set with a different alpha and re-initialise an entry of the df.sd.list()#
+  pars_sd.focal<- c(b = b, g = g, a = alphas[j], tau = NA,   p_test = NA, x = 0)#
+  min = 0.2 # was 0.001, test with 0.1#
+  df.sd.list[[j]]<- data.frame(Sn = seq(0+min, 1-min, min),#
+                             p_not_infected_c = NA,#
+                             p_not_infected_n = NA,#
+                             prop_time_not_recovered_c = NA,#
+                             prop_time_not_recovered_n = NA)#
+  # run through the df.sd.list[[j]] for different initial compliance#
+  for(i in 1:nrow(df.sd.list[[j]])){#
+    #print(i)#
+    # redefine ini at each loop iteration, with different frequencies of compliers#
+    ini<- c(Sn = df.sd.list[[j]]$Sn[i] - ((df.sd.list[[j]]$Sn[i]*nb_cases_ini)/N),#
+            Sc = (1 - df.sd.list[[j]]$Sn[i]) - (((1 - df.sd.list[[j]]$Sn[i])*nb_cases_ini)/N),#
+            In = (df.sd.list[[j]]$Sn[i]*nb_cases_ini)/N,#
+            Ic = ((1 - df.sd.list[[j]]$Sn[i])*nb_cases_ini)/N,#
+            Rn = 0,#
+            Rc = 0)#
+    # Run (no burnin phase)#
+    out.run<- ode(y = ini, times = times.run, func = sir_npi_quick_sd, parms = pars_sd.focal)#
+    out<- out.run#
+    # EVALUATE BENEFIT AND COST AT EQUILIBRIUM (tmax), to compute PAYOFFS AFTERWARD#
+    # proba that an individual is still susceptible by the end of the epidemic#
+    df.sd.list[[j]]$p_not_infected_c[i]<- tail(out, 1)[,c('Sc')]/sum(tail(out, 1)[,c('Sc', 'Ic', 'Rc')]) #
+    df.sd.list[[j]]$p_not_infected_n[i]<- tail(out, 1)[,c('Sn')]/sum(tail(out, 1)[,c('Sn', 'In', 'Rn')])#
+    # Using integral, average proportion of time individual spent not recovered#
+    df.sd.list[[j]]$prop_time_not_recovered_c[i]<- integral(out, c('Sc', 'Ic'))/integral(out, c('Sc', 'Ic', 'Rc')) #
+    df.sd.list[[j]]$prop_time_not_recovered_n[i]<- integral(out, c('Sn', 'In'))/integral(out, c('Sn', 'In', 'Rn'))#
+  }#
+}
+library(deSolve)
+reductions<- c(0.05, 0.1, 0.25,0.5, 0.75, 0.9, 0.95)#
+alphas<- 1/(1-reductions) # corresponds to reduction of beta of 5%, 10%, 25%, 50%, 75%, 90%, 95%#
+#
+df.sd.list<- vector('list', length = length(alphas))#
+#
+names(df.sd.list)<- paste0('alpha_', round(alphas, 2))#
+#
+# Simulation#
+#
+for(j in 1:length(alphas)){#
+  print(j)#
+  # redefine a new parameter set with a different alpha and re-initialise an entry of the df.sd.list()#
+  pars_sd.focal<- c(b = b, g = g, a = alphas[j], tau = NA,   p_test = NA, x = 0)#
+  min = 0.2 # was 0.001, test with 0.1#
+  df.sd.list[[j]]<- data.frame(Sn = seq(0+min, 1-min, min),#
+                             p_not_infected_c = NA,#
+                             p_not_infected_n = NA,#
+                             prop_time_not_recovered_c = NA,#
+                             prop_time_not_recovered_n = NA)#
+  # run through the df.sd.list[[j]] for different initial compliance#
+  for(i in 1:nrow(df.sd.list[[j]])){#
+    #print(i)#
+    # redefine ini at each loop iteration, with different frequencies of compliers#
+    ini<- c(Sn = df.sd.list[[j]]$Sn[i] - ((df.sd.list[[j]]$Sn[i]*nb_cases_ini)/N),#
+            Sc = (1 - df.sd.list[[j]]$Sn[i]) - (((1 - df.sd.list[[j]]$Sn[i])*nb_cases_ini)/N),#
+            In = (df.sd.list[[j]]$Sn[i]*nb_cases_ini)/N,#
+            Ic = ((1 - df.sd.list[[j]]$Sn[i])*nb_cases_ini)/N,#
+            Rn = 0,#
+            Rc = 0)#
+    # Run (no burnin phase)#
+    out.run<- ode(y = ini, times = times.run, func = sir_npi_quick_sd, parms = pars_sd.focal)#
+    out<- out.run#
+    # EVALUATE BENEFIT AND COST AT EQUILIBRIUM (tmax), to compute PAYOFFS AFTERWARD#
+    # proba that an individual is still susceptible by the end of the epidemic#
+    df.sd.list[[j]]$p_not_infected_c[i]<- tail(out, 1)[,c('Sc')]/sum(tail(out, 1)[,c('Sc', 'Ic', 'Rc')]) #
+    df.sd.list[[j]]$p_not_infected_n[i]<- tail(out, 1)[,c('Sn')]/sum(tail(out, 1)[,c('Sn', 'In', 'Rn')])#
+    # Using integral, average proportion of time individual spent not recovered#
+    df.sd.list[[j]]$prop_time_not_recovered_c[i]<- integral(out, c('Sc', 'Ic'))/integral(out, c('Sc', 'Ic', 'Rc')) #
+    df.sd.list[[j]]$prop_time_not_recovered_n[i]<- integral(out, c('Sn', 'In'))/integral(out, c('Sn', 'In', 'Rn'))#
+  }#
+}
+local_project_dir='/Users/s1687811/Documents/PhD/Research/CooperativePathogenicityVirulence/'
+setwd(local_project_dir)#
+setwd('./CooperativePathogenicityVirulence_repo/')#
+source('./scripts/sourced_packages.R')#
+library(ape)#
+library(MCMCglmm)#
+library(dmetar)#
+library(esc)#
+# 0 - LOAD DATA  ----#
+#
+# Annotations summarised at species level#
+d<- read.table('./output/1_processed_tables/2.1_assembled_SPECIES_annotation.txt', header=TRUE, sep = '\t',#
+               colClasses = c(rep('character', 4),#
+                              rep('numeric', 9)))#
+#
+d<- rename(d,#
+           nb_extracellular = secretome,#
+           species.patric = species,#
+           vf = is_victor_vf,#
+           #mp3_pathogenic = is_mp3_hybrid_pathogenic,#
+           nb_cds = total_cds,#
+           ab_degradation = antibiotic_degradation) %>%#
+  rename(species = species_id)#
+#
+d$pathogen<- as.factor(d$pathogen)#
+# Detail annotation at gene level#
+d.annot<- read.csv('./output/1_processed_tables/2.2_assembled_GENES_annotation.txt', header=TRUE, sep = '\t',#
+               colClasses = c(rep('character', 7),#
+                              rep('numeric', 8)))#
+#
+head(d.annot)#
+#
+sum(is.na(d.annot$secretome)) # all genes are annotated#
+#
+d.annot2<- d.annot %>%#
+  filter(!is.na(secretome)) %>% # in fact no case of this#
+  mutate(is_coop = biofilm+antibiotic_degradation+quorum_sensing+siderophores+secretion_system+secretome)%>%#
+  mutate(is_coop = ifelse(is_coop == 0, is_coop, 1)) %>%#
+  select(-genus, -species, -product_patric, -total_cds) %>%#
+  rename(is_vf = is_victor_vf,#
+         species = species_id)#
+#
+head(d.annot2)#
+# 1 - QUICK OVERAL CHI-SQUARE ----#
+#
+# Code wrapper:#
+# make a contingency table for a focus cooperative trait#
+# run a chi-squre test on it#
+# compute OR and CI#
+#
+ctab.all<- function(focus_trait){#
+  tab<- d.annot2 %>% #
+    select(focus_trait, is_vf)%>%#
+    rename(cooperative = 1) %>%#
+    group_by(cooperative, is_vf) %>%#
+    table()#
+  or<- esc_2x2(grp1yes = tab[2,2],#
+               grp1no = tab[2,1],#
+               grp2yes = tab[1,2],#
+               grp2no = tab[1,1],#
+               es.type = 'or')#
+  chi<- chisq.test(tab)#
+  return(list(tab = tab, or = or, chi = chi))#
+}#
+#
+ctab.all.secretome<- ctab.all('secretome')#
+ctab.all.biofilm<- ctab.all('biofilm')#
+ctab.all.sid<- ctab.all('siderophores')  # marginally #
+ctab.all.qs<- ctab.all('quorum_sensing')#
+ctab.all.ab<- ctab.all('antibiotic_degradation') # approx may be incorrect # ns#
+ctab.all.ssyst<- ctab.all('secretion_system')    # approx may be incorrect#
+ctab.all.any<- ctab.all('is_coop') #
+# 2 - ACCOUNTING FOR PHYLOGENY ----#
+# 2.1 - CONTINGENCY TABLES ----#
+#
+# WORKS WITH ENVIRONMENT DATAFRAME 'd.annot2'#
+#
+# Code wrappers:#
+# get_conttable:#
+#   makes a contingency table for a given trait for a given species#
+# get_effects:  #
+#   run metabin() on each 2x2 table#
+#   extarcts individual species effects, SE and CI --> then used in PMM#
+#   also runs a meta-analysis, although not phylogenetic#
+# NOTE: I use basic 'MH' method. Using  GLMM method gives different results for the meta-analysis but the individual effects exacted are the same#
+get_conttable<- function(focal_trait = ''){#
+  d.annot2[,c('species', focal_trait, 'is_vf')] %>%#
+    rename(renamed_focal_trait = 2) %>%#
+    mutate(treatment_outcome = paste(renamed_focal_trait, is_vf, sep = '_')) %>%#
+    select(species, treatment_outcome) %>%#
+    group_by(species, treatment_outcome) %>%#
+    table() %>%#
+    as.data.frame() %>%#
+    spread(treatment_outcome, Freq) %>%#
+    rename(coop0_vf0 = `0_0`,#
+           coop0_vf1 = `0_1`,#
+           coop1_vf0 = `1_0`,#
+           coop1_vf1 = `1_1`)#
+}#
+get_effects<- function(ctab=''){#
+  m<- metabin(data = ctab,#
+              event.e = coop1_vf1,#
+              n.e = coop1_vf1+coop1_vf0,#
+              event.c = coop0_vf1,#
+              n.c = coop0_vf1+coop0_vf0,#
+              sm = "or",#
+              incr = 0.5, MH.exact = FALSE,#
+              method = 'MH', #
+              allstudies = FALSE)#
+  ctab$logOR = m$TE#
+  ctab$se_logOR = m$seTE#
+  ctab$ci_l = m$lower#
+  ctab$ci_u = m$upper#
+  ctab$z = m$zval#
+  ctab$pval = m$pval#
+  return(list(df = ctab, meta.out = m))#
+}#
+#
+# Make contingency tables#
+ctab.iscoop<- get_conttable(focal_trait = 'is_coop')#
+ctab.secretome<- get_conttable(focal_trait = 'secretome')#
+ctab.ab<- get_conttable(focal_trait = 'antibiotic_degradation')#
+ctab.qs<- get_conttable(focal_trait = 'quorum_sensing')#
+ctab.sid<- get_conttable(focal_trait = 'siderophores')#
+ctab.ssyst<- get_conttable(focal_trait = 'secretion_system')#
+ctab.biofilm<- get_conttable(focal_trait = 'biofilm')#
+#
+library(meta)#
+#
+# Run metabin to extract effects#
+effects.iscoop<- get_effects(ctab.iscoop)#
+effects.secretome<- get_effects(ctab.secretome)#
+effects.ab<- get_effects(ctab.ab)#
+effects.qs<- get_effects(ctab.qs)#
+effects.sid<- get_effects(ctab.sid)#
+effects.ssyst<- get_effects(ctab.ssyst)#
+effects.biofilm<- get_effects(ctab.biofilm)#
+# ASSEMBLE ALL OUTPUT#
+df.all<- rbind(#
+  cbind(effects.iscoop$df,cooperative_trait = 'is_coop'),#
+  cbind(effects.secretome$df,cooperative_trait = 'secretome'),#
+  cbind(effects.ab$df,cooperative_trait = 'ab'),#
+  cbind(effects.qs$df,cooperative_trait = 'qs'),#
+  cbind(effects.sid$df,cooperative_trait = 'sid'),#
+  cbind(effects.ssyst$df,cooperative_trait = 'ssyst'),#
+  cbind(effects.biofilm$df,cooperative_trait = 'biofilm'))#
+df.all$species.ide = df.all$species#
+unique(df.all$species)
+library(MCMCglmm)#
+library(ape)#
+#
+midas.tree<- read.tree('./data/5_phylogeny_files/midas_tree_renamed.newick')#
+div = 2#
+nitt = 10500000/div#
+burnin = 500000/div#
+thin = ceiling(5000/div)#
+nitt#
+(nitt-burnin)/thin#
+a <- 1000#
+prior.a <- list(R = list(V = diag(1), nu = 0.002), # residual variance = non-phylo variance#
+                G = list(G1 = list(V = diag(1), nu = 1, alpha.mu = 0, alpha.V = diag(1)*a),  # phylogeny#
+                         G2 = list(V = diag(1), nu = 1, alpha.mu = 0, alpha.V = diag(1)*a) # measurement error, estimate it rather than fix it to 1#
+                         )) #
+# Code wrapper to run meta-analysis on a given trait#
+run_meta<- function(df = '', focal_trait, prior = ''){#
+  df.tmp = df[df$cooperative_trait %in% focal_trait,]#
+  phylogeny<- drop.tip(midas.tree, midas.tree$tip.label[which(!midas.tree$tip.label %in% df.tmp$species)])#
+  phylogeny<- chronopl(phylogeny, lambda = 0)#
+  phylogeny<-makeNodeLabel(phylogeny)#
+  Ainv<-inverseA(phylogeny, scale=FALSE)$Ainv#
+  randomtest <- MCMCglmm(logOR ~ 1,#
+                         random = ~species + idh(se_logOR):units,   # non-phylo species effect here is residual because one observation per species, and that's also equivalent to "study effect" in a usual meta-analysis#
+                         #random = ~species + se_logOR,             # non-phylo species effect here is residual because one observation per species, and that's also equivalent to "study effect" in a usual meta-analysis#
+                         ginverse = list(species=Ainv),#
+                         family = 'gaussian',#
+                         prior = prior,#
+                         data = df.tmp,#
+                         start = list(QUASI = FALSE),#
+                         nitt=nitt, thin=thin, burnin=burnin)#
+  return(randomtest)#
+}#
+#
+# Run meta-analysis on each cooperation category#
+meta.a.secretome<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'secretome', prior = prior.a)#
+meta.a.biofilm<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'biofilm', prior = prior.a)#
+meta.a.sid<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'sid', prior = prior.a)#
+meta.a.ab<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'ab', prior = prior.a)#
+meta.a.qs<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'qs', prior = prior.a)#
+meta.a.ssyst<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'ssyst', prior = prior.a)#
+#
+# Run meta-analysis on grouped categories under a single 'cooperative' category#
+meta.a.coop<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'is_coop', prior = prior.a)#
+# Check how many datapoint there were for in each model#
+# (if a species has two entries of the 2x2 table VF/COOP that are equal to zero, the odds ratio cannot be computed)#
+df = df.all[!is.na(df.all$logOR),]#
+nrow(df[df$cooperative_trait %in% 'is_coop',])#
+nrow(df[df$cooperative_trait %in% 'secretome',])#
+nrow(df[df$cooperative_trait %in% 'biofilm',])#
+nrow(df[df$cooperative_trait %in% 'sid',])#
+nrow(df[df$cooperative_trait %in% 'ab',])#
+nrow(df[df$cooperative_trait %in% 'qs',])#
+nrow(df[df$cooperative_trait %in% 'ssyst',])#
+# SAVE ----#
+#
+# We run the analysis chains to then use Gelman-Rubin test to assess convergence#
+#save.image("./output/3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN1.RData")#
+#save.image("./output/3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN2.RData")#
+save.image("./output/3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN3.RData")

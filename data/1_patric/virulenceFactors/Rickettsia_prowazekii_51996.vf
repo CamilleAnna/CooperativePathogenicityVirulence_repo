@@ -1,0 +1,4 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+1105096.3	Rickettsia prowazekii str. BuV67-CWPP	fig|1105096.3.peg.188	MA1_00895	VBIRicPro229008_0188	dnaK	Chaperone protein DnaK	Virulence Factor	Victors	BLAT	17988285	Brucella melitensis bv. 1 str. 16M			11854256	80	79	80	1e-236
+1105096.3	Rickettsia prowazekii str. BuV67-CWPP	fig|1105096.3.peg.666	MA1_03175	VBIRicPro229008_0666		Translation elongation factor Tu	Virulence Factor	Victors	BLAT	15676067	Neisseria meningitidis MC58			11062540	86	86	80	1e-160
+1105096.3	Rickettsia prowazekii str. BuV67-CWPP	fig|1105096.3.peg.829	MA1_03960	VBIRicPro229008_0829		rickettsial conserved	Virulence Factor	Victors	BLAT	15604650	Rickettsia prowazekii			19506016	100	100	100	1e-111

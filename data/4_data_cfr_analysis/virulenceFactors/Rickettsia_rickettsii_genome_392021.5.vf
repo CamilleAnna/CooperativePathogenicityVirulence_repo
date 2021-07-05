@@ -1,0 +1,4 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+392021.5	Rickettsia rickettsii str. 'Sheila Smith'	fig|392021.5.peg.1174	A1G_05565	VBIRicRic5337_1174		Translation elongation factor Tu	Virulence Factor	Victors	BLAT	15676067	Neisseria meningitidis MC58			11062540	86	86	81	1e-161
+392021.5	Rickettsia rickettsii str. 'Sheila Smith'	fig|392021.5.peg.1464	A1G_06970	VBIRicRic5337_1464		hypothetical protein	Virulence Factor	Victors	BLAT	15604650	Rickettsia prowazekii			19506016	98	96	82	4e-87
+392021.5	Rickettsia rickettsii str. 'Sheila Smith'	fig|392021.5.peg.1470	A1G_06990	VBIRicRic5337_1470		hypothetical protein	Virulence Factor	VFDB	BLAT	VFG040466	Rickettsia rickettsii str. Sheila Smith		Adherence;Autotransporter		100	100	100	0.0

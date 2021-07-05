@@ -1,0 +1,51 @@
+Legget_species	facultative_vs_obligate	immune_subversion	generation_time_h	case_fatality_rate	QS_virulence	infection_route	effect_symptoms_on_transmission	motility	infective_dose	species_id	genome_id	matching_supfam_id	gram_profile	total_cds	biofilm	antibiotic_degradation	quorum_sensing	siderophores	secretion_system	secretome	is_victor_vf
+Aggregatibacter actinomycetemcomitans	Facultative	1	11	25.5	0	Skin	No effect	0	NA	Aggregatibacter_actinomycetemcomitans_genome_754507.3	754507.3	m5b	n	2169	6	4	5	3	2	9	40
+Anaplasma phagocytophilum	Facultative	1	21.6	1.5	0	Skin	Hinders	NA	NA	Anaplasma_phagocytophilum_genome_212042.8	212042.8	as	n	1506	0	0	0	0	1	9	0
+Arcobacter butzleri	Facultative	NA	0.66	0.4	0	Ingestion	Helps	1	NA	Arcobacter_butzleri_genome_367737.6	367737.6	6k	n	2275	3	11	1	15	3	15	0
+Bacillus anthracis	Facultative	1	0.5	20	1	Skin	Helps	0	20250	Bacillus_anthracis_genome_592021.13	592021.13	2N	p	6007	10	9	3	4	1	140	22
+Bacillus cereus	Facultative	0	0.3	0	1	Ingestion	Helps	1	1e+06	Bacillus_cereus_genome_405535.8	405535.8	k2	p	5873	8	10	2	4	1	122	12
+Bacteroides fragilis	Facultative	1	0.63	19.3	0	Skin	No effect	0	NA	Bacteroides_fragilis_genome_295405.11	295405.11	fa	n	4412	9	3	0	10	7	36	1
+Bordetella pertussis	Obligate	0	3.8	1	0	Inhalation	Helps	0	200	Bordetella_pertussis_genome_257313.5	257313.5	be	n	4170	12	7	0	14	9	29	31
+Brucella abortus	Facultative	1	2	1.025	1	Ingestion	No effect	0	55	Brucella_abortus_genome_430066.4	430066.4	91	n	3476	0	3	2	4	2	16	224
+Brucella melitensis	Facultative	1	2	3.25	1	Ingestion	No effect	0	55	Brucella_melitensis_genome_546272.3	546272.3	1E	n	3486	0	4	2	4	2	21	224
+Burkholderia mallei	Facultative	1	0.75	38.5	1	Inhalation	No effect	0	10	Burkholderia_mallei_genome_243160.12	243160.12	bi	n	5724	7	9	2	5	22	77	45
+Burkholderia pseudomallei	Facultative	1	1	38.5	1	Inhalation	No effect	1	10	Burkholderia_pseudomallei_genome_1335307.3	1335307.3	HkK	n	7381	15	12	3	7	26	100	47
+Campylobacter jejuni subsp. jejuni	Facultative	1	1.1	0.4	0	Ingestion	Helps	1	550	Campylobacter_jejuni_subsp._jejuni_genome_1357994.3	1357994.3	2yk	n	1799	1	2	1	2	3	23	56
+Clostridium perfringens	Facultative	1	0.2	0.07	1	Ingestion	Helps	1	1e+05	Clostridium_perfringens_genome_195103.10	195103.1	2f	p	2866	6	4	3	0	4	50	4
+Coxiella burnetii	Facultative	1	8	3	0	Inhalation	No effect	0	10	Coxiella_burnetii_genome_360115.5	360115.5	5w	n	2194	3	2	0	1	2	11	1
+Cronobacter sakazakii	Facultative	1	0.23	60	1	Skin	Hinders	1	1000	Cronobacter_sakazakii_genome_290339.8	290339.8	hS	n	4069	26	8	1	17	2	48	118
+Enterococcus faecalis	Facultative	0	0.5	0.01	1	Ingestion	Helps	0	1e+07	Enterococcus_faecalis_genome_226185.9	226185.9	ef	p	3243	8	2	2	0	1	42	39
+Escherichia coli EAEC	Obligate	0	0.5	0.025	1	Ingestion	Helps	1	50500000	Escherichia_coli_EaggEC_genome_585055.56	585055.56	kt	n	4966	52	16	2	22	22	62	217
+Escherichia coli EHEC	Obligate	1	0.33	0.254	1	Ingestion	Helps	1	10	Escherichia_coli_EHEC_genome_155864.210	155864.21	e1	n	4635	61	21	4	18	11	58	219
+Escherichia coli ETEC	Obligate	0	0.33	0.025	1	Ingestion	Helps	1	2.55e+09	Escherichia_coli_ETEC_genome_331111.12	331111.12	6l	n	5196	63	21	4	16	12	62	240
+Francisella tularensis subsp. holarctica	Facultative	1	3	0	1	Ingestion	Hinders	0	1000	Francisella_tularensis_holarctica_genome_351581.3	351581.3	h1y	n	2057	8	4	0	1	2	18	327
+Francisella tularensis subsp. tularensis	Facultative	1	3	14	1	Inhalation	Hinders	0	7.5	Francisella_tularensis_subsp._tularensis_genome_418136.12	418136.12	3a	n	2082	9	4	0	1	2	24	327
+Gardnerella vaginalis	Facultative	0	13.5	0	1	Skin	Helps	0	2e+10	Gardnerella_vaginalis_genome_525284.18	525284.18	gF	p	1345	2	1	1	0	0	17	0
+Haemophilus ducreyi	Obligate	1	1.8	0	0	Skin	Helps	1	30	Haemophilus_ducreyi_genome_233412.5	233412.5	hd	n	1705	4	2	1	1	0	8	45
+Helicobacter pylori	Obligate	1	2.4	3	0	Ingestion	Helps	1	10000	Helicobacter_pylori_genome_1407463.3	1407463.3	7mp	n	1701	0	10	1	1	1	27	64
+Legionella pneumophila	Obligate	1	3.3	17.5	1	Inhalation	No effect	1	140000	Legionella_pneumophila_genome_400673.7	400673.7	2w	n	3438	7	11	2	3	11	43	25
+Listeria monocytogenes	Obligate	1	1	30	1	Ingestion	No effect	1	1000	Listeria_monocytogenes_genome_930782.3	930782.3	avB	p	3404	10	0	2	0	1	54	91
+Mycobacterium tuberculosis	Obligate	1	19	50	0	Inhalation	Helps	0	10	Mycobacterium_tuberculosis_genome_216594.6	216594.6	mb	OM+	5880	14	8	0	8	4	184	142
+Mycoplasma pneumoniae	Obligate	0	6	36.3	0	Inhalation	Helps	1	5050000	Mycoplasma_pneumoniae_genome_272634.6	272634.6	mp	woOM-	755	0	0	0	0	0	14	0
+Neisseria gonorrhoeae	Obligate	1	0.58	0	0	Skin	Hinders	0	1050	Neisseria_gonorrhoeae_genome_242231.10	242231.1	ni	n	2628	24	5	1	7	2	7	57
+Neisseria meningitidis	Obligate	0	0.72	20.3	0	Inhalation	No effect	0	1000	Neisseria_meningitidis_genome_272831.7	272831.7	19	n	2662	10	5	1	8	4	14	63
+Orientia tsutsugamushi	Facultative	1	9	60	0	Skin	Hinders	0	3	Orientia_tsutsugamushi_genome_357244.4	357244.4	2q	n	2364	0	0	0	0	1	7	0
+Pseudomonas aeruginosa	Facultative	0	0.5	47	1	Skin	Helps	1	1000	Pseudomonas_aeruginosa_genome_208964.400	208964.4	pa	n	5734	40	16	3	28	58	78	106
+Rickettsia conorii	Obligate	1	4.1	2.1	0	Skin	Hinders	0	10	Rickettsia_conorii_genome_272944.4	272944.4	rc	n	1578	1	1	0	0	1	13	2
+Rickettsia prowazekii	Obligate	1	10	30	0	Skin	Hinders	0	10	Rickettsia_prowazekii_genome_1290427.3	1290427.3	I6w	n	926	0	0	0	0	1	6	3
+Rickettsia rickettsii	Obligate	1	9	65	0	Skin	Hinders	0	10	Rickettsia_rickettsii_genome_392021.5	392021.5	6b	n	1577	1	1	0	0	1	12	2
+Salmonella enterica subsp. enterica serovar Paratyphi	Obligate	1	0.4	4	0	Ingestion	No effect	1	1000	Salmonella_enterica_subsp._enterica_serovar_Typhimurium_genome_990282.21	990282.21	xaB	n	5050	44	13	3	15	15	77	330
+Salmonella enterica subsp. enterica serovar Typhi	Obligate	1	0.4	4	0	Ingestion	No effect	1	1e+05	Salmonella_enterica_subsp._enterica_serovar_Paratyphi_genome_554290.17	554290.17	kh	n	4896	41	7	3	13	13	71	314
+Salmonella enterica subsp. enterica serovar Typhimurium	Facultative	1	0.4	4	1	Ingestion	Helps	1	1e+05	Salmonella_enterica_Typhi_genome_220341.7	220341.7	si	n	5297	39	11	3	15	13	75	317
+Shigella dysenteriae	Obligate	1	0.67	0.6	0	Ingestion	Helps	0	10	Shigella_dysenteriae_genome_754093.4	754093.4	cIt	n	6315	27	7	2	22	14	82	284
+Shigella flexneri	Obligate	1	0.68	0.1	0	Ingestion	Helps	0	100	Shigella_flexneri_genome_198214.7	198214.7	s0	n	5527	44	13	3	22	3	84	288
+Shigella sonnei	Obligate	1	0.5	0.9	0	Ingestion	Helps	0	75	Shigella_sonnei_genome_216599.12	216599.12	Qf7	n	5483	53	18	4	22	4	81	276
+Staphylococcus aureus subsp. aureus	Facultative	1	0.4	4	1	Ingestion	No effect	0	1e+05	Staphylococcus_aureus_subsp._aureus_genome_359787.11	359787.11	1i	p	2839	12	5	2	6	0	103	36
+Streptococcus pyogenes	Obligate	1	0.4	19	1	Inhalation	No effect	0	1000	Streptococcus_pyogenes_genome_160491.19	160491.19	4z	p	1935	7	4	1	0	1	32	56
+Treponema pallidum	Obligate	1	33	3.17	0	Skin	Helps	1	57	Treponema_pallidum_genome_243276.5	243276.5	tp	n	1099	2	0	0	0	1	11	0
+Vibrio cholerae	Obligate	0	0.2	0.9	1	Ingestion	Helps	1	3.33e+10	Vibrio_cholerae_genome_914149.18	914149.18	w4y	n	3643	10	6	1	13	18	46	132
+Vibrio parahaemolyticus	Facultative	0	0.2	0.01	1	Ingestion	No effect	1	5.5e+07	Vibrio_parahaemolyticus_genome_1211705.3	1211705.3	AXA	n	4626	7	9	2	10	34	65	65
+Vibrio vulnificus	Facultative	1	0.16	39	1	Ingestion	Helps	1	100	Vibrio_vulnificus_genome_216895.17	216895.17	vv	n	4808	9	9	1	9	21	55	62
+Yersinia enterocolitica	Facultative	1	0.55	0.5	1	Ingestion	Helps	1	1e+06	Yersinia_enterocolitica_genome_930944.6	930944.6	95D	n	4424	35	5	4	7	27	81	120
+Yersinia pestis	Facultative	1	1.25	90	1	Skin	Helps	0	10	Yersinia_pestis_genome_360102.15	360102.15	ys	n	4780	27	5	5	16	31	87	135
+Yersinia pseudotuberculosis	Facultative	1	0.5	0.5	1	Ingestion	No effect	0	1e+06	Yersinia_pseudotuberculosis_genome_349747.9	349747.9	06	n	4749	28	5	6	13	15	76	108

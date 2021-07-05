@@ -1,0 +1,3 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+941638.3	Rickettsia slovaca 13-B	fig|941638.3.peg.1204	Rsl_1165	VBIRicSlo180092_1204	tuf	Translation elongation factor Tu	Virulence Factor	Victors	BLAT	15676067	Neisseria meningitidis MC58			11062540	86	86	81	1e-161
+941638.3	Rickettsia slovaca 13-B	fig|941638.3.peg.1493	Rsl_1448	VBIRicSlo180092_1493	pldA	hypothetical protein	Virulence Factor	Victors	BLAT	15604650	Rickettsia prowazekii			19506016	98	96	81	1e-86

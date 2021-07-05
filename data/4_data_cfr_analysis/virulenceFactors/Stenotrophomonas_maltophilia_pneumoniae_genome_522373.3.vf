@@ -1,0 +1,2 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+522373.3	Stenotrophomonas maltophilia K279a	fig|522373.3.peg.3453	Smlt3674	VBISteMal45202_3453	pilG	twitching motility protein PilG	Virulence Factor	VFDB	BLAT	VFG001225	Pseudomonas aeruginosa PAO1		Adherence;Twitching motility		94	82	84	3e-48

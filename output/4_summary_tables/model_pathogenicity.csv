@@ -1,0 +1,47 @@
+effect	post.mean	l-95% CI	u-95% CI	eff.samp	pMCMC	model_name
+species	12.906	4.377	21.287	2000	NA	secretome
+units	1	1	1	0	NA	secretome
+(Intercept)	-1.5e-02	-5.2e+00	4.644	2000	0.968	secretome
+nb_cds	 2.3e-04	-8.8e-04	0.001	2000	0.687	secretome
+focal_trait	0.051	0.001	0.11	2794.19	0.04	secretome
+species	12.477	4.744	21.141	1858.526	NA	biofilm
+units	1	1	1	0	NA	biofilm
+(Intercept)	-1.9e+00	-6.7e+00	3.256	2000	0.415	biofilm
+nb_cds	0.001	-5.5e-05	0.002	2000	0.053	biofilm
+focal_trait	0.162	-4.3e-02	0.368	2000	0.129	biofilm
+species	13.055	5.164	21.925	2519.245	NA	siderophores
+units	1	1	1	0	NA	siderophores
+(Intercept)	-9.7e-01	-5.7e+00	3.691	2000	0.681	siderophores
+nb_cds	0.001	 3.6e-04	0.002	2000	0.005	siderophores
+focal_trait	0.002	-2.1e-01	0.252	2000	0.971	siderophores
+species	12.682	5.42	22.356	1976.943	NA	antibiotic degradation
+units	1	1	1	0	NA	antibiotic degradation
+(Intercept)	-1.2e+00	-5.9e+00	3.394	2162.236	0.615	antibiotic degradation
+nb_cds	0.001	-1.3e-04	0.002	2068.75	0.088	antibiotic degradation
+focal_trait	0.18	-1.6e-01	0.533	1455.56	0.293	antibiotic degradation
+species	12.912	4.743	21.487	2000	NA	quorum-sensing
+units	1	1	1	0	NA	quorum-sensing
+(Intercept)	-7.7e-01	-5.7e+00	4.007	2000	0.73	quorum-sensing
+nb_cds	0.001	 3.3e-04	0.002	2000	0.001	quorum-sensing
+focal_trait	-1.9e-01	-1.1e+00	0.613	2000	0.653	quorum-sensing
+species	10.315	3.015	18.791	2000	NA	secretion systems
+units	1	1	1	0	NA	secretion systems
+(Intercept)	-1.5e+00	-5.7e+00	2.671	2000	0.483	secretion systems
+nb_cds	0.001	 4.5e-06	0.002	2229.329	0.039	secretion systems
+focal_trait	0.223	0.066	0.369	2000	0.018	secretion systems
+species	10.681	3.931	18.295	2000	NA	virulence factors
+units	1	1	1	0	NA	virulence factors
+(Intercept)	-2.8e+00	-7.3e+00	1.719	2000	0.237	virulence factors
+nb_cds	0.001	-1.3e-04	0.001	2000	0.105	virulence factors
+focal_trait	0.052	0.026	0.076	2000	5.0e-04	virulence factors
+species	8.386	1.657	16.318	2000	NA	Multivariate model
+units	1	1	1	0	NA	Multivariate model
+(Intercept)	1.437	-2.0e+00	5.081	1800.354	0.416	Multivariate model
+z_nb_cds	-8.7e-01	-2.7e+00	1.122	2000	0.374	Multivariate model
+z_biofilm	-3.6e-01	-2.7e+00	1.9	2274.818	0.714	Multivariate model
+z_ab_degradation	0.685	-6.7e-01	2.234	2000	0.375	Multivariate model
+z_quorum_sensing	-7.3e-01	-2.0e+00	0.572	2158.389	0.277	Multivariate model
+z_secretion_system	2.447	0.969	3.847	2000	0.012	Multivariate model
+z_siderophores	-1.1e+00	-2.7e+00	0.566	1836.411	0.203	Multivariate model
+z_nb_extracellular	1.894	0.255	3.681	2132.078	0.032	Multivariate model
+z_vf	3.326	1.48	4.889	2000	5.0e-04	Multivariate model

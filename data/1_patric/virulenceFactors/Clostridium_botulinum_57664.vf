@@ -1,0 +1,4 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+1435052.3	Clostridium botulinum CDC54088	fig|1435052.3.peg.457		VBICloBot319521_0457		EutM/PduA/PduJ-like protein 2 clustered with choline trimethylamine-lyase	Virulence Factor	Victors	BLAT	29376182	Enterococcus faecalis V583			17307944	88	88	88	6e-35
+1435052.3	Clostridium botulinum CDC54088	fig|1435052.3.peg.3071		VBICloBot319521_3071		UTP--glucose-1-phosphate uridylyltransferase (EC 2.7.7.9)	Virulence Factor	VFDB	BLAT	VFG000964	Streptococcus pyogenes M1 GAS		Antiphagocytosis;Adherence;Tissue invasion		89	14	88	1e-13
+1435052.3	Clostridium botulinum CDC54088	fig|1435052.3.peg.3071		VBICloBot319521_3071		UTP--glucose-1-phosphate uridylyltransferase (EC 2.7.7.9)	Virulence Factor	Victors	BLAT	15676538	Neisseria meningitidis MC58			11062540	85	14	80	7e-12

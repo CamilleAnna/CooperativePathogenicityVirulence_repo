@@ -1,0 +1,13 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+272634.6	Mycoplasma pneumoniae M129	fig|272634.6.peg.91	MPN093	VBIMycPne110_0091		hypothetical protein	Virulence Factor	VFDB	BLAT	VFG002030	Mycoplasma pneumoniae M129		Adherence		96	23	93	1e-158
+272634.6	Mycoplasma pneumoniae M129	fig|272634.6.peg.137		VBIMycPne110_0137		hypothetical protein	Virulence Factor	VFDB	BLAT	VFG002033	Mycoplasma pneumoniae M129		Adherence		96	7	97	3e-67
+272634.6	Mycoplasma pneumoniae M129	fig|272634.6.peg.155	MPN141	VBIMycPne110_0155	P1	hypothetical protein	Virulence Factor	VFDB	BLAT	VFG002033	Mycoplasma pneumoniae M129		Adherence		100	100	100	0.0
+272634.6	Mycoplasma pneumoniae M129	fig|272634.6.peg.156	MPN142	VBIMycPne110_0156	orf6	hypothetical protein	Virulence Factor	VFDB	BLAT	VFG002030	Mycoplasma pneumoniae M129		Adherence		100	100	100	0.0
+272634.6	Mycoplasma pneumoniae M129	fig|272634.6.peg.333	MPN309	VBIMycPne110_0333	P65	Cell envelope-associated transcriptional attenuator LytR-CpsA-Psr, subfamily F2	Virulence Factor	VFDB	BLAT	VFG002031	Mycoplasma pneumoniae M129		Adherence		100	100	100	1e-249
+272634.6	Mycoplasma pneumoniae M129	fig|272634.6.peg.334	MPN310	VBIMycPne110_0334		hypothetical protein	Virulence Factor	VFDB	BLAT	VFG002029	Mycoplasma pneumoniae M129		Adherence		100	100	100	0.0
+272634.6	Mycoplasma pneumoniae M129	fig|272634.6.peg.394	MPN367	VBIMycPne110_0394		hypothetical protein	Virulence Factor	VFDB	BLAT	VFG002030	Mycoplasma pneumoniae M129		Adherence		98	23	97	1e-163
+272634.6	Mycoplasma pneumoniae M129	fig|272634.6.peg.403	MPN372	VBIMycPne110_0403		hypothetical protein	Virulence Factor	VFDB	BLAT	VFG043671	Mycoplasma pneumoniae M129		Toxin		100	100	100	0.0
+272634.6	Mycoplasma pneumoniae M129	fig|272634.6.peg.483	MPN447	VBIMycPne110_0483	hmw1	hypothetical protein	Virulence Factor	VFDB	BLAT	VFG002035	Mycoplasma pneumoniae M129		Adherence		100	100	100	0.0
+272634.6	Mycoplasma pneumoniae M129	fig|272634.6.peg.488	MPN452	VBIMycPne110_0488	hmw3	hypothetical protein	Virulence Factor	VFDB	BLAT	VFG002034	Mycoplasma pneumoniae M129		Adherence		100	100	100	0.0
+272634.6	Mycoplasma pneumoniae M129	fig|272634.6.peg.489	MPN453	VBIMycPne110_0489		hypothetical protein	Virulence Factor	VFDB	BLAT	VFG002036	Mycoplasma pneumoniae M129		Adherence		99	88	100	1e-146
+272634.6	Mycoplasma pneumoniae M129	fig|272634.6.peg.629	MPN567	VBIMycPne110_0629	P200	hypothetical protein	Virulence Factor	VFDB	BLAT	VFG002032	Mycoplasma pneumoniae M129		Adherence		100	100	100	0.0

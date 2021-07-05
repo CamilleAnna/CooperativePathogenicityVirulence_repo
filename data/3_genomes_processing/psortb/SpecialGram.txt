@@ -1,0 +1,6 @@
+For Corynebacterium_matruchotii_57066, special gram, use precomputed genome if available
+For Mycobacterium_avium_56142, special gram, use precomputed genome if available
+For Mycobacterium_intracellulare_57056, special gram, use precomputed genome if available
+For Mycobacterium_marinum_56420, special gram, use precomputed genome if available
+For Mycobacterium_tuberculosis_57144, special gram, use precomputed genome if available
+For Mycobacterium_tuberculosis_57439, special gram, use precomputed genome if available

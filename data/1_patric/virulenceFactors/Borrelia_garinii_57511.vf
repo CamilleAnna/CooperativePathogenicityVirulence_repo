@@ -1,0 +1,19 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+139.73	Borrelia garinii IPT89	fig|139.73.peg.59		VBIBorGar300382_0059		DNA mismatch repair protein MutS	Virulence Factor	Victors	BLAT	15595142	Borrelia burgdorferi B31			19997622	99	27	92	1e-128
+139.73	Borrelia garinii IPT89	fig|139.73.peg.60		VBIBorGar300382_0060		DNA mismatch repair protein MutS	Virulence Factor	Victors	BLAT	15595142	Borrelia burgdorferi B31			19997622	99	13	96	1e-56
+139.73	Borrelia garinii IPT89	fig|139.73.peg.61		VBIBorGar300382_0061		DNA mismatch repair protein MutS	Virulence Factor	Victors	BLAT	15595142	Borrelia burgdorferi B31			19997622	97	56	92	1e-259
+139.73	Borrelia garinii IPT89	fig|139.73.peg.138		VBIBorGar300382_0138		Recombination inhibitory protein MutS2	Virulence Factor	Victors	BLAT	15594444	Borrelia burgdorferi B31			19997622	99	71	90	1e-292
+139.73	Borrelia garinii IPT89	fig|139.73.peg.139		VBIBorGar300382_0139		Recombination inhibitory protein MutS2	Virulence Factor	Victors	BLAT	15594444	Borrelia burgdorferi B31			19997622	100	8	94	4e-32
+139.73	Borrelia garinii IPT89	fig|139.73.peg.185		VBIBorGar300382_0185		Metal transporter, ZIP family	Virulence Factor	Victors	BLAT	15594564	Borrelia burgdorferi B31			19218460	99	45	98	9e-63
+139.73	Borrelia garinii IPT89	fig|139.73.peg.482		VBIBorGar300382_0482		hypothetical protein	Virulence Factor	Victors	BLAT	219873298	Borrelia burgdorferi 156a			16468997	100	100	90	1e-181
+139.73	Borrelia garinii IPT89	fig|139.73.peg.521		VBIBorGar300382_0521		Holliday junction ATP-dependent DNA helicase RuvB (EC 3.6.4.12)	Virulence Factor	Victors	BLAT	15594368	Borrelia burgdorferi B31			19997622	100	100	97	1e-191
+139.73	Borrelia garinii IPT89	fig|139.73.peg.581		VBIBorGar300382_0581		Guanosine-3',5'-bis(diphosphate) 3'-pyrophosphohydrolase (EC 3.1.7.2) / GTP pyrophosphokinase (EC 2.7.6.5), (p)ppGpp synthetase II	Virulence Factor	Victors	BLAT	15594543	Borrelia burgdorferi B31			16041012	97	32	98	1e-120
+139.73	Borrelia garinii IPT89	fig|139.73.peg.582		VBIBorGar300382_0582		Guanosine-3',5'-bis(diphosphate) 3'-pyrophosphohydrolase (EC 3.1.7.2) / GTP pyrophosphokinase (EC 2.7.6.5), (p)ppGpp synthetase II	Virulence Factor	Victors	BLAT	15594543	Borrelia burgdorferi B31			16041012	99	55	97	1e-209
+139.73	Borrelia garinii IPT89	fig|139.73.peg.593		VBIBorGar300382_0593		hypothetical protein	Virulence Factor	Victors	BLAT	15594613	Borrelia burgdorferi B31			20815822	100	100	81	4e-65
+139.73	Borrelia garinii IPT89	fig|139.73.peg.1132		VBIBorGar300382_1132		surface-located membrane protein 1 (lmp1)	Virulence Factor	Victors	BLAT	15594555	Borrelia burgdorferi B31			19266024	99	18	92	1e-103
+139.73	Borrelia garinii IPT89	fig|139.73.peg.1148		VBIBorGar300382_1148		periplasmic protein	Virulence Factor	Victors	BLAT	15594708	Borrelia burgdorferi			20444101	100	40	96	1e-148
+139.73	Borrelia garinii IPT89	fig|139.73.peg.1150		VBIBorGar300382_1150		periplasmic protein	Virulence Factor	Victors	BLAT	15594708	Borrelia burgdorferi			20444101	96	42	90	1e-146
+139.73	Borrelia garinii IPT89	fig|139.73.peg.1224		VBIBorGar300382_1224		Flagellin protein FlaA	Virulence Factor	Victors	BLAT	435009	"Borrelia burgdorferi HB19 "			8627071	100	100	98	1e-181
+139.73	Borrelia garinii IPT89	fig|139.73.peg.1349		VBIBorGar300382_1349		Superoxide dismutase [Mn] (EC 1.15.1.1)	Virulence Factor	Victors	BLAT	15594498	Borrelia burgdorferi B31			19040638	98	93	91	1e-108
+139.73	Borrelia garinii IPT89	fig|139.73.peg.1455		VBIBorGar300382_1455		surface-located membrane protein 1 (lmp1)	Virulence Factor	Victors	BLAT	15594555	Borrelia burgdorferi B31			19266024	96	21	87	1e-117
+139.73	Borrelia garinii IPT89	fig|139.73.peg.1481		VBIBorGar300382_1481		Oxidative stress response regulator, BosR	Virulence Factor	Victors	BLAT	218249450	Borrelia burgdorferi ZS7			19906179	93	76	97	1e-72

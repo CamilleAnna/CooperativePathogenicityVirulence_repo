@@ -1,0 +1,2 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+360115.5	Coxiella burnetii RSA 331	fig|360115.5.peg.385	COXBURSA331_A0358	VBICoxBur33747_0385	rpmJ	LSU ribosomal protein L36p @ LSU ribosomal protein L36p, zinc-dependent	Virulence Factor	Victors	BLAT	56707499	Francisella tularensis subsp. tularensis SCHU S4			17420240	90	97	86	1e-10

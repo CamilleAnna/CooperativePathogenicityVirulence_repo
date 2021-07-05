@@ -1,0 +1,4 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+1297579.6	Fusobacterium nucleatum CC53	fig|1297579.6.peg.609	H848_03180	VBIFusNuc285170_0609		Ethanolamine utilization protein similar to PduA/PduJ	Virulence Factor	Victors	BLAT	29376182	Enterococcus faecalis V583			17307944	95	93	85	1e-36
+1297579.6	Fusobacterium nucleatum CC53	fig|1297579.6.peg.824	H848_04290	VBIFusNuc285170_0824		Translation elongation factor Tu	Virulence Factor	Victors	BLAT	15676067	Neisseria meningitidis MC58			11062540	87	87	80	1e-165
+1297579.6	Fusobacterium nucleatum CC53	fig|1297579.6.peg.982	H848_05142	VBIFusNuc285170_0982		Translation elongation factor Tu	Virulence Factor	Victors	BLAT	15676067	Neisseria meningitidis MC58			11062540	87	87	80	1e-165

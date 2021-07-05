@@ -1,0 +1,113 @@
+species	gram_profile
+Actinomyces odontolyticus	p
+Actinomyces viscosus	p
+Bacteroides ovatus	n
+Bacteroides uniformis	n
+Bacteroides vulgatus	n
+Capnocytophaga gingivalis	n
+Coprococcus comes	p
+Corynebacterium matruchotii	OM+
+Dorea formicigenerans	p
+Dorea longicatena	p
+Eubacterium rectale	p
+Faecalibacterium prausnitzii	n
+Fusobacterium nucleatum	n
+Fusobacterium periodonticum	n
+Gemella haemolysans	p
+Gemella morbillorum	p
+Gemella sanguinis	p
+Granulicatella adiacens	p
+Haemophilus haemolyticus	n
+Haemophilus parainfluenzae	n
+Lautropia mirabilis	n
+Leptotrichia wadei	n
+Neisseria flavescens	n
+Neisseria sicca	n
+Neisseria subflava	n
+Prevotella melaninogenica	n
+Propionibacterium acnes	p
+Propionibacterium granulosum	p
+Roseburia hominis	n
+Roseburia intestinalis	n
+Roseburia inulinivorans	n
+Rothia dentocariosa	p
+Rothia mucilaginosa	p
+Streptococcus australis	p
+Streptococcus gordonii	p
+Streptococcus infantis	p
+Streptococcus parasanguinis	p
+Streptococcus salivarius	p
+Veillonella dispar	n
+Veillonella parvula	n
+Acinetobacter baumannii	n
+Acinetobacter calcoaceticus	n
+Acinetobacter junii	n
+Acinetobacter lwoffii	n
+Bacillus anthracis	p
+Bacillus cereus	p
+Bartonella bacilliformis	n
+Bartonella henselae	n
+Bartonella quintana	n
+Brucella abortus	n
+Burkholderia cenocepacia	n
+Burkholderia multivorans	n
+Burkholderia pseudomallei	n
+Campylobacter coli	n
+Campylobacter concisus	n
+Campylobacter jejuni	n
+Campylobacter showae	n
+Campylobacter ureolyticus	n
+Chlamydia pneumoniae	n
+Clostridium botulinum	p
+Clostridium perfringens	p
+Clostridium tetani	p
+[Clostridium] leptum	p
+Coxiella burnetii	n
+Ehrlichia chaffeensis	n
+Escherichia coli	n
+Escherichia fergusonii	n
+Francisella tularensis subsp. tularensis	n
+Helicobacter canadensis	n
+Helicobacter fennelliae	n
+Helicobacter pullorum	n
+Helicobacter pylori	n
+Listeria monocytogenes	p
+Mycobacterium colombiense	OM+
+Mycobacterium intracellulare	OM+
+Mycobacterium tuberculosis	OM+
+Pseudomonas aeruginosa	n
+Pseudomonas fluorescens	n
+Rickettsia prowazekii	n
+Salmonella enterica subsp. enterica	n
+Staphylococcus aureus subsp. aureus	p
+Staphylococcus epidermidis	p
+Streptococcus agalactiae	p
+Streptococcus mitis	p
+Streptococcus mutans	p
+Streptococcus pneumoniae	p
+Streptococcus pyogenes	p
+Streptococcus sanguinis	p
+Vibrio cholerae	n
+Vibrio mimicus	n
+Vibrio parahaemolyticus	n
+Vibrio sp. HENC-01	n
+Yersinia enterocolitica	n
+Yersinia kristensenii	n
+Yersinia pestis subsp. pestis	n
+[Eubacterium] eligens	p
+[Eubacterium] hallii	p
+[Ruminococcus] obeum	p
+[Ruminococcus] torques	p
+Lachnoanaerobaculum sp. ICM7	p
+Lachnospiraceae bacterium 3_1_46FAA	p
+Lachnospiraceae bacterium 5_1_63FAA	p
+Lachnospiraceae bacterium 7_1_58FAA	p
+Prevotella nanceiensis	n
+Rothia aeria	p
+Staphylococcus capitis	p
+Streptococcus oralis	p
+Subdoligranulum variabile	n
+Borrelia afzelii	n
+Borrelia burgdorferi	n
+Borrelia garinii	n
+Porphyromonas sp. oral taxon 279	n

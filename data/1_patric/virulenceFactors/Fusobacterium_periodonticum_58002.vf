@@ -1,0 +1,3 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+469599.8	Fusobacterium periodonticum 2_1_31	fig|469599.8.peg.2071	FSAG_01818	VBIFusPer41726_2071	csoS1A	Ethanolamine utilization protein similar to PduA/PduJ	Virulence Factor	Victors	BLAT	29376182	Enterococcus faecalis V583			17307944	95	93	87	4e-37
+469599.8	Fusobacterium periodonticum 2_1_31	fig|469599.8.peg.2311	FSAG_02058	VBIFusPer41726_2311	tuf	Translation elongation factor Tu	Virulence Factor	Victors	BLAT	15676067	Neisseria meningitidis MC58			11062540	87	87	81	1e-166

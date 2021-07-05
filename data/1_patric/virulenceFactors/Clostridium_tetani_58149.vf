@@ -1,0 +1,4 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+1513.25	Clostridium tetani ATCC 19406	fig|1513.25.peg.587	KY54_02955			Ethanolamine utilization protein similar to PduA/PduJ	Virulence Factor	Victors	BLAT	29376182	Enterococcus faecalis V583			17307944	95	93	88	3e-38
+1513.25	Clostridium tetani ATCC 19406	fig|1513.25.peg.1172	KY54_05955			Thiol-activated cytolysin	Virulence Factor	Victors	BLAT	28211522	Clostridium tetani E88			16701501	100	100	100	1e-311
+1513.25	Clostridium tetani ATCC 19406	fig|1513.25.peg.2160	KY54_10970			EutM/PduA/PduJ-like protein 2 clustered with choline trimethylamine-lyase	Virulence Factor	Victors	BLAT	29376182	Enterococcus faecalis V583			17307944	90	90	87	2e-35

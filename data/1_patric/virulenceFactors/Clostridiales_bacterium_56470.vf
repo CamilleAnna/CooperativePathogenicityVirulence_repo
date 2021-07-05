@@ -1,0 +1,2 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+1232439.3	Clostridiales bacterium VE202-03	fig|1232439.3.peg.877		VBICloBac300556_0877		hypothetical protein	Virulence Factor	Victors	BLAT	29376182	Enterococcus faecalis V583			17307944	46	89	83	2e-32

@@ -1,0 +1,7 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+1325130.3	Helicobacter fennelliae MRY12-0050	fig|1325130.3.peg.117	HFN_1446	VBIHelFen309249_0117		Gluconate 2-dehydrogenase (EC 1.1.99.3), membrane-bound, flavoprotein	Virulence Factor	Victors	BLAT	218562073	Campylobacter jejuni subsp. jejuni NCTC 11168			18284594	83	83	80	1e-240
+1325130.3	Helicobacter fennelliae MRY12-0050	fig|1325130.3.peg.1108	HFN_0009	VBIHelFen309249_1108		Flagellar biosynthesis protein FliS	Virulence Factor	VFDB	BLAT	VFG006617	Helicobacter pylori 26695				96	96	83	9e-52
+1325130.3	Helicobacter fennelliae MRY12-0050	fig|1325130.3.peg.1108	HFN_0009	VBIHelFen309249_1108		Flagellar biosynthesis protein FliS	Virulence Factor	Victors	BLAT	15645372	Helicobacter			12018657	96	96	83	9e-52
+1325130.3	Helicobacter fennelliae MRY12-0050	fig|1325130.3.peg.1399	HFN_0298	VBIHelFen309249_1399		Chemotaxis regulator - transmits chemoreceptor signals to flagellar motor components CheY	Virulence Factor	VFDB	BLAT	VFG043386	Helicobacter pylori 26695				100	100	86	9e-57
+1325130.3	Helicobacter fennelliae MRY12-0050	fig|1325130.3.peg.1573	HFN_0472	VBIHelFen309249_1573		Flagellin	Virulence Factor	VFDB	BLAT	VFG000277	Helicobacter pylori 26695		Motility		100	100	80	1e-237
+1325130.3	Helicobacter fennelliae MRY12-0050	fig|1325130.3.peg.1573	HFN_0472	VBIHelFen309249_1573		Flagellin	Virulence Factor	Victors	BLAT	15611177	Helicobacter			8698465	100	100	80	1e-238

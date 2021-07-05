@@ -1,0 +1,4 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+1408440.3	Gemella sanguinis ATCC 700632	fig|1408440.3.peg.453				Manganese ABC transporter, periplasmic-binding protein SitA	Virulence Factor	VFDB	BLAT	VFG001359	Streptococcus pneumoniae TIGR4		Manganese uptake;ABC transporter		89	89	84	1e-139
+1408440.3	Gemella sanguinis ATCC 700632	fig|1408440.3.peg.453				Manganese ABC transporter, periplasmic-binding protein SitA	Virulence Factor	Victors	BLAT	15903537	Streptococcus pneumoniae R6			8945574	89	89	84	1e-139
+1408440.3	Gemella sanguinis ATCC 700632	fig|1408440.3.peg.454				Manganese ABC transporter, inner membrane permease protein SitD	Virulence Factor	Victors	BLAT	116516771	"Streptococcus pneumoniae D39 "			11988523	97	96	86	1e-129

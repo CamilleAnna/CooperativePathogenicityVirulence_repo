@@ -1,0 +1,119 @@
+species_id	genome_name	genome_id	is_rep_genome	count_genomes	genus	species	pathogen	gram_profile
+Acidaminococcus_intestini_54097	Acidaminococcus intestini RyC-MR95	568816.4	1	5	Acidaminococcus	Acidaminococcus intestini	0	n
+Actinomyces_odontolyticus_57475	Actinomyces odontolyticus ATCC 17982	411466.7	1	2	Actinomyces	Actinomyces odontolyticus	0	p
+Actinomyces_viscosus_57672	Actinomyces viscosus C505	562973.4	1	2	Actinomyces	Actinomyces viscosus	0	p
+Akkermansia_muciniphila_55290	Akkermansia muciniphila ATCC BAA-835	349741.6	1	2	Akkermansia	Akkermansia muciniphila	0	n
+Anaerostipes_hadrus_55206	butyrate-producing bacterium SSC/2	245018.3	1	4		butyrate-producing bacterium SSC/2	0	p
+Bacteroides_ovatus_58035	Bacteroides ovatus CL02T12C04	997885.3	1	11	Bacteroides	Bacteroides ovatus	0	n
+Bacteroides_thetaiotaomicron_56941	Bacteroides sp. 1_1_6	469586.3	1	4	Bacteroides	Bacteroides sp. 1_1_6	0	n
+Bacteroides_uniformis_57318	Bacteroides uniformis ATCC 8492	411479.10	1	7	Bacteroides	Bacteroides uniformis	0	n
+Bacteroides_vulgatus_57955	Bacteroides vulgatus ATCC 8482	435590.9	1	16	Bacteroides	Bacteroides vulgatus	0	n
+Bifidobacterium_longum_57796	Bifidobacterium longum subsp. infantis 157F	565040.3	1	41	Bifidobacterium	Bifidobacterium longum subsp. infantis	0	p
+Campylobacter_concisus_59746	Campylobacter concisus UNSW2	1242965.3	1	1	Campylobacter	Campylobacter concisus	0	n
+Campylobacter_showae_58485	Campylobacter showae CC57C	1073353.3	1	1	Campylobacter	Campylobacter showae	0	n
+Capnocytophaga_gingivalis_61780	Capnocytophaga gingivalis ATCC 33624	553178.3	1	1	Capnocytophaga	Capnocytophaga gingivalis	0	n
+Clostridiales_bacterium_56470	Clostridiales bacterium VE202-03	1232439.3	1	5		Clostridiales bacterium VE202-03	0	p
+Clostridium_leptum_61499	Clostridium leptum DSM 753	428125.8	1	1	Ruminiclostridium	[Clostridium] leptum	0	p
+Coprococcus_comes_61587	Coprococcus comes ATCC 27758	470146.3	1	1	Coprococcus	Coprococcus comes	0	p
+Corynebacterium_matruchotii_57066	Corynebacterium matruchotii ATCC 14266	553207.3	1	2	Corynebacterium	Corynebacterium matruchotii	0	OM+
+Dorea_formicigenerans_56346	Dorea formicigenerans 4_6_53AFAA	742765.5	1	3	Dorea	Dorea formicigenerans	0	p
+Dorea_longicatena_59913	Dorea longicatena AGR2136	1280698.3	1	1	Dorea	Dorea longicatena	0	p
+Eubacterium_eligens_61678	Eubacterium eligens ATCC 27750	515620.4	1	1	Eubacterium	[Eubacterium] eligens	0	p
+Eubacterium_hallii_61477	Eubacterium hallii DSM 3353	411469.3	1	1	Eubacterium	[Eubacterium] hallii	0	p
+Eubacterium_rectale_56927	Eubacterium rectale DSM 17629	657318.4	1	3	Eubacterium	Eubacterium rectale	0	p
+Faecalibacterium_prausnitzii_57453	Faecalibacterium prausnitzii M21/2	411485.10	1	2	Faecalibacterium	Faecalibacterium prausnitzii	0	n
+Fusobacterium_nucleatum_57734	Fusobacterium nucleatum CC53	1297579.6	1	12	Fusobacterium	Fusobacterium nucleatum	0	n
+Fusobacterium_periodonticum_58002	Fusobacterium periodonticum 2_1_31	469599.8	1	5	Fusobacterium	Fusobacterium periodonticum	0	n
+Gemella_haemolysans_61762	Gemella haemolysans ATCC 10379	546270.5	1	1	Gemella	Gemella haemolysans	0	p
+Gemella_morbillorum_61817	Gemella morbillorum M424	562982.3	1	1	Gemella	Gemella morbillorum	0	p
+Gemella_sanguinis_57791	Gemella sanguinis ATCC 700632	1408440.3	1	2	Gemella	Gemella sanguinis	0	p
+Granulicatella_adiacens_61980	Granulicatella adiacens ATCC 49175	638301.3	1	1	Granulicatella	Granulicatella adiacens	0	p
+Haemophilus_haemolyticus_58348	Haemophilus haemolyticus M19107	1028802.3	1	1	Haemophilus	Haemophilus haemolyticus	0	n
+Haemophilus_parainfluenzae_57123	Haemophilus parainfluenzae HK262	1095745.3	1	2	Haemophilus	Haemophilus parainfluenzae	0	n
+Lachnospiraceae_bacterium_51870	Lachnospiraceae bacterium 8_1_57FAA	665951.3	1	4		Lachnospiraceae bacterium 8_1_57FAA	0	p
+Lachnospiraceae_bacterium_62587	Lachnospiraceae bacterium ICM7	936594.3	1	1	Lachnoanaerobaculum	Lachnoanaerobaculum sp. ICM7	0	p
+Lautropia_mirabilis_62440	Lautropia mirabilis ATCC 51599	887898.3	1	1	Lautropia	Lautropia mirabilis	0	n
+Leptotrichia_wadei_57378	Leptotrichia wadei F0279	888055.3	1	2	Leptotrichia	Leptotrichia wadei	0	n
+Neisseria_flavescens_61757	Neisseria flavescens NRL30031/H210	546264.5	1	1	Neisseria	Neisseria flavescens	0	n
+Neisseria_sicca_58189	Neisseria sicca ATCC 29256	547045.3	1	4	Neisseria	Neisseria sicca	0	n
+Neisseria_subflava_61760	Neisseria subflava NJ9703	546268.4	1	1	Neisseria	Neisseria subflava	0	n
+Porphyromonas_sp_57899	Porphyromonas sp. KLE 1280	997829.3	1	2	Porphyromonas	Porphyromonas sp. KLE 1280	0	n
+Prevotella_melaninogenica_58075	Prevotella melaninogenica ATCC 25845	553174.6	1	4	Prevotella	Prevotella melaninogenica	0	n
+Prevotella_nanceiensis_44721	Prevotella nanceiensis JCM 15639	1236507.3	1	2			0	n
+Propionibacterium_acnes_57367	Propionibacterium acnes	1747.46	1	102	Propionibacterium	Propionibacterium acnes	0	p
+Propionibacterium_granulosum_57661	Propionibacterium granulosum DSM 20700	1160719.4	1	3	Propionibacterium	Propionibacterium granulosum	0	p
+Roseburia_hominis_61877	Roseburia hominis A2-183	585394.18	1	1	Roseburia	Roseburia hominis	0	n
+Roseburia_intestinalis_56239	Roseburia intestinalis M50/1	657315.3	1	3	Roseburia	Roseburia intestinalis	0	n
+Roseburia_inulinivorans_61943	Roseburia inulinivorans DSM 16841	622312.4	1	1	Roseburia	Roseburia inulinivorans	0	n
+Rothia_aeria_57338	Rothia dentocariosa C6D	2047.5	1	4	Rothia	Rothia dentocariosa	0	p
+Rothia_dentocariosa_57938	Rothia dentocariosa M567	563032.4	1	2	Rothia	Rothia dentocariosa	0	p
+Rothia_mucilaginosa_58144	Rothia mucilaginosa M508	563033.4	1	2	Rothia	Rothia mucilaginosa	0	p
+Ruminococcus_obeum_61472	Ruminococcus obeum ATCC 29174	411459.7	1	1	Blautia	[Ruminococcus] obeum	0	p
+Ruminococcus_torques_62045	Ruminococcus torques L2-14	657313.3	1	1	Blautia	[Ruminococcus] torques	0	p
+Staphylococcus_capitis_55595	Staphylococcus capitis SK14	553212.3	1	5	Staphylococcus	Staphylococcus capitis	0	p
+Staphylococcus_epidermidis_57523	Staphylococcus epidermidis NIH05001	979221.3	1	93	Staphylococcus	Staphylococcus epidermidis	0	p
+Streptococcus_parasanguinis_58126	Streptococcus parasanguinis F0449	1095733.3	1	3	Streptococcus	Streptococcus parasanguinis	0	p
+Streptococcus_salivarius_58022	Streptococcus salivarius	1304.156	1	4	Streptococcus	Streptococcus salivarius	0	p
+Streptococcus_sanguinis_58161	Streptococcus sanguinis SK1	888807.3	1	6	Streptococcus	Streptococcus sanguinis	0	p
+Subdoligranulum_variabile_61478	Subdoligranulum variabile DSM 15176	411471.5	1	1	Subdoligranulum	Subdoligranulum variabile	0	n
+Veillonella_dispar_61763	Veillonella dispar ATCC 17748	546273.3	1	1	Veillonella	Veillonella dispar	0	n
+Veillonella_parvula_57794	Veillonella parvula ATCC 17745	686660.3	1	5	Veillonella	Veillonella parvula	0	n
+Acinetobacter_baumannii_56211	Acinetobacter baumannii 263903-1	1310678.3	1	16	Acinetobacter	Acinetobacter baumannii	1	n
+Acinetobacter_baumannii_57014	Acinetobacter baumannii BJAB0868	1096997.4	1	952	Acinetobacter	Acinetobacter baumannii	1	n
+Acinetobacter_calcoaceticus_57657	Acinetobacter calcoaceticus TG19588	1221294.3	1	8	Acinetobacter	Acinetobacter calcoaceticus	1	n
+Acinetobacter_junii_57406	Acinetobacter junii MTCC 11364	1330047.3	1	7	Acinetobacter	Acinetobacter junii	1	n
+Acinetobacter_lwoffii_58233	Acinetobacter lwoffii NCTC 5866 = CIP 64.10	981327.3	1	12	Acinetobacter	Acinetobacter lwoffii	1	n
+Bacillus_anthracis_57688	Bacillus anthracis str. Vollum	261591.4	1	115	Bacillus	Bacillus anthracis	1	p
+Bacillus_cereus_57918	Streptococcus pneumoniae SMRU1024	1313.12055	1	91	NA	NA	1	p
+Bacillus_cereus_57982	Bacillus cereus CER057	1053198.3	1	32	Bacillus	Bacillus cereus	1	p
+Bacteroides_ureolyticus_58254	Campylobacter ureolyticus	827.3	1	2	Campylobacter	Campylobacter ureolyticus	1	n
+Bartonella_bacilliformis_54763	Bartonella bacilliformis INS	1206782.3	1	12	Bartonella	Bartonella bacilliformis	1	n
+Bartonella_henselae_53943	Bartonella henselae str. Zeus	1134509.3	1	9	Bartonella	Bartonella henselae	1	n
+Bartonella_quintana_55497	Bartonella quintana JK 31	1134506.3	1	14	Bartonella	Bartonella quintana	1	n
+Borrelia_afzelii_54058	Borrelia afzelii ACA-1	445986.17	1	4	Borrelia	Borrelia afzelii	1	n
+Borrelia_burgdorferi_56121	Borrelia burgdorferi Bol26	445984.3	1	23	Borrelia	Borrelia burgdorferi	1	n
+Borrelia_garinii_57511	Borrelia garinii IPT89	139.73	1	17	Borrelia	Borrelia garinii	1	n
+Brucella_abortus_57261	Brucella abortus bv. 1 str. B02-0237	35802.7	1	466	Brucella	Brucella abortus	1	n
+Burkholderia_cenocepacia_58253	Burkholderia cenocepacia S2AES	1165868.3	1	14	Burkholderia	Burkholderia cenocepacia	1	n
+Burkholderia_multivorans_56971	Burkholderia multivorans ATCC 17616 (Prj:19401)	395019.7	1	8	Burkholderia	Burkholderia multivorans	1	n
+Burkholderia_pseudomallei_54177	Burkholderia pseudomallei BPC006	1229785.3	1	159	Burkholderia	Burkholderia pseudomallei	1	n
+Campylobacter_coli_58237	Campylobacter coli LMG 23344	887306.3	1	53	Campylobacter	Campylobacter coli	1	n
+Campylobacter_fetus_53261	Campylobacter fetus subsp. venerealis B6	1167638.3	1	8	Campylobacter	Campylobacter fetus subsp. venerealis	1	n
+Campylobacter_jejuni_57666	Campylobacter jejuni X	1381117.3	1	113	Campylobacter	Campylobacter jejuni	1	n
+Chlamydophila_pneumoniae_54194	Chlamydophila pneumoniae AR39	115711.10	1	5	Chlamydia	Chlamydia pneumoniae	1	n
+Clostridium_botulinum_57664	Clostridium botulinum CDC54088	1435052.3	1	26	Clostridium	Clostridium botulinum	1	p
+Clostridium_perfringens_56840	Clostridium perfringens ATCC 13124	195103.10	1	12	Clostridium	Clostridium perfringens	1	p
+Clostridium_tetani_58149	Clostridium tetani ATCC 19406	1513.25	1	8	Clostridium	Clostridium tetani	1	p
+Coxiella_burnetii_53221	Coxiella burnetii RSA 493	227377.7	1	11	Coxiella	Coxiella burnetii	1	n
+Ehrlichia_chaffeensis_52119	Ehrlichia chaffeensis str. Heartland	1249651.3	1	8	Ehrlichia	Ehrlichia chaffeensis	1	n
+Escherichia_coli_58110	Escherichia coli O157:H43 str. T22	1137135.3	1	2754	Escherichia	Escherichia coli	1	n
+Escherichia_fergusonii_56914	Escherichia fergusonii ECD227	981367.3	1	3	Escherichia	Escherichia fergusonii	1	n
+Francisella_tularensis_57093	Francisella tularensis subsp. tularensis FSC198	393115.11	1	49	Francisella	Francisella tularensis subsp. tularensis	1	n
+Helicobacter_bilis_58212	Helicobacter bilis ATCC 51630	37372.4	1	7	Helicobacter	Helicobacter bilis	1	n
+Helicobacter_canadensis_34147	Helicobacter canadensis MIT 98-5491	537970.13	1	2	Helicobacter	Helicobacter canadensis	1	n
+Helicobacter_fennelliae_60112	Helicobacter fennelliae MRY12-0050	1325130.3	1	1	Helicobacter	Helicobacter fennelliae	1	n
+Helicobacter_pullorum_61742	Helicobacter pullorum MIT 98-5489	537972.5	1	1	Helicobacter	Helicobacter pullorum	1	n
+Helicobacter_pylori_58188	Helicobacter pylori wls-5-1	1451267.3	1	79	Helicobacter	Helicobacter pylori	1	n
+Listeria_monocytogenes_56580	Listeria monocytogenes N53-1	1234142.3	1	48	Listeria	Listeria monocytogenes	1	p
+Mycobacterium_avium_56142	Mycobacterium avium subsp. paratuberculosis Pt146	1029818.3	1	38	Mycobacterium	Mycobacterium avium subsp. paratuberculosis	1	OM+
+Mycobacterium_intracellulare_57056	Mycobacterium intracellulare M.i.198	1214063.3	1	12	Mycobacterium	Mycobacterium intracellulare	1	OM+
+Mycobacterium_marinum_56420	Mycobacterium sp. 012931	1187065.3	1	7	Mycobacterium	Mycobacterium sp. 012931	1	OM+
+Mycobacterium_tuberculosis_57144	Mycobacterium colombiense CECT 3035	1041522.3	1	2	Mycobacterium	Mycobacterium colombiense	1	OM+
+Mycobacterium_tuberculosis_57439	Mycobacterium tuberculosis PanR0208	1344047.3	1	2196	Mycobacterium	Mycobacterium tuberculosis	1	OM+
+Pseudomonas_aeruginosa_57148	Pseudomonas aeruginosa AZPAE15040	287.878	1	674	Pseudomonas	Pseudomonas aeruginosa	1	n
+Pseudomonas_brassicacearum_57978	Pseudomonas fluorescens Q8r1-96	1038923.3	1	8	Pseudomonas	Pseudomonas fluorescens	1	n
+Rickettsia_prowazekii_51996	Rickettsia prowazekii str. BuV67-CWPP	1105096.3	1	12	Rickettsia	Rickettsia prowazekii	1	n
+Rickettsia_rickettsii_57256	Rickettsia slovaca 13-B	941638.3	1	34	Rickettsia	Rickettsia slovaca	1	n
+Salmonella_enterica_58156	Salmonella enterica subsp. enterica serovar Enteritidis str. EC20120528	1412537.3	1	918	Salmonella	Salmonella enterica subsp. enterica	1	n
+Staphylococcus_aureus_56630	Staphylococcus aureus subsp. aureus IS-122	904783.3	1	4138	Staphylococcus	Staphylococcus aureus subsp. aureus	1	p
+Streptococcus_agalactiae_55593	Streptococcus agalactiae A909	205921.4	1	291	Streptococcus	Streptococcus agalactiae	1	p
+Streptococcus_pneumoniae_57684	Streptococcus pneumoniae SMRU2224	1313.10903	1	3362	Streptococcus	Streptococcus pneumoniae	1	p
+Streptococcus_pyogenes_56747	Streptococcus pyogenes M1 476	1207470.4	1	228	Streptococcus	Streptococcus pyogenes	1	p
+Vibrio_cholerae_57327	Vibrio cholerae O1 str. 2010EL-1786	914149.18	1	207	Vibrio	Vibrio cholerae	1	n
+Vibrio_harveyi_55946	Vibrio sp. HENC-01	992010.3	1	8	Vibrio	Vibrio sp. HENC-01	1	n
+Vibrio_mimicus_57727	Vibrio mimicus CAIM 1882	1400797.3	1	8	Vibrio	Vibrio mimicus	1	n
+Vibrio_owensii_57591	Vibrio owensii LMG 25430	1280004.3	1	11	Vibrio	Vibrio owensii	1	n
+Vibrio_parahaemolyticus_57034	Vibrio parahaemolyticus S078	670.114	1	221	Vibrio	Vibrio parahaemolyticus	1	n
+Yersinia_enterocolitica_60538	Yersinia enterocolitica LC20	1443113.3	1	1	Yersinia	Yersinia enterocolitica	1	n
+Yersinia_kristensenii_61733	Yersinia kristensenii ATCC 33638	527012.3	1	1	Yersinia	Yersinia kristensenii	1	n
+Yersinia_pestis_56773	Yersinia pestis biovar Orientalis str. AS200901434	1084233.3	1	132	Yersinia	Yersinia pestis subsp. pestis	1	n

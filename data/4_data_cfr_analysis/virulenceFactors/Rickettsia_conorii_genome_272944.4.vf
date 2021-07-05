@@ -1,0 +1,4 @@
+genome_id	genome_name	patric_id	refseq_locus_tag	alt_locus_tag	gene	product	property	source	evidence	source_id	organism	function	classification	pmid	query_coverage	subject_coverage	identity	e_value
+272944.4	Rickettsia conorii str. Malish 7	fig|272944.4.peg.1033	RC0909	VBIRicCon45613_1033		hypothetical protein	Virulence Factor	VFDB	BLAT	VFG040815	Rickettsia conorii str. Malish 7		Actin-based motility		100	99	100	1e-303
+272944.4	Rickettsia conorii str. Malish 7	fig|272944.4.peg.1149	RC1008	VBIRicCon45613_1149	tuf	Translation elongation factor Tu	Virulence Factor	Victors	BLAT	15676067	Neisseria meningitidis MC58			11062540	86	86	81	1e-161
+272944.4	Rickettsia conorii str. Malish 7	fig|272944.4.peg.1457	RC1270	VBIRicCon45613_1457		hypothetical protein	Virulence Factor	Victors	BLAT	15604650	Rickettsia prowazekii			19506016	98	96	81	1e-86
