@@ -5,7 +5,10 @@
 #         assembled_SPECIES_annotation.txt
 #         midas_tree_renamed.newick
 #   Runs analysis:
-
+#         Takes the species Annotation
+#         Run a binary response phylogenetic analysis to test whether each cooperative trait predicts pathogenicty
+#         Run both univariate models (one for each trait)
+#         And a multivariate model with all traits, z-transformed, included as predictors
 #   Output:
 #         3_model_output/CompAnalysis_pathogens_d118_CHAIN1.RData
 #         3_model_output/CompAnalysis_pathogens_d118_CHAIN2.RData
