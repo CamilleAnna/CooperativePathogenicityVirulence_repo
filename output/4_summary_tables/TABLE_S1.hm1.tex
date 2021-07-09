@@ -1,0 +1,51 @@
+\begin{table}
+
+\caption{\label{tab:}Model summaries of virulence factors phylogenetic meta-analyses (estimates in model summary are on log scale)}
+\centering
+\begin{tabular}[t]{llllllll}
+\toprule
+Model & Structure & Effect & Posterior
+ mean & CI95\% lower & CI95\% upper & Effective
+ sampling & pMCMC\\
+\midrule
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Secretome}}\\
+\hspace{1em} & Fixed effect & Intercept & 1.430 & 0.606 & 2.247 & 2000 & 5.00e-04\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 2.190 & 1.616 & 2.892 & 2000 & \\
+\hspace{1em} &  & Measurement error & 0.009 & 0.000 & 0.036 & 2000 & \\
+\hspace{1em} &  & Residual & 0.013 & 0.000 & 0.050 & 2000 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Biofilm}}\\
+\hspace{1em} & Fixed effect & Intercept & 2.453 & 1.412 & 3.401 & 2000 & 5.00e-04\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 2.869 & 2.011 & 3.785 & 2000 & \\
+\hspace{1em} &  & Measurement error & 0.015 & 0.000 & 0.056 & 2000 & \\
+\hspace{1em} &  & Residual & 0.019 & 0.000 & 0.074 & 2000 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Siderophores}}\\
+\hspace{1em} & Fixed effect & Intercept & 2.326 & 1.053 & 3.526 & 2000 & 1.00e-03\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 4.040 & 2.528 & 5.828 & 2000 & \\
+\hspace{1em} &  & Measurement error & 0.035 & 0.000 & 0.122 & 1876 & \\
+\hspace{1em} &  & Residual & 0.038 & 0.000 & 0.157 & 2000 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Antibiotic degradation}}\\
+\hspace{1em} & Fixed effect & Intercept & 2.419 & 1.326 & 3.407 & 2145 & 5.00e-04\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 3.034 & 2.117 & 3.968 & 2000 & \\
+\hspace{1em} &  & Measurement error & 0.009 & 0.000 & 0.035 & 2000 & \\
+\hspace{1em} &  & Residual & 0.013 & 0.000 & 0.048 & 2000 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Quorum sensing}}\\
+\hspace{1em} & Fixed effect & Intercept & 3.229 & 2.220 & 4.318 & 2000 & 5.00e-04\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 2.565 & 1.717 & 3.582 & 2000 & \\
+\hspace{1em} &  & Measurement error & 0.008 & 0.000 & 0.030 & 2000 & \\
+\hspace{1em} &  & Residual & 0.014 & 0.000 & 0.055 & 2000 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Secretion systems}}\\
+\hspace{1em} & Fixed effect & Intercept & 2.647 & 1.455 & 3.839 & 2000 & 5.00e-04\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 3.781 & 2.493 & 5.264 & 1814 & \\
+\hspace{1em} &  & Measurement error & 0.019 & 0.000 & 0.077 & 1873 & \\
+\hspace{1em} &  & Residual & 0.039 & 0.000 & 0.152 & 2000 & \\
+\bottomrule
+\multicolumn{8}{l}{\rule{0pt}{1em}CI95\%: 95\% credible interval of the posterior distribution}\\
+\multicolumn{8}{l}{\rule{0pt}{1em}pMCMC: taken as twice the posterior probability that the estimate is negative}\\
+\end{tabular}
+\end{table}

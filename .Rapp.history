@@ -1,3 +1,4 @@
+phylogeny
 div = 1#
 nitt = 10500000/div#
 burnin = 500000/div#
@@ -1011,117 +1012,151 @@ library(ape)#
 library(MCMCglmm)#
 library(dmetar)#
 library(esc)#
-# 0 - LOAD DATA  ----#
-d<- read.table('./output/1_processed_tables/2.1_assembled_SPECIES_annotation.txt', header=TRUE, sep = '\t',#
-               colClasses = c(rep('character', 4),#
-                              rep('numeric', 9)))#
+# CFR DATASET ----#
+d.cfr<- read.table('./output/1_processed_tables/4.1_assembled_CFR_SPECIES_annotation.txt', header=TRUE,#
+                   sep = '\t',#
+                   colClasses = c('character', 'character', 'character',#
+                                  'numeric', 'numeric',#
+                                  'character', 'character', 'character',#
+                                  'numeric', 'numeric',#
+                                  rep('character', 4), rep('numeric', 8)))#
 #
-d<- rename(d,#
-           nb_extracellular = secretome,#
-           species.patric = species,#
-           vf = is_victor_vf,#
-           nb_cds = total_cds,#
-           ab_degradation = antibiotic_degradation) %>%#
-  rename(species = species_id)#
-#
-d$pathogen<- as.factor(d$pathogen)#
-#
-# Sanity check#
-nrow(d) # 118#
-length(unique(d$species))#
-table(d$pathogen) # we have: 59 non-pathogen, 9 pathogen (species that were both already reclassified as pathogen)#
-unique(d$gram_profile) # Three gram profiles types
-# PHYLOGENY ----#
-tree<- read.tree('./data/5_phylogeny_files/midas_tree_renamed.newick')#
+d.cfr<- rename(d.cfr,#
+               supfam_id = matching_supfam_id,#
+               nb_cds = total_cds)
+# PHYLOGENY#
+tree<- read.tree('./data/5_phylogeny_files/supfam_cfr_tree.newick')#
 tree$tip.label#
-tree<- drop.tip(tree, tree$tip.label[!tree$tip.label %in% d$species])#
+tree<- drop.tip(tree, tree$tip.label[!tree$tip.label %in% d.cfr$supfam_id])#
+tree$tip.label<- d.cfr$species_id[match(tree$tip.label, d.cfr$supfam_id)]#
+tree<- chronopl(tree, lambda = 1)#
+#plot(tree) # ultrametricised tree#
+tree<-makeNodeLabel(tree)#
+Ainv<-inverseA(tree, scale=FALSE)$Ainv
+d.cfr$log_cfr_plus1<- log(d.cfr$case_fatality_rate + 1)
+# PRIOR AND RUN SPECS#
+prior <- list(R = list(R1 = list(V = diag(1), nu = 0.002)), # non-pylo / residual#
+              G = list(G1 = list(V = diag(1), nu = 1, alpha.mu = 0, alpha.V = 100))) # phylo#
 #
-phylogeny<- chronopl(tree, lambda = 1)#
-#plot(phylogeny) # ultrametricised tree#
-phylogeny<-makeNodeLabel(phylogeny)#
-Ainv<-inverseA(phylogeny, scale=FALSE)$Ainv
-prior <- list(R = list(V = 1, fix = 1),#
-              G = list(G1 = list(V = diag(1), nu = 1000, alpha.mu = rep(0,1), alpha.V = diag(1))))#
-div = 20 # 2#
+div = 2#
 nitt = 10500000/div#
 burnin = 500000/div#
 thin = ceiling(5000/div)#
 nitt#
-(nitt-burnin)/thin#
+(nitt-burnin)/thin
+# code wrapper for univariate models with transmission route and growth rate included#
+m3 <-function(df, focal_trait){#
+  d.tmp<- df#
+  colnames(d.tmp)[which(colnames(d.tmp) == focal_trait)]<- 'focal_trait'#
 #
-d<- as.data.frame(d)#
-#
-# Code wrapper to run models on ech trait (uses env variables for data and nitt/burnin/thin)#
-run_m1.go<- function(df, focal_trait){#
-  colnames(df)[which(colnames(df) == focal_trait)]<- 'focal_trait'#
-  m1.go<- MCMCglmm(pathogen  ~ 1 + nb_cds + focal_trait ,#
-                   random = ~species,#
-                   ginverse = list(species=Ainv),#
-                   data = df,#
-                   prior = prior,#
-                   family=c("categorical"), trunc=T,#
-                   start=list(QUASI=FALSE),#
-                   #pl = TRUE, pr = TRUE, nodes = 'ALL',#
-                   DIC = TRUE,#
-                   verbose = FALSE,#
-                   nitt=nitt, thin=thin, burnin=burnin)#
-  return(m1.go)#
+  m<- MCMCglmm(#
+  log_cfr_plus1  ~ -1 + infection_route + generation_time_h + nb_cds + focal_trait,#
+  random = ~species_id,#
+  ginverse = list(species_id= Ainv), #
+  data = d.tmp,#
+  prior = prior,#
+  family = c("gaussian"),#
+  start = list(QUASI = FALSE), #
+  DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,#
+  verbose = FALSE)#
+  return(m)#
 }#
-run_m1.go.gram<- function(df, focal_trait){#
-  colnames(df)[which(colnames(df) == focal_trait)]<- 'focal_trait'#
-  m1.go<- MCMCglmm(pathogen  ~ 1 + nb_cds + gram_profile + focal_trait ,#
-                   random = ~species,#
-                   ginverse = list(species=Ainv),#
-                   data = df,#
-                   prior = prior,#
-                   family=c("categorical"), trunc=T,#
-                   start=list(QUASI=FALSE),#
-                   #pl = TRUE, pr = TRUE, nodes = 'ALL',#
-                   DIC = TRUE,#
-                   verbose = FALSE,#
-                   nitt=nitt, thin=thin, burnin=burnin)#
-  return(m1.go)#
+#
+# code wrapper for univariate models with cooperation only#
+m3.coop_only <-function(df, focal_trait){#
+  d.tmp<- df#
+  colnames(d.tmp)[which(colnames(d.tmp) == focal_trait)]<- 'focal_trait'#
+  m<- MCMCglmm(#
+    log_cfr_plus1  ~ -1 + nb_cds + focal_trait,#
+    random = ~species_id,#
+    ginverse = list(species_id= Ainv), #
+    data = d.tmp,#
+    prior = prior,#
+    family = c("gaussian"),#
+    start = list(QUASI = FALSE), #
+    DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,#
+    verbose = FALSE)#
+  return(m)#
 }
-m1.ss<- run_m1.go(d, focal_trait = 'nb_extracellular')#
-m1.biofilm<- run_m1.go(d, 'biofilm')#
-m1.siderophores<- run_m1.go(d,'siderophores')#
-m1.ab_degradation<- run_m1.go(d,'ab_degradation')#
-m1.secretion_system<- run_m1.go(d,'secretion_system')#
-m1.quorum_sensing<- run_m1.go(d,'quorum_sensing')#
-m1.vf<- run_m1.go(d, 'vf')#
-m1.biofilm.gram<- run_m1.go.gram(d, 'biofilm')#
-m1.siderophores.gram<- run_m1.go.gram(d,'siderophores')#
-m1.ab_degradation.gram<- run_m1.go.gram(d,'ab_degradation')#
-m1.secretion_system.gram<- run_m1.go.gram(d,'secretion_system')#
-m1.quorum_sensing.gram<- run_m1.go.gram(d,'quorum_sensing')#
-m1.vf.gram<- run_m1.go.gram(d, 'vf')
-summary(m1.biofilm)          # #
-summary(m1.siderophores)     # (*, neg, in multivariate model)#
-summary(m1.ab_degradation)   # #
-summary(m1.quorum_sensing)   # #
-summary(m1.secretion_system) # *#
-summary(m1.ss) #  *#
-summary(m1.vf)
-summary(m1.biofilm)
-summary(m1.siderophores)
-summary(m1.ab_degradation)
-summary(m1.quorum_sensing)
-summary(m1.secretion_system)
-summary(m1.ss)
-summary(m1.vf)
-summary(m1.biofilm.gram)
-summary(m1.siderophores.gram)
-summary(m1.ab_degradation.gram)
-summary(m1.quorum_sensing.gram)
-summary(m1.secretion_system.gram)
-summary(m1.ss.gram)
-summary(m1.vf.gram)
-anova(m1.biofilm.gram, m1.biofilm)
-summary(m1.biofilm)
-plot(m1.biofilm)
-summary(m1.secretion_system.gram)
-summary(m1.secretion_system)
-summary(m1.ss)
-summary(m1.ss.gram)
-summary(m1.vf.gram)
-summary(m1.vf)
+div = 20#
+nitt = 10500000/div#
+burnin = 500000/div#
+thin = ceiling(5000/div)#
+nitt#
+(nitt-burnin)/thin
+m3.bio<- m3(df = d.cfr, focal_trait = 'biofilm')#
+m3.qs<- m3(df = d.cfr, focal_trait = 'quorum_sensing')#
+m3.ab<- m3(df = d.cfr, focal_trait = 'antibiotic_degradation')#
+m3.sid<- m3(df = d.cfr, focal_trait = 'siderophores')#
+m3.ssy<- m3(df = d.cfr, focal_trait = 'secretion_system')#
+m3.sec<- m3(df = d.cfr, focal_trait = 'secretome')#
+m3.vf<- m3(df = d.cfr, focal_trait = 'is_victor_vf')#
+#
+#save.image("./output/model_output/cfr_2604.RData")#
+m3.bio.coop_onl<- m3.coop_only(df = d.cfr, focal_trait = 'biofilm')#
+m3.qs.coop_onl<- m3.coop_only(df = d.cfr, focal_trait = 'quorum_sensing')#
+m3.ab.coop_onl<- m3.coop_only(df = d.cfr, focal_trait = 'antibiotic_degradation')#
+m3.sid.coop_onl<- m3.coop_only(df = d.cfr, focal_trait = 'siderophores')#
+m3.ssy.coop_onl<- m3.coop_only(df = d.cfr, focal_trait = 'secretion_system')#
+m3.sec.coop_onl<- m3.coop_only(df = d.cfr, focal_trait = 'secretome')#
+m3.vf.coop_onl<- m3.coop_only(df = d.cfr, focal_trait = 'is_victor_vf')#
+#
+#save.image("./output/model_output/cfr_2604.RData")
+nitt
+z.transform<- function(x){(x - mean(x))/sd(x)}#
+#
+d.cfr$z_nb_cds<- z.transform(d.cfr$nb_cds)#
+d.cfr$z_biofilm<- z.transform(d.cfr$biofilm)#
+d.cfr$z_quorum_sensing<- z.transform(d.cfr$quorum_sensing)#
+d.cfr$z_antibiotic_degradation<- z.transform(d.cfr$antibiotic_degradation)#
+d.cfr$z_secretion_system<- z.transform(d.cfr$secretion_system)#
+d.cfr$z_siderophores<- z.transform(d.cfr$siderophores)#
+d.cfr$z_secretome<- z.transform(d.cfr$secretome)#
+d.cfr$z_is_victor_vf<- z.transform(d.cfr$is_victor_vf)
+m3.multi.COOPonly.withVF<- MCMCglmm(#
+  log_cfr_plus1  ~ z_nb_cds + z_biofilm + z_quorum_sensing + z_antibiotic_degradation + z_secretion_system + z_siderophores + z_secretome + z_is_victor_vf,#
+  random = ~species_id,#
+  ginverse = list(species_id= Ainv), #
+  data = d.cfr,#
+  prior = prior,#
+  family = c("gaussian"),#
+  start = list(QUASI = FALSE), #
+  DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,#
+  verbose = FALSE)#
+m3.multi<- MCMCglmm(#
+  log_cfr_plus1  ~ -1 + infection_route + generation_time_h + z_nb_cds + z_biofilm + z_quorum_sensing + z_antibiotic_degradation + z_secretion_system + z_siderophores + z_secretome,#
+  random = ~species_id,#
+  ginverse = list(species_id= Ainv), #
+  data = d.cfr,#
+  prior = prior,#
+  family = c("gaussian"),#
+  start = list(QUASI = FALSE), #
+  DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,#
+  verbose = FALSE)#
+m3.multi.with_vf<- MCMCglmm(#
+  log_cfr_plus1  ~ -1 + infection_route + generation_time_h + z_nb_cds + z_biofilm + z_quorum_sensing + z_antibiotic_degradation + z_secretion_system + z_siderophores + z_secretome + z_is_victor_vf,#
+  random = ~species_id,#
+  ginverse = list(species_id= Ainv), #
+  data = d.cfr,#
+  prior = prior,#
+  family = c("gaussian"),#
+  start = list(QUASI = FALSE), #
+  DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,#
+  verbose = FALSE)
+summary(m3.bio.coop_onl)
+summary(m3.qs.coop_onl)
+summary(m3.ab.coop_onl)
+summary(m3.sid.coop_onl)
+summary(m3.ssy.coop_onl)
+summary(m3.sec.coop_onl)
+summary(m3.vf.coop_onl)
+summary(m3.bio)
+summary(m3.qs)
+summary(m3.ab)
+summary(m3.sid)
+summary(m3.ssy)
+summary(m3.sec)
+summary(m3.vf)
+summary(m3.multi.COOPonly.withVF)
+summary(m3.multi.with_vf)
+summary(m3.multi)

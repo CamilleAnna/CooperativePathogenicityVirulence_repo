@@ -15,6 +15,100 @@ library(ggtree)
 library(grid)
 library(gridExtra)
 library(scales)
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(patchwork)
+library(gtable)
+library(ggpubr)
+
+# Figure 1 (web of science) ----
+
+# table with assembled tables of the three Web of Science searches
+d<- read_excel('./data/6_webofscience_search/WebOfScience_microbial_cooperation.xlsx', sheet = 1)
+d<- d[!is.na(d$`Publication Years`),]
+
+colnames(d)<- c('year', 'microbe_general', 'cooperation', 'coop_and_health', 'prop_cooperation', 'MA5Y_prop_cooperation')
+
+d$coop_and_health[which(d$coop_and_health == 0)]<- NA # for bubbles to not appear on plot if n = 0
+
+d$prop_coop_perc<- d$prop_cooperation*100 # get % instead of proprotions 
+d$MA5Y_prop_cooperation_perc<- d$MA5Y_prop_cooperation*100 # get % instead of proprotions 
+
+# rename to get neat legend title
+d<- d %>% rename(`Number of papers \nmentionning \nhealth impact` = coop_and_health)
+
+# main plot
+p<- ggplot(d, aes(x = year, y = prop_coop_perc, col))+
+  ylab('Percentage of research on microbial cooperation')+
+  xlab('Year')+
+  xlim(2000, 2020)+
+  geom_line(col = 'grey', size = 0.3)+
+  geom_line(aes(x = year, y = MA5Y_prop_cooperation_perc), size = 0.5)+
+  geom_point(aes(x = year, y = MA5Y_prop_cooperation_perc, size = `Number of papers \nmentionning \nhealth impact`), shape = 21, fill = 'dodgerblue', col = 'black', alpha = .5)+
+  theme_bw()+
+  theme_bw()+
+  scale_size_continuous(breaks = c(1, 2, 4, 8))+
+  scale_color_manual(values = c('black', 'grey'))+
+  theme(axis.title = element_text(face = 'bold', size = 5),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        axis.line = element_line(colour = "black", size = 0.3),
+        axis.ticks = element_line(colour = "black", size = 0.3),
+        axis.text = element_text(colour = "black",size = 5),
+        #legend.position = 'none', #c(0.9, 0.1),
+        legend.key.width = unit(0.2, "cm"),
+        legend.key.height = unit(0.2, "cm"),
+        legend.text = element_text(size = 4),
+        legend.title = element_text(size = 5)
+  )
+
+p
+
+# Make plot to extract lines legend
+p.legend.lines<- d %>%
+  select(year, prop_coop_perc, MA5Y_prop_cooperation_perc) %>%
+  rename(`per year` = prop_coop_perc,
+         `5-year moving average` = MA5Y_prop_cooperation_perc) %>%
+  gather('measure', 'value', 2:3) %>%
+  ggplot(., aes(x = year, y = value, col = measure, size = measure))+
+  geom_line()+
+  scale_size_manual(values=c(`per year` = 0.3,`5-year moving average` = 0.4))+
+  scale_color_manual(values = c('black', 'grey'))+
+  theme_bw()+
+  theme(legend.key.width = unit(0.2, "cm"),
+        legend.key.height = unit(0.2, "cm"),
+        legend.text = element_text(size = 5),
+        legend.title = element_blank())
+
+legend.lines <- cowplot::get_legend(p.legend.lines)
+
+
+
+
+
+# p+ annotate("text", x = 2014, y = 0.046,
+#             label = "First principles of\nHamiltonian medicine\n(Crespi, 2005)",
+#             size = 2, face = 'bold', hjust = 0, fontface = 'italic')+
+#   annotate("segment", x = 2014, xend = 2014, y = 0.05, yend = 0.05+0.013, size=0.4, alpha=0.6, arrow=arrow(length = unit(0.15,"cm")))+
+#   annotate("text", x = 2005, y = 0.014,
+#            label = "Hamiltonian Medicine:\nWhy the Social Lives\nof Pathogens Matter\n(Foster, 2005)",
+#            size = 2, face = 'bold', hjust = 0, fontface = 'italic')+
+#   annotate("segment", x = 2005, xend = 2005, y = 0.015, yend = 0.015+0.008, size=0.4, alpha=0.6, arrow=arrow(length = unit(0.15,"cm")))
+
+
+
+# output figure
+pdf('./output/2_figures/Figure1_WebOfScience.pdf', width = 8.2/2.55, height = 8.6/2.55)
+p+
+  theme(legend.position = 'top',
+        legend.justification = c("left"))+
+  annotation_custom(grob = legend.lines, xmax = 2007, ymin = 0.08)
+
+dev.off()
+
+
 
 
 # Figure 2 ----
@@ -260,18 +354,18 @@ dev.off()
 # Figure 3 ----
 
 theme_results<-   theme_bw()+
-  theme(axis.title = element_text(face = 'bold', size = 5),
+  theme(axis.title = element_text(size = 5),
         axis.text = element_text(size = 5, colour = 'black'),
         #panel.grid = element_line(size = 0.1),
         panel.grid = element_blank(),
         panel.border = element_blank(),
-        axis.line = element_line(colour = "black", size = 0.25),
-        axis.ticks = element_line(colour = "black", size = 0.25),
+        axis.line = element_line(colour = "black", size = 0.2),
+        axis.ticks = element_line(colour = "black", size = 0.2),
         legend.position = 'none', #c(0.9, 0.1),
         legend.key.size = unit(0.3, "cm"),
         legend.text = element_text(size = 0),
         legend.title = element_blank(),
-        plot.title = element_text(hjust = 0.5, size = 5, face = 'bold'))
+        plot.title = element_text(hjust = 0.5, size = 6, face = 'bold'))
 
 
 # ... A (virulence factor) ----
@@ -306,13 +400,13 @@ meta.results<- meta.results %>% filter(trait != 'Cooperation (any)')
 
 p.vf.meta<- ggplot(meta.results, aes(x = `post.mean`, y = trait, col = 'black'))+
   xlab('Estimated odds ratio\n  ')+ylab('')+
-  ggtitle('Are cooperative products virlence factors?')+
+  ggtitle('Are cooperative products\nvirlence factors?')+
   geom_point()+
   #xlim(-1,5)+
-  geom_errorbarh(aes(xmin = `l.95..CI`, xmax = `u.95..CI`), height = 0.1)+
+  geom_errorbarh(aes(xmin = `l.95..CI`, xmax = `u.95..CI`), height = 0.1, size = 0.25)+
   geom_vline(xintercept = 1, linetype = 'dashed', col = 'darkgrey', size = 0.2)+
   geom_point(col = 'black', size = 0.5)+
-  geom_errorbarh(aes(xmin = `l.95..CI`, xmax = `u.95..CI`), height = 0.1, col = 'black', size = 0.3)+
+  geom_errorbarh(aes(xmin = `l.95..CI`, xmax = `u.95..CI`), height = 0.1, col = 'black', size = 0.25)+
   scale_color_manual(values = 'white')+
   theme_results
 
@@ -333,11 +427,11 @@ m1.outs.multi$trait<- factor(m1.outs.multi$trait,
 
 p.patho.meta<- ggplot(m1.outs.multi, aes(x = post.mean, y = trait, col = 'black'))+
   xlab('Estimated regression coefficients\n(multivariate model)')+ylab('')+
-  ggtitle('Is cooperation predictive of pathogenicity?')+
+  ggtitle('Is cooperation predictive\nof pathogenicity?')+
   geom_point()+
-  geom_errorbarh(aes(xmin = `l-95% CI`, xmax = `u-95% CI`), height = 0.1)+
+  geom_errorbarh(aes(xmin = `l-95% CI`, xmax = `u-95% CI`), height = 0.1, size = 0.25)+
   geom_point(col = 'black', size = 0.5)+
-  geom_errorbarh(aes(xmin = `l-95% CI`, xmax = `u-95% CI`), height = 0.1, col = 'black', size = 0.3)+
+  geom_errorbarh(aes(xmin = `l-95% CI`, xmax = `u-95% CI`), height = 0.1, col = 'black', size = 0.25)+
   geom_vline(xintercept = 0, linetype = 'dashed', col = 'darkgrey', size = 0.2)+
   scale_color_manual(values = 'white')+
   theme_results
@@ -360,26 +454,28 @@ m3.outs.multi$trait<- factor(m3.outs.multi$trait,
 
 p.cfr.meta<- ggplot(m3.outs.multi, aes(x = post.mean, y = trait, col = 'black'))+
   xlab('Estimated regression coefficients\n(multivariate model)')+ylab('')+
-  ggtitle('Are more cooperative pathogens more virulent?')+
+  ggtitle('Are more cooperative pathogens\nmore virulent?')+
   geom_point()+
-  geom_errorbarh(aes(xmin = `l-95% CI`, xmax = `u-95% CI`), height = 0.1)+
+  geom_errorbarh(aes(xmin = `l-95% CI`, xmax = `u-95% CI`), height = 0.1, size = 0.25)+
   geom_point(col = 'black', size = 0.5)+
-  geom_errorbarh(aes(xmin = `l-95% CI`, xmax = `u-95% CI`), height = 0.1, col = 'black', size = 0.3)+
+  geom_errorbarh(aes(xmin = `l-95% CI`, xmax = `u-95% CI`), height = 0.1, col = 'black', size = 0.25)+
   geom_vline(xintercept = 0, linetype = 'dashed', col = 'darkgrey', size = 0.2)+
   scale_color_manual(values = 'white')+
   theme_results
 
 
-pdf('./output/2_figures/Figure3_modelResults_main2.pdf', width = (5.8*3)/2.55, height = 5.8/2.55)
 
-(p.vf.meta|p.patho.meta|p.cfr.meta)+
-  plot_annotation(tag_levels = 'A') & 
-  theme(plot.tag = element_text(size = 7, face = 'bold'))
-
+pdf('./output/2_figures/Figure3_modelResults_A.pdf', width = 5.5/2.55, height = 5.5/2.55)
+p.vf.meta
 dev.off()
 
+pdf('./output/2_figures/Figure3_modelResults_B.pdf', width = 5.5/2.55, height = 5.5/2.55)
+p.patho.meta
+dev.off()
 
-
+pdf('./output/2_figures/Figure3_modelResults_C.pdf', width = 5.5/2.55, height = 5.5/2.55)
+p.cfr.meta
+dev.off()
 
 
 
@@ -537,7 +633,6 @@ d.long.raw$trait<- gsub('vf', 'VF', d.long.raw$trait)
 d.long.raw<- d.long.raw[d.long.raw$trait != 'nb_cds',]
 d.long.raw$trait<- factor(d.long.raw$trait,
                           levels = c('VF', 'QS', 'Biofilm', 'Siderophores', 'Antib. degr.', 'Secr. Syst.', 'Secretome')) # order as models *UNI* table
-
 
 
 make.boxplot.pathogen<- function(focal.trait){
@@ -729,6 +824,82 @@ grid.arrange(p.patho.uni, p.cfr.uni,
 dev.off()
 
 
+
+# CODE WRAPPERS FOR SUPP. TABLES ----
+
+format_effects.HM1<- function(string){
+  
+  string_edited<- string %>%
+    gsub(pattern = "(Intercept)", replacement = "Intercept", ., fixed = TRUE) %>%
+    gsub(pattern = "infection_routeIngestion", replacement = "Infection route: Ingestion", ., fixed = TRUE) %>%
+    gsub(pattern = "infection_routeInhalation", replacement = "Infection route: Inhalation", ., fixed = TRUE) %>%
+    gsub(pattern = "infection_routeSkin", replacement = "Infection route: Skin", ., fixed = TRUE) %>%
+    gsub(pattern = "generation_time_h", replacement = "Generation time (h)", ., fixed = TRUE) %>%
+    gsub(pattern = "z_nb_cds", replacement = "z(Proteome size)", ., fixed = TRUE) %>%
+    gsub(pattern = "z_biofilm", replacement = "z(Biofilm)", ., fixed = TRUE) %>%
+    gsub(pattern = "z_ab_degradation", replacement = "z(Antib. degr.)", ., fixed = TRUE) %>%
+    gsub(pattern = "z_antibiotic_degradation", replacement = "z(Antib. degr.)", ., fixed = TRUE) %>%
+    gsub(pattern = "z_quorum_sensing", replacement = "z(Quorum-sensing)", ., fixed = TRUE) %>%
+    gsub(pattern = "z_siderophores", replacement = "z(Siderophores)", ., fixed = TRUE) %>%
+    gsub(pattern = "z_nb_extracellular", replacement = "z(Secretome)", ., fixed = TRUE) %>%
+    gsub(pattern = "z_secretome", replacement = "z(Secretome)", ., fixed = TRUE) %>%
+    gsub(pattern = "z_vf", replacement = "z(Virulence Factors)", ., fixed = TRUE) %>%
+    gsub(pattern = "z_is_victor_vf", replacement = "z(Virulence Factors)", ., fixed = TRUE) %>%
+    gsub(pattern = "z_secretion_system", replacement = "z(Secretion systems)", ., fixed = TRUE) %>%
+    gsub(pattern = "nb_cds", replacement = "Proteome size", ., fixed = TRUE) %>%
+    gsub(pattern = "species_id", replacement = "Species, phylogenetic", ., fixed = TRUE) %>%
+    gsub(pattern = "species", replacement = "Species, phylogenetic", ., fixed = TRUE) %>%
+    gsub(pattern = "se_logOR.units", replacement = "Measurement error", ., fixed = TRUE) %>%
+    gsub(pattern = "focal_trait", replacement = "Focal trait", ., fixed = TRUE) %>%
+    gsub(pattern = "units", replacement = "Residual", ., fixed = TRUE) %>%
+    
+    return(string_edited)  
+}
+format_full_summary.HM1<- function(model, trait){
+  
+  fixed<- summary(model)$solutions %>%
+    as.data.frame()%>%
+    rownames_to_column('Effect') %>%
+    mutate(Structure = 'Fixed effect',
+           pMCMC = ifelse(pMCMC<0.01,
+                          formatC(pMCMC, digit = 2, format = 'e'),
+                          formatC(pMCMC, digit = 3, format = 'f')))
+  
+  random<- summary(model)$Gcovariances %>%
+    as.data.frame()%>%
+    rownames_to_column('Effect') %>%
+    mutate(pMCMC = '') %>%
+    mutate(Structure = '(Co)variance')
+  
+  
+  unit<- summary(model)$Rcovariances %>%
+    as.data.frame()%>%
+    rownames_to_column('Effect') %>%
+    mutate(pMCMC = '') %>%
+    mutate(Structure = '(Co)variance')
+  
+  
+  tab<- rbind(fixed, random, unit) %>%
+    mutate(Effect = format_effects.HM1(Effect),
+           Model = trait) %>%
+    mutate(Structure = ifelse(duplicated(Structure) == TRUE, '', Structure),
+           Model = ifelse(duplicated(Model) == TRUE, '', Model)) %>%
+    select(Model, Structure, Effect, post.mean,`l-95% CI`, `u-95% CI`, eff.samp, pMCMC) %>%
+    rename(`Posterior\n mean` = post.mean,
+           `CI95% lower` = `l-95% CI`,
+           `CI95% upper` = `u-95% CI`,
+           `Effective\n sampling` = eff.samp) %>%
+    as.data.frame() %>%
+    mutate(`Effective\n sampling` = formatC(`Effective\n sampling`, digit = 0, format = 'f')) %>%
+    mutate_if(is.numeric, funs(formatC(., digit = 3, format = 'f')))
+  
+  
+  return(tab)
+  
+}
+
+
+
 # SUPP. TABLE 1 (summary VF analysis) ----
 
 get.effects.M2<- function(model.output, model = ''){
@@ -776,7 +947,39 @@ summary.tab.vf<- rbind(
 )
 
 
-write.table(summary.tab.vf, './output/4_summary_tables/model_virulenceFactors.csv', sep = '\t', col.names = TRUE,quote = FALSE,  row.names = FALSE)
+write.table(summary.tab.vf, './output/4_summary_tables/TABLE_S1.hm1.csv', sep = '\t', col.names = TRUE,quote = FALSE,  row.names = FALSE)
+
+
+library(kableExtra)
+
+
+tab<-rbind(
+  format_full_summary.HM1(meta.a.secretome, ''),
+  format_full_summary.HM1(meta.a.biofilm, ''),
+  format_full_summary.HM1(meta.a.sid, ''),
+  format_full_summary.HM1(meta.a.ab, ''),
+  format_full_summary.HM1(meta.a.qs, ''),
+  format_full_summary.HM1(meta.a.ssyst, '')
+)
+
+
+tab.s1<- kable(tab, "latex", booktabs = T, caption = 'Model summaries of virulence factors phylogenetic meta-analyses (estimates in model summary are on log scale)') %>%
+  footnote(c("CI95%: 95% credible interval of the posterior distribution",
+             "pMCMC: taken as twice the posterior probability that the estimate is negative"),
+           fixed_small_size = TRUE, general_title = "") %>%
+  kable_styling() %>%
+  pack_rows("Secretome", 1, 4) %>%
+  pack_rows("Biofilm", 5, 8) %>%
+  pack_rows("Siderophores", 9, 12) %>%
+  pack_rows("Antibiotic degradation", 13, 16) %>%
+  pack_rows("Quorum sensing", 17, 20) %>%
+  pack_rows("Secretion systems", 21, 24)
+
+
+fileConn<-file("./output/4_summary_tables/TABLE_S1.hm1.tex")
+writeLines(tab.s1, fileConn)
+close(fileConn)
+
 
 
 # SUPP. TABLE 2 (summary PATHOGENICITY analysis) ----
@@ -826,7 +1029,41 @@ summary.tab.pathogenicity<- rbind(
 )
 
 
-write.table(summary.tab.pathogenicity, './output/4_summary_tables/model_pathogenicity.csv', sep = '\t', col.names = TRUE,quote = FALSE,  row.names = FALSE)
+write.table(summary.tab.pathogenicity, './output/4_summary_tables/TABLE_s2.hm1.csv', sep = '\t', col.names = TRUE,quote = FALSE,  row.names = FALSE)
+
+
+tab2<-rbind(
+  format_full_summary.HM1(m1.ss, ''),
+  format_full_summary.HM1(m1.biofilm, ''),
+  format_full_summary.HM1(m1.siderophores, ''),
+  format_full_summary.HM1(m1.ab_degradation, ''),
+  format_full_summary.HM1(m1.quorum_sensing, ''),
+  format_full_summary.HM1(m1.secretion_system, ''),
+  format_full_summary.HM1(m1.vf, ''),
+  format_full_summary.HM1(m1.multi.with_vf_NOgram, '')
+)
+
+
+
+tab.s2<- kable(tab2, "latex", booktabs = T, caption = 'Model summaries of pathogenicity comparative analyses. This includes: 6 univariate models with each cooperative traits as predictor, one univariate model with number of virulence factors as predictor, and one multivariate model with all predictors included)') %>%
+  footnote(c("CI95%: 95% credible interval of the posterior distribution",
+             "pMCMC: taken as twice the posterior probability that the estimate is negative",
+             "z(): For multivariate model, predictors were z-transformed"),
+           fixed_small_size = TRUE, general_title = "") %>%
+  kable_styling() %>%
+  pack_rows("Secretome", 1, 5) %>%
+  pack_rows("Biofilm", 6, 10) %>%
+  pack_rows("Siderophores", 11, 15) %>%
+  pack_rows("Antibiotic degradation", 16, 20) %>%
+  pack_rows("Quorum sensing", 21, 25) %>%
+  pack_rows("Secretion systems", 26, 30) %>%
+  pack_rows("Virulence factors", 31, 35) %>%
+  pack_rows("Multivariate model", 36, 46)
+
+
+fileConn<-file("./output/4_summary_tables/TABLE_S2.hm1.tex")
+writeLines(tab.s2, fileConn)
+close(fileConn)
 
 
 
@@ -878,9 +1115,45 @@ summary.tab.cfr<-
     get.effects.M3(m3.multi.with_vf, "multivariate-model"))
 
 
-write.table(summary.tab.cfr, './output/4_summary_tables/model_cfr.csv', sep = '\t', col.names = TRUE,quote = FALSE,  row.names = FALSE)
+write.table(summary.tab.cfr, './output/4_summary_tables/TABLE_s3.hm1.csv', sep = '\t', col.names = TRUE,quote = FALSE,  row.names = FALSE)
 
 
+
+tab3<-rbind(
+format_full_summary.HM1(m3.legget, ''),
+format_full_summary.HM1(m3.bio, ''),
+format_full_summary.HM1(m3.qs, ''),
+format_full_summary.HM1(m3.sec, ''),
+format_full_summary.HM1(m3.ab, ''),
+format_full_summary.HM1(m3.sid, ''),
+format_full_summary.HM1(m3.ssy, ''),
+format_full_summary.HM1(m3.vf, ''),
+format_full_summary.HM1(m3.multi.with_vf, "")
+)
+
+
+
+tab.s3<- kable(tab3, "latex", booktabs = T, caption = 'Model summaries of virulence comparative analyses (case fatality rate). This includes: one model replicating Leggett\'s et al (2017) main results (non-cooperative traits), 6 univariate models with each cooperative traits as predictor, one univariate model with number of virulence factors as predictor, and one multivariate model with all predictors included)') %>%
+  footnote(c("CI95%: 95% credible interval of the posterior distribution",
+             "pMCMC: taken as twice the posterior probability that the estimate is negative",
+             "z(): For multivariate model, predictors were z-transformed"),
+           fixed_small_size = TRUE, general_title = "") %>%
+  kable_styling() %>%
+  pack_rows("Non-cooperative traits", 1, 6) %>%
+  pack_rows("Secretome", 7, 14) %>%
+  pack_rows("Biofilm", 15, 22) %>%
+  pack_rows("Siderophores", 23, 30) %>%
+  pack_rows("Antibiotic degradation", 31, 38) %>%
+  pack_rows("Quorum sensing", 39, 46) %>%
+  pack_rows("Secretion systems", 47, 54) %>%
+  pack_rows("Virulence factors", 55, 62) %>%
+  pack_rows("Multivariate model", 63, 76)
+  
+
+
+fileConn<-file("./output/4_summary_tables/TABLE_S3.hm1.tex")
+writeLines(tab.s3, fileConn)
+close(fileConn)
 
 
 
