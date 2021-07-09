@@ -1,3 +1,116 @@
+system(command=paste0("mv ", GENOME, ".PATRIC.spgene.tab ", sps[i],".vf") )
+sps='Campylobacter_ureolyticus_62430'#
+GENOME='883165.3'#
+system(command=paste0('wget -N "ftp://ftp.patricbrc.org/genomes/', GENOME, '/', GENOME, '.PATRIC.spgene.tab"'))#
+system(command=paste0("grep 'Virulence Factor' ", GENOME, ".PATRIC.spgene.tab > tmp.2")) #
+system(command=paste0("head -n 1 ", GENOME, ".PATRIC.spgene.tab > tmp.1"))#
+system(command=paste0("cat tmp.* > ", GENOME, ".PATRIC.spgene.tab"))#
+system(command=paste0("mv ", GENOME, ".PATRIC.spgene.tab ", sps[i],".vf") )
+GENOME = midas.sps[midas.sps$V1 == sps[i],2]#
+#
+system(command=paste0('wget -N "ftp://ftp.patricbrc.org/genomes/', GENOME, '/', GENOME, '.PATRIC.spgene.tab"'))#
+system(command=paste0("grep 'Virulence Factor' ", GENOME, ".PATRIC.spgene.tab > tmp.2")) #
+system(command=paste0("head -n 1 ", GENOME, ".PATRIC.spgene.tab > tmp.1"))#
+system(command=paste0("cat tmp.* > ", GENOME, ".PATRIC.spgene.tab"))#
+system(command=paste0("mv ", GENOME, ".PATRIC.spgene.tab ", sps[i],".vf") )
+getwd()
+cat GENOME
+GENOME
+sps
+sps='Acinetobacter_baylyi_46310'
+i=1
+GENOME='1221291.3'
+system(command=paste0('wget -N "ftp://ftp.patricbrc.org/genomes/', GENOME, '/', GENOME, '.PATRIC.spgene.tab"'))#
+system(command=paste0("grep 'Virulence Factor' ", GENOME, ".PATRIC.spgene.tab > tmp.2")) #
+system(command=paste0("head -n 1 ", GENOME, ".PATRIC.spgene.tab > tmp.1"))#
+system(command=paste0("cat tmp.* > ", GENOME, ".PATRIC.spgene.tab"))#
+system(command=paste0("mv ", GENOME, ".PATRIC.spgene.tab ", sps[i],".vf") )
+dvf<- read.csv(paste0(sps[i],'.vf'), header=TRUE, sep = '\t', colClasses = 'character') %>%#
+  select(genome_id, patric_id, gene, product, source) %>%#
+  rename(qpid = patric_id) %>%#
+  filter(source == 'Victors')
+library(dplyr)
+dvf<- read.csv(paste0(sps[i],'.vf'), header=TRUE, sep = '\t', colClasses = 'character') %>%#
+  select(genome_id, patric_id, gene, product, source) %>%#
+  rename(qpid = patric_id) %>%#
+  filter(source == 'Victors')
+head(dvf)
+dvf %>%#
+  mutate(species = sps[i]) %>%#
+  rename(peg = qpid) %>%#
+  select(species, peg, gene, product, source)
+source("~/Documents/PhD/Research/background_scripts/basic_packages.R")#
+library(ape)#
+library(MCMCglmm)#
+midas.info<- read.table('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/species_info_files/species_info.txt', header=TRUE)#
+head(midas.info)#
+midas.info[grep('55206',midas.info$species_id), ]#
+spos<- read.table('~/Documents/PhD/Research/HamiltonRuleMicrobiome/HamiltonRuleMicrobiome_work/output/SPORULATION_SCORES_all_midas_species.txt', header=TRUE, sep = '\t') %>%#
+  rename(species_id = species)#
+vt<- read_excel('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/Midas_transmission_data.xls') %>%#
+  filter(tax_level == 'species',#
+         time_point == '12M') %>%#
+  mutate(species_id = gsub(')', '', fixed = TRUE, gsub('._', '_', fixed = TRUE, gsub('(id:', '', gsub(' ', '_', tax_group), fixed = TRUE)))) %>%#
+  select(species_id, prop1) %>%#
+  rename(vt = prop1)#
+#
+vt$species_id[grep('55206', vt$species_id)]<- midas.info[grep('55206',midas.info$species_id), 1]#
+vt<- left_join(vt, spos, by ='species_id')#
+vt$spcol<-ifelse(vt$species_id =='Escherichia_coli_58110', 'Ecoli', 'other')#
+ggplot(vt, aes(x = sporulation_score, y =  vt,  col = spcol))+#
+  geom_point()#
+#
+lm1<- lm(vt~sporulation_score, data = vt)#
+summary(lm1)#
+tree<- read.tree('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/species_info_files/midas_tree_renamed.newick')#
+tree<- drop.tip(tree, tree$tip.label[!tree$tip.label %in% vt$species_id])#
+phylogeny<- chronopl(tree, lambda = 0)#
+phylogeny<- makeNodeLabel(phylogeny)#
+Ainv<-inverseA(phylogeny, scale=FALSE)$Ainv
+prior.1<- list(R=list(R1 = list(V=diag(1), nu = 0.002)),  # a single residual variance#
+               G=list(G1 = list(V=diag(1), nu = 0.002)))  # a single random effect#
+div = 1#
+nitt = 10500000/div#
+burnin = 500000/div#
+thin = ceiling(5000/div)#
+nitt#
+(nitt-burnin)/thin#
+#
+vt<- as.data.frame(vt)
+m.vt<- MCMCglmm(vt  ~ 1 + sporulation_score,#
+                random = ~species_id,#
+                ginverse = list(species_id=Ainv),#
+                 data = vt,#
+                 prior = prior.1,#
+                 family=c("gaussian"),#
+                 start=list(QUASI=FALSE),#
+                 #pl = TRUE, pr = TRUE, nodes = 'ALL',#
+                 DIC = TRUE,#
+                 nitt=nitt, thin=thin, burnin=burnin)
+summary(m.vt)
+plot(m.vt)
+vt<- read_excel('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/Midas_transmission_data.xls') %>%#
+  filter(tax_level == 'species',#
+         time_point == '12M') %>%#
+  mutate(species_id = gsub(')', '', fixed = TRUE, gsub('._', '_', fixed = TRUE, gsub('(id:', '', gsub(' ', '_', tax_group), fixed = TRUE)))) %>%#
+  filter(n1 > 3) %>%#
+  select(species_id, prop1) %>%#
+  rename(vt = prop1)#
+#
+vt$species_id[grep('55206', vt$species_id)]<- midas.info[grep('55206',midas.info$species_id), 1]#
+vt<- left_join(vt, spos, by ='species_id')
+vt$genus<- do.call('rbind', strsplit(vt$species_id, '_'))[,1]#
+ggplot(vt, aes(x = sporulation_score, y =  vt, col = genus))+#
+  ylim(0,1)+#
+  geom_point(size = 2)+#
+  scale_color_brewer(palette = 'Set1')
+tree<- read.tree('~/Documents/PhD/Research/HamiltonianMedicine/HamiltonianMedicineMicrobiome/data/species_info_files/midas_tree_renamed.newick')#
+tree<- drop.tip(tree, tree$tip.label[!tree$tip.label %in% vt$species_id])#
+phylogeny<- chronopl(tree, lambda = 0)#
+phylogeny<- makeNodeLabel(phylogeny)#
+Ainv<-inverseA(phylogeny, scale=FALSE)$Ainv#
+prior.1<- list(R=list(R1 = list(V=diag(1), nu = 0.002)),  # a single residual variance#
+               G=list(G1 = list(V=diag(1), nu = 0.002)))  # a single random effect
 phylogeny
 div = 1#
 nitt = 10500000/div#
@@ -1004,7 +1117,8 @@ for(j in 1:length(alphas)){#
     df.sd.list[[j]]$prop_time_not_recovered_n[i]<- integral(out, c('Sn', 'In'))/integral(out, c('Sn', 'In', 'Rn'))#
   }#
 }
-local_project_dir='/Users/s1687811/Documents/PhD/Research/CooperativePathogenicityVirulence/'
+local_project_dir='/Users/s1687811/Documents/PhD/Research/CooperativePathogenicityVirulence/'#
+#
 setwd(local_project_dir)#
 setwd('./CooperativePathogenicityVirulence_repo/')#
 source('./scripts/sourced_packages.R')#
@@ -1023,7 +1137,13 @@ d.cfr<- read.table('./output/1_processed_tables/4.1_assembled_CFR_SPECIES_annota
 #
 d.cfr<- rename(d.cfr,#
                supfam_id = matching_supfam_id,#
-               nb_cds = total_cds)
+               nb_cds = total_cds)#
+# This reproduces Figure 3a of Leggett et al#
+# So the CFR in the data must indeed be a PERCENTAGE#
+# Also confirms the data I have scrapped for infective dose is correct#
+ ggplot(d.cfr, aes(x = log(infective_dose), y = case_fatality_rate, col = infection_route))+#
+   geom_point()+#
+   scale_color_manual(values = c('lightgrey', 'darkgrey', 'black'))
 # PHYLOGENY#
 tree<- read.tree('./data/5_phylogeny_files/supfam_cfr_tree.newick')#
 tree$tip.label#
@@ -1032,7 +1152,12 @@ tree$tip.label<- d.cfr$species_id[match(tree$tip.label, d.cfr$supfam_id)]#
 tree<- chronopl(tree, lambda = 1)#
 #plot(tree) # ultrametricised tree#
 tree<-makeNodeLabel(tree)#
-Ainv<-inverseA(tree, scale=FALSE)$Ainv
+Ainv<-inverseA(tree, scale=FALSE)$Ainv#
+# TRANSFORM RESPONSE#
+# Legget's data are %death, but no actual number is given.#
+# Can't analyse with binomial regression#
+# So went for a log+1 gaussian response instead#
+#
 d.cfr$log_cfr_plus1<- log(d.cfr$case_fatality_rate + 1)
 # PRIOR AND RUN SPECS#
 prior <- list(R = list(R1 = list(V = diag(1), nu = 0.002)), # non-pylo / residual#
@@ -1044,6 +1169,27 @@ burnin = 500000/div#
 thin = ceiling(5000/div)#
 nitt#
 (nitt-burnin)/thin
+# REPLICATE LEGGET ----#
+m3.legget <- MCMCglmm(#
+  log_cfr_plus1  ~ -1 + infection_route + generation_time_h,#
+  random = ~species_id,#
+  ginverse = list(species_id= Ainv), #
+  data = d.cfr,#
+  prior = prior,#
+  family = c("gaussian"),#
+  start = list(QUASI = FALSE), #
+  DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,verbose = FALSE)#
+#
+summary(m3.legget)#
+# as reported in Leggett's, Skin & Inhalation have significantly greater CFR#
+# their lower CI bound is higher than upper bound of CI of Ingestion#
+# However we do not recover result that generation time hase an effect#
+# However model strategy is different, their modelled a multivariate response#
+# and I think they transformed data for make up numbers corresponding to the %, because they say they used a binomial response model#
+# Anyway, main effect they report is the strong effect of transmission route#
+# Will include this in my model#
+# UNIVARIATE ----#
+#
 # code wrapper for univariate models with transmission route and growth rate included#
 m3 <-function(df, focal_trait){#
   d.tmp<- df#
@@ -1061,29 +1207,6 @@ m3 <-function(df, focal_trait){#
   verbose = FALSE)#
   return(m)#
 }#
-#
-# code wrapper for univariate models with cooperation only#
-m3.coop_only <-function(df, focal_trait){#
-  d.tmp<- df#
-  colnames(d.tmp)[which(colnames(d.tmp) == focal_trait)]<- 'focal_trait'#
-  m<- MCMCglmm(#
-    log_cfr_plus1  ~ -1 + nb_cds + focal_trait,#
-    random = ~species_id,#
-    ginverse = list(species_id= Ainv), #
-    data = d.tmp,#
-    prior = prior,#
-    family = c("gaussian"),#
-    start = list(QUASI = FALSE), #
-    DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,#
-    verbose = FALSE)#
-  return(m)#
-}
-div = 20#
-nitt = 10500000/div#
-burnin = 500000/div#
-thin = ceiling(5000/div)#
-nitt#
-(nitt-burnin)/thin
 m3.bio<- m3(df = d.cfr, focal_trait = 'biofilm')#
 m3.qs<- m3(df = d.cfr, focal_trait = 'quorum_sensing')#
 m3.ab<- m3(df = d.cfr, focal_trait = 'antibiotic_degradation')#
@@ -1091,18 +1214,19 @@ m3.sid<- m3(df = d.cfr, focal_trait = 'siderophores')#
 m3.ssy<- m3(df = d.cfr, focal_trait = 'secretion_system')#
 m3.sec<- m3(df = d.cfr, focal_trait = 'secretome')#
 m3.vf<- m3(df = d.cfr, focal_trait = 'is_victor_vf')#
+# DIC clearly better when including the transmission route, down to ~170#
+# while DIC ~190 for all models when transmission route is not included#
+# no significance for any of the traits#
+summary(m3.bio) # .#
+summary(m3.qs)#
+summary(m3.ab)#
+summary(m3.sid)#
+summary(m3.ssy)#
+summary(m3.sec)#
+summary(m3.vf)#
+# MULTIVARIATE MODEL ----#
 #
-#save.image("./output/model_output/cfr_2604.RData")#
-m3.bio.coop_onl<- m3.coop_only(df = d.cfr, focal_trait = 'biofilm')#
-m3.qs.coop_onl<- m3.coop_only(df = d.cfr, focal_trait = 'quorum_sensing')#
-m3.ab.coop_onl<- m3.coop_only(df = d.cfr, focal_trait = 'antibiotic_degradation')#
-m3.sid.coop_onl<- m3.coop_only(df = d.cfr, focal_trait = 'siderophores')#
-m3.ssy.coop_onl<- m3.coop_only(df = d.cfr, focal_trait = 'secretion_system')#
-m3.sec.coop_onl<- m3.coop_only(df = d.cfr, focal_trait = 'secretome')#
-m3.vf.coop_onl<- m3.coop_only(df = d.cfr, focal_trait = 'is_victor_vf')#
-#
-#save.image("./output/model_output/cfr_2604.RData")
-nitt
+# z-transform predictors#
 z.transform<- function(x){(x - mean(x))/sd(x)}#
 #
 d.cfr$z_nb_cds<- z.transform(d.cfr$nb_cds)#
@@ -1112,27 +1236,7 @@ d.cfr$z_antibiotic_degradation<- z.transform(d.cfr$antibiotic_degradation)#
 d.cfr$z_secretion_system<- z.transform(d.cfr$secretion_system)#
 d.cfr$z_siderophores<- z.transform(d.cfr$siderophores)#
 d.cfr$z_secretome<- z.transform(d.cfr$secretome)#
-d.cfr$z_is_victor_vf<- z.transform(d.cfr$is_victor_vf)
-m3.multi.COOPonly.withVF<- MCMCglmm(#
-  log_cfr_plus1  ~ z_nb_cds + z_biofilm + z_quorum_sensing + z_antibiotic_degradation + z_secretion_system + z_siderophores + z_secretome + z_is_victor_vf,#
-  random = ~species_id,#
-  ginverse = list(species_id= Ainv), #
-  data = d.cfr,#
-  prior = prior,#
-  family = c("gaussian"),#
-  start = list(QUASI = FALSE), #
-  DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,#
-  verbose = FALSE)#
-m3.multi<- MCMCglmm(#
-  log_cfr_plus1  ~ -1 + infection_route + generation_time_h + z_nb_cds + z_biofilm + z_quorum_sensing + z_antibiotic_degradation + z_secretion_system + z_siderophores + z_secretome,#
-  random = ~species_id,#
-  ginverse = list(species_id= Ainv), #
-  data = d.cfr,#
-  prior = prior,#
-  family = c("gaussian"),#
-  start = list(QUASI = FALSE), #
-  DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,#
-  verbose = FALSE)#
+d.cfr$z_is_victor_vf<- z.transform(d.cfr$is_victor_vf)#
 m3.multi.with_vf<- MCMCglmm(#
   log_cfr_plus1  ~ -1 + infection_route + generation_time_h + z_nb_cds + z_biofilm + z_quorum_sensing + z_antibiotic_degradation + z_secretion_system + z_siderophores + z_secretome + z_is_victor_vf,#
   random = ~species_id,#
@@ -1142,21 +1246,12 @@ m3.multi.with_vf<- MCMCglmm(#
   family = c("gaussian"),#
   start = list(QUASI = FALSE), #
   DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,#
-  verbose = FALSE)
-summary(m3.bio.coop_onl)
-summary(m3.qs.coop_onl)
-summary(m3.ab.coop_onl)
-summary(m3.sid.coop_onl)
-summary(m3.ssy.coop_onl)
-summary(m3.sec.coop_onl)
-summary(m3.vf.coop_onl)
-summary(m3.bio)
-summary(m3.qs)
-summary(m3.ab)
-summary(m3.sid)
-summary(m3.ssy)
-summary(m3.sec)
-summary(m3.vf)
-summary(m3.multi.COOPonly.withVF)
-summary(m3.multi.with_vf)
-summary(m3.multi)
+  verbose = FALSE)#
+#
+summary(m3.multi.with_vf)#
+plot(m3.multi.with_vf)#
+# SAVE ----#
+#
+#save.image("./output/3_model_output/CompAnalysis_cfr_CHAIN1.RData") #(former cfr_2604.RData)#
+#save.image("./output/3_model_output/CompAnalysis_cfr_CHAIN2.RData")#
+save.image("./output/3_model_output/CompAnalysis_cfr_CHAIN3.RData")

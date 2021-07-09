@@ -109,7 +109,7 @@ prior <- list(R = list(V = 1, fix = 1),
               G = list(G1 = list(V = diag(1), nu = 1000, alpha.mu = rep(0,1), alpha.V = diag(1))))
 
 
-div = 2 # 2
+div = 2
 nitt = 10500000/div
 burnin = 500000/div
 thin = ceiling(5000/div)
