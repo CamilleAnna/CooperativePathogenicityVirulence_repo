@@ -2,10 +2,20 @@
 #                   Script for comparative analysis of virulence factors
 #
 #   Takes as input:
+#         2.1_assembled_SPECIES_annotation.txt
+#         2.2_assembled_GENES_annotation.txt
+#         midas_tree_renamed.newick
 #   Runs analysis:
+#         Use genes annotations to make contingency table VFxCoop
+#         Compute Odds ratio and SE on the odds ratio
+#         Use MCMCglmm to run phylogenetic meta-analysis
 #   Output:
+#         3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN3.RData
+#         3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN3.RData
+#         3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN3.RData
+#         additional_figs/VF_ForestFunnel_VICTOR_dataset118.pdf
 #
-# Code for extracting tables and producing figures in separate script file, usinf RData object
+# Code for extracting tables and producing figures in separate script file, using RData object
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -31,7 +41,6 @@ d<- rename(d,
            nb_extracellular = secretome,
            species.patric = species,
            vf = is_victor_vf,
-           #mp3_pathogenic = is_mp3_hybrid_pathogenic,
            nb_cds = total_cds,
            ab_degradation = antibiotic_degradation) %>%
   rename(species = species_id)
@@ -323,7 +332,7 @@ nrow(df[df$cooperative_trait %in% 'ssyst',])
 # We run the analysis chains to then use Gelman-Rubin test to assess convergence
 #save.image("./output/3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN1.RData")
 #save.image("./output/3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN2.RData")
-save.image("./output/3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN3.RData")
+#save.image("./output/3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN3.RData")
 
 
 # Model summaries
