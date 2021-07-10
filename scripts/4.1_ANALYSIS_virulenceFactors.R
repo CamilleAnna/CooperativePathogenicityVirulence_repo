@@ -264,7 +264,7 @@ library(ape)
 midas.tree<- read.tree('./data/5_phylogeny_files/midas_tree_renamed.newick')
 
 
-div = 2
+div = 2000
 nitt = 10500000/div
 burnin = 500000/div
 thin = ceiling(5000/div)
@@ -297,6 +297,7 @@ run_meta<- function(df = '', focal_trait, prior = ''){
                          prior = prior,
                          data = df.tmp,
                          start = list(QUASI = FALSE),
+                         verbose = FALSE,
                          nitt=nitt, thin=thin, burnin=burnin)
   
   return(randomtest)
@@ -313,6 +314,14 @@ meta.a.ssyst<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'ssyst
 
 # Run meta-analysis on grouped categories under a single 'cooperative' category
 meta.a.coop<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'is_coop', prior = prior.a)
+
+
+meta.a.secretome.1<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'secretome', prior = prior.a)
+meta.a.secretome.2<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'secretome', prior = prior.a)
+
+summary(meta.a.secretome.1)$solutions
+summary(meta.a.secretome.2)$solutions
+
 
 
 # Check how many datapoint there were for in each model
@@ -361,4 +370,11 @@ round(exp(summary(meta.a.coop)$solutions), 2)  # all classes together
 
 
 # GELMAN-RUBIN TESTS ----
+
+# --> in figures script
+
+
+
+
+
 

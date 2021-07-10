@@ -199,6 +199,11 @@ plot(m3.multi.with_vf)
 #save.image("./output/3_model_output/CompAnalysis_cfr_CHAIN2.RData")
 #save.image("./output/3_model_output/CompAnalysis_cfr_CHAIN3.RData")
 
+# GELMAN-RUBIN tests ----
+
+# in figures script
+
+
 
 
 

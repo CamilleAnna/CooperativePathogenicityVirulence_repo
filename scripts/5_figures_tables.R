@@ -851,7 +851,7 @@ format_effects.HM1<- function(string){
     gsub(pattern = "species", replacement = "Species, phylogenetic", ., fixed = TRUE) %>%
     gsub(pattern = "se_logOR.units", replacement = "Measurement error", ., fixed = TRUE) %>%
     gsub(pattern = "focal_trait", replacement = "Focal trait", ., fixed = TRUE) %>%
-    gsub(pattern = "units", replacement = "Residual", ., fixed = TRUE) %>%
+    gsub(pattern = "units", replacement = "Residual", ., fixed = TRUE)
     
     return(string_edited)  
 }
@@ -1154,6 +1154,326 @@ tab.s3<- kable(tab3, "latex", booktabs = T, caption = 'Model summaries of virule
 fileConn<-file("./output/4_summary_tables/TABLE_S3.hm1.tex")
 writeLines(tab.s3, fileConn)
 close(fileConn)
+
+
+# SUPP. TABLE 4: Gelman rubin tests ----
+
+
+do.gelman.vf<- function(focus.model, rm.units){
+  
+  
+  load("./output/3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN1.RData")
+  chain1<- get(focus.model)
+  
+  load("./output/3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN2.RData")
+  chain2<- get(focus.model)
+  
+  load("./output/3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN3.RData")
+  chain3<- get(focus.model)
+  
+  
+  # Sol
+  combinedchains.Sol = mcmc.list(chain1$Sol, chain2$Sol, chain3$Sol)
+  psrf.sol<- gelman.diag(combinedchains.Sol)$psrf[,2] # extracts upper CI of the estimate of potential scale reduction factor
+  
+  psrf.sol<- gelman.diag(combinedchains.Sol)$psrf %>%
+    as.data.frame()%>%
+    rownames_to_column(var = 'effect') %>%
+    mutate(model = focus.model,
+           structure = 'Fixed effects') %>%
+    select(model, structure, effect, `Point est.`, `Upper C.I.`)
+  
+  
+  # VCV
+  if(rm.units == TRUE){
+    # VCV - in this case, unit variance (residual) was fixed. Remove from the evaluated chain
+    
+    combinedchains.vcv = mcmc.list(chain1$VCV[,1], chain2$VCV[,1], chain3$VCV[,1])
+    psrf.vcv<- gelman.diag(combinedchains.vcv)$psrf[,2]
+    
+    psrf.vcv<- gelman.diag(combinedchains.vcv)$psrf %>%
+      as.data.frame()%>%
+      rownames_to_column(var = 'effect') %>%
+      mutate(model = focus.model,
+             structure = 'Variances') %>%
+      select(model, structure, effect, `Point est.`, `Upper C.I.`)
+    
+    psrf.vcv[,'effect']<- colnames(chain1$VCV)[1]
+    
+  }else{
+    combinedchains.vcv = mcmc.list(chain1$VCV, chain2$VCV, chain3$VCV)
+    psrf.vcv<- gelman.diag(combinedchains.vcv)$psrf[,2]
+    
+    
+    psrf.vcv<- gelman.diag(combinedchains.vcv)$psrf %>%
+      as.data.frame()%>%
+      rownames_to_column(var = 'effect') %>%
+      mutate(model = focus.model,
+             structure = 'Variances') %>%
+      select(model, structure, effect, `Point est.`, `Upper C.I.`)
+    
+  }
+  
+  gel.tab<- rbind(psrf.sol, psrf.vcv) %>%
+    mutate(structure = ifelse(duplicated(structure) == TRUE, '', structure),
+           model = ifelse(duplicated(model) == TRUE, '', model)) 
+  
+  return(gel.tab)
+  
+}
+do.gelman.patho<- function(focus.model, rm.units){
+  
+  
+  load("./output/3_model_output/CompAnalysis_pathogens_d118_CHAIN1.RData")
+  chain1<- get(focus.model)
+  
+  load("./output/3_model_output/CompAnalysis_pathogens_d118_CHAIN2.RData")
+  chain2<- get(focus.model)
+  
+  load("./output/3_model_output/CompAnalysis_pathogens_d118_CHAIN3.RData")
+  chain3<- get(focus.model)
+  
+  
+  # Sol
+  combinedchains.Sol = mcmc.list(chain1$Sol, chain2$Sol, chain3$Sol)
+  psrf.sol<- gelman.diag(combinedchains.Sol)$psrf[,2] # extracts upper CI of the estimate of potential scale reduction factor
+  
+  psrf.sol<- gelman.diag(combinedchains.Sol)$psrf %>%
+    as.data.frame()%>%
+    rownames_to_column(var = 'effect') %>%
+    mutate(model = focus.model,
+           structure = 'Fixed effects') %>%
+    select(model, structure, effect, `Point est.`, `Upper C.I.`)
+  
+  
+  # VCV
+  if(rm.units == TRUE){
+    # VCV - in this case, unit variance (residual) was fixed. Remove from the evaluated chain
+    
+    combinedchains.vcv = mcmc.list(chain1$VCV[,1], chain2$VCV[,1], chain3$VCV[,1])
+    psrf.vcv<- gelman.diag(combinedchains.vcv)$psrf[,2]
+    
+    psrf.vcv<- gelman.diag(combinedchains.vcv)$psrf %>%
+      as.data.frame()%>%
+      rownames_to_column(var = 'effect') %>%
+      mutate(model = focus.model,
+             structure = 'Variances') %>%
+      select(model, structure, effect, `Point est.`, `Upper C.I.`)
+    
+    psrf.vcv[,'effect']<- colnames(chain1$VCV)[1]
+    
+  }else{
+    combinedchains.vcv = mcmc.list(chain1$VCV, chain2$VCV, chain3$VCV)
+    psrf.vcv<- gelman.diag(combinedchains.vcv)$psrf[,2]
+    
+    
+    psrf.vcv<- gelman.diag(combinedchains.vcv)$psrf %>%
+      as.data.frame()%>%
+      rownames_to_column(var = 'effect') %>%
+      mutate(model = focus.model,
+             structure = 'Variances') %>%
+      select(model, structure, effect, `Point est.`, `Upper C.I.`)
+    
+  }
+  
+  gel.tab<- rbind(psrf.sol, psrf.vcv) %>%
+    mutate(structure = ifelse(duplicated(structure) == TRUE, '', structure),
+           model = ifelse(duplicated(model) == TRUE, '', model)) 
+  
+  return(gel.tab)
+  
+}
+do.gelman.cfr<- function(focus.model, rm.units){
+  
+  
+  load("./output/3_model_output/CompAnalysis_cfr_CHAIN1.RData")
+  chain1<- get(focus.model)
+  
+  load("./output/3_model_output/CompAnalysis_cfr_CHAIN2.RData")
+  chain2<- get(focus.model)
+  
+  load("./output/3_model_output/CompAnalysis_cfr_CHAIN3.RData")
+  chain3<- get(focus.model)
+  
+  
+  # Sol
+  combinedchains.Sol = mcmc.list(chain1$Sol, chain2$Sol, chain3$Sol)
+  psrf.sol<- gelman.diag(combinedchains.Sol)$psrf[,2] # extracts upper CI of the estimate of potential scale reduction factor
+  
+  psrf.sol<- gelman.diag(combinedchains.Sol)$psrf %>%
+    as.data.frame()%>%
+    rownames_to_column(var = 'effect') %>%
+    mutate(model = focus.model,
+           structure = 'Fixed effects') %>%
+    select(model, structure, effect, `Point est.`, `Upper C.I.`)
+  
+  
+  # VCV
+  if(rm.units == TRUE){
+    # VCV - in this case, unit variance (residual) was fixed. Remove from the evaluated chain
+    
+    combinedchains.vcv = mcmc.list(chain1$VCV[,1], chain2$VCV[,1], chain3$VCV[,1])
+    psrf.vcv<- gelman.diag(combinedchains.vcv)$psrf[,2]
+    
+    psrf.vcv<- gelman.diag(combinedchains.vcv)$psrf %>%
+      as.data.frame()%>%
+      rownames_to_column(var = 'effect') %>%
+      mutate(model = focus.model,
+             structure = 'Variances') %>%
+      select(model, structure, effect, `Point est.`, `Upper C.I.`)
+    
+    psrf.vcv[,'effect']<- colnames(chain1$VCV)[1]
+    
+  }else{
+    combinedchains.vcv = mcmc.list(chain1$VCV, chain2$VCV, chain3$VCV)
+    psrf.vcv<- gelman.diag(combinedchains.vcv)$psrf[,2]
+    
+    
+    psrf.vcv<- gelman.diag(combinedchains.vcv)$psrf %>%
+      as.data.frame()%>%
+      rownames_to_column(var = 'effect') %>%
+      mutate(model = focus.model,
+             structure = 'Variances') %>%
+      select(model, structure, effect, `Point est.`, `Upper C.I.`)
+    
+  }
+  
+  gel.tab<- rbind(psrf.sol, psrf.vcv) %>%
+    mutate(structure = ifelse(duplicated(structure) == TRUE, '', structure),
+           model = ifelse(duplicated(model) == TRUE, '', model)) 
+  
+  return(gel.tab)
+  
+}
+
+
+
+
+# Run the gelman tests for VF analysis
+gelman.tab.vf<- rbind(
+  do.gelman.vf('meta.a.secretome', rm.units = TRUE),
+  do.gelman.vf('meta.a.biofilm', rm.units = TRUE),
+  do.gelman.vf('meta.a.sid', rm.units = TRUE),
+  do.gelman.vf('meta.a.ab', rm.units = TRUE),
+  do.gelman.vf('meta.a.qs', rm.units = TRUE),
+  do.gelman.vf('meta.a.ssyst', rm.units = TRUE)
+)
+
+
+# Run the gelman tests for PATHOGENICITY analysis
+gelman.tab.pathogenicity<- rbind(
+  do.gelman.patho('m1.ss', rm.units = TRUE),
+  do.gelman.patho('m1.biofilm', rm.units = TRUE),
+  do.gelman.patho('m1.siderophores', rm.units = TRUE),
+  do.gelman.patho('m1.ab_degradation', rm.units = TRUE),
+  do.gelman.patho('m1.quorum_sensing', rm.units = TRUE),
+  do.gelman.patho('m1.secretion_system', rm.units = TRUE),
+  do.gelman.patho('m1.vf', rm.units = TRUE),
+  do.gelman.patho('m1.multi.with_vf_NOgram', rm.units = TRUE)
+)
+
+
+# Run the gelman tests for CFR analysis
+gelman.tab.cfr<- rbind(
+  do.gelman.cfr('m3.bio', rm.units = FALSE),
+  do.gelman.cfr('m3.qs', rm.units = FALSE),
+  do.gelman.cfr('m3.ab', rm.units = FALSE),
+  do.gelman.cfr('m3.sid', rm.units = FALSE),
+  do.gelman.cfr('m3.ssy', rm.units = FALSE),
+  do.gelman.cfr('m3.sec', rm.units = FALSE),
+  do.gelman.cfr('m3.vf', rm.units = FALSE),
+  do.gelman.cfr('m3.multi.with_vf', rm.units = FALSE)
+)
+
+
+# Format the gelman rubin tests table for manuscript
+dgl<- rbind(gelman.tab.vf,gelman.tab.pathogenicity,gelman.tab.cfr)
+
+range(dgl$`Upper C.I.`) # max scale reduction factor is 1.017
+
+
+
+dgl$effect<- format_effects.HM1(dgl$effect)
+
+
+dgl$structure<- gsub(pattern = "Variances", replacement = "(Co)variances", dgl$structure, fixed = TRUE)
+
+
+colnames(dgl)<- c('Model', 'Structure', 'Effect', 'Point estimate', 'Upper CI95%')
+
+
+dgl$`Point estimate` = ifelse(dgl$`Point estimate`<0.01,
+                              formatC(dgl$`Point estimate`, digit = 2, format = 'e'),
+                              formatC(dgl$`Point estimate`, digit = 3, format = 'f'))
+
+dgl$`Upper CI95%` = ifelse(dgl$`Upper CI95%`<0.01,
+                              formatC(dgl$`Upper CI95%`, digit = 2, format = 'e'),
+                              formatC(dgl$`Upper CI95%`, digit = 3, format = 'f'))
+
+
+rename.models.HM1<- function(string){
+  
+  string_edited<- string %>%
+    gsub(pattern = "meta.a.secretome", replacement = "Secretome", ., fixed = TRUE) %>%
+    gsub(pattern = "meta.a.biofilm", replacement = "Biofilm", ., fixed = TRUE) %>%
+    gsub(pattern = "meta.a.sid", replacement = "Siderophores", ., fixed = TRUE) %>%
+    gsub(pattern = "meta.a.ab", replacement = "Antib. degr", ., fixed = TRUE) %>%
+    gsub(pattern = "meta.a.qs", replacement = "Quorum-sensing", ., fixed = TRUE) %>%
+    gsub(pattern = "meta.a.ssyst", replacement = "Secretion systems", ., fixed = TRUE) %>%
+    
+    gsub(pattern = "m1.ss", replacement = "Secretome", ., fixed = TRUE) %>%
+    gsub(pattern = "m1.biofilm", replacement = "Biofilm", ., fixed = TRUE) %>%
+    gsub(pattern = "m1.siderophores", replacement = "Siderophores", ., fixed = TRUE) %>%
+    gsub(pattern = "m1.ab_degradation", replacement = "Antib. degr", ., fixed = TRUE) %>%
+    gsub(pattern = "m1.quorum_sensing", replacement = "Quorum-sensing", ., fixed = TRUE) %>%
+    gsub(pattern = "m1.secretion_system", replacement = "Secretion systems", ., fixed = TRUE) %>%
+    gsub(pattern = "m1.vf", replacement = "Virulence factors", ., fixed = TRUE) %>%
+    gsub(pattern = "m1.multi.with_vf_NOgram", replacement = "Multivariate model", ., fixed = TRUE) %>%
+    
+    gsub(pattern = "m3.sec", replacement = "Secretome", ., fixed = TRUE) %>%
+    gsub(pattern = "m3.bio", replacement = "Biofilm", ., fixed = TRUE) %>%
+    gsub(pattern = "m3.sid", replacement = "Siderophores", ., fixed = TRUE) %>%
+    gsub(pattern = "m3.ab", replacement = "Antib. degr", ., fixed = TRUE) %>%
+    gsub(pattern = "m3.qs", replacement = "Quorum-sensing", ., fixed = TRUE) %>%
+    gsub(pattern = "m3.ssy", replacement = "Secretion systems", ., fixed = TRUE) %>%
+    gsub(pattern = "m3.vf", replacement = "Virulence factors", ., fixed = TRUE) %>%
+    gsub(pattern = "m3.multi.with_vf", replacement = "Multivariate model", ., fixed = TRUE)
+    
+
+    return(string_edited)  
+}
+
+
+dgl$Model<- rename.models.HM1(dgl$Model)
+
+
+dgl$Analysis<- ''
+
+dgl<- dgl %>%
+  select(Analysis, Model, Structure, Effect, `Point estimate`, `Upper CI95%`)
+
+
+  
+tab.s4<- kable(dgl, "latex",longtable = T, booktabs = T,#align=c(rep('l',times=6)),
+               caption = 'Gelman rubin tests of convergence, summaries for all models. Gelman rubin tests were run on three independent chains for each model.') %>%
+  footnote(c("CI95%: 95% confidence interval",
+             "z(): For multivariate model, predictors were z-transformed"),
+           fixed_small_size = TRUE, general_title = "") %>%
+  #kable_styling() %>%
+  kable_styling(latex_options = c("hold_position", "repeat_header"))%>%
+  pack_rows("Virulence factors (phylog. meta-analysis)", 1, 12) %>%
+  pack_rows("Pathogenicity (Binomial response phylog. comparative analysis)", 13, 50) %>%
+  pack_rows("Virulence (Gaussian response phylog. comparative analysis)", 51, 120)
+
+
+fileConn<-file("./output/4_summary_tables/TABLE_S4.hm1.tex")
+writeLines(tab.s4, fileConn)
+close(fileConn)
+
+
+
+
+
 
 
 

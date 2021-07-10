@@ -18,7 +18,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
-#local_project_dir=PATH/TO/CLONE/REPO # '/Users/s1687811/Documents/PhD/Research/CooperativePathogenicityVirulence/'
+#local_project_dir=path/to/cloned/repo #'/Users/s1687811/Documents/PhD/Research/CooperativePathogenicityVirulence/'
 
 setwd(local_project_dir)
 setwd('./CooperativePathogenicityVirulence_repo/')
@@ -279,4 +279,19 @@ plot(m1.multi.with_vf_NOgram)
 #save.image("./output/3_model_output/CompAnalysis_pathogens_d118_CHAIN1.RData")
 #save.image("./output/3_model_output/CompAnalysis_pathogens_d118_CHAIN2.RData")
 #save.image("./output/3_model_output/CompAnalysis_pathogens_d118_CHAIN3.RData")
+
+
+# GELMAN RUBIN TESTS ----
+
+# in figures script
+
+
+
+
+
+
+
+
+
+
 

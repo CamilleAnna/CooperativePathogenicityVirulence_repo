@@ -1,0 +1,121 @@
+Analysis	Model	Structure	Effect	Point estimate	Upper CI95%
+	Secretome	Fixed effects	Intercept	1.000	1.000
+		(Co)variances	Species, phylogenetic	1.000	1.001
+	Biofilm	Fixed effects	Intercept	1.000	1.000
+		(Co)variances	Species, phylogenetic	1.000	1.000
+	Siderophores	Fixed effects	Intercept	1.000	1.003
+		(Co)variances	Species, phylogenetic	1.000	1.001
+	Antib. degr	Fixed effects	Intercept	1.001	1.005
+		(Co)variances	Species, phylogenetic	1.000	1.001
+	Quorum-sensing	Fixed effects	Intercept	1.000	1.000
+		(Co)variances	Species, phylogenetic	1.000	1.000
+	Secretion systems	Fixed effects	Intercept	1.000	1.001
+		(Co)variances	Species, phylogenetic	1.000	1.000
+	Secretome	Fixed effects	Intercept	1.001	1.001
+			Proteome size	1.000	1.001
+			Focal trait	1.001	1.003
+		(Co)variances	Species, phylogenetic	1.001	1.003
+	Biofilm	Fixed effects	Intercept	1.000	1.000
+			Proteome size	1.000	1.000
+			Focal trait	1.000	1.000
+		(Co)variances	Species, phylogenetic	1.001	1.002
+	Siderophores	Fixed effects	Intercept	1.000	1.001
+			Proteome size	1.000	1.001
+			Focal trait	1.001	1.001
+		(Co)variances	Species, phylogenetic	1.000	1.001
+	Antib. degr	Fixed effects	Intercept	1.000	1.001
+			Proteome size	1.000	1.001
+			Focal trait	1.000	1.001
+		(Co)variances	Species, phylogenetic	1.001	1.002
+	Quorum-sensing	Fixed effects	Intercept	1.000	1.000
+			Proteome size	1.001	1.003
+			Focal trait	1.002	1.009
+		(Co)variances	Species, phylogenetic	1.002	1.004
+	Secretion systems	Fixed effects	Intercept	1.000	1.000
+			Proteome size	1.000	1.002
+			Focal trait	1.001	1.002
+		(Co)variances	Species, phylogenetic	1.002	1.006
+	Virulence factors	Fixed effects	Intercept	1.000	1.000
+			Proteome size	1.002	1.003
+			Focal trait	1.004	1.016
+		(Co)variances	Species, phylogenetic	1.001	1.004
+	Multivariate model	Fixed effects	Intercept	1.000	1.003
+			z(Proteome size)	1.000	1.000
+			z(Biofilm)	1.000	1.000
+			z(Antib. degr.)	1.000	1.000
+			z(Quorum-sensing)	1.000	1.000
+			z(Secretion systems)	1.000	1.000
+			z(Siderophores)	1.000	1.001
+			z(Secretome)	1.000	1.000
+			z(Virulence Factors)	1.004	1.017
+		(Co)variances	Species, phylogenetic	1.000	1.001
+	Biofilm	Fixed effects	Infection route: Ingestion	1.000	1.000
+			Infection route: Inhalation	1.000	1.000
+			Infection route: Skin	1.000	1.000
+			Generation time (h)	1.000	1.000
+			Proteome size	1.003	1.011
+			Focal trait	1.002	1.009
+		(Co)variances	Species, phylogenetic	1.000	1.000
+			Residual	1.000	1.000
+	Quorum-sensing	Fixed effects	Infection route: Ingestion	1.000	1.000
+			Infection route: Inhalation	1.000	1.000
+			Infection route: Skin	1.000	1.000
+			Generation time (h)	1.000	1.001
+			Proteome size	1.000	1.000
+			Focal trait	1.000	1.000
+		(Co)variances	Species, phylogenetic	1.000	1.001
+			Residual	1.000	1.001
+	Antib. degr	Fixed effects	Infection route: Ingestion	1.000	1.000
+			Infection route: Inhalation	1.001	1.003
+			Infection route: Skin	1.000	1.000
+			Generation time (h)	1.001	1.001
+			Proteome size	1.001	1.004
+			Focal trait	1.000	1.001
+		(Co)variances	Species, phylogenetic	1.000	1.000
+			Residual	1.000	1.000
+	Siderophores	Fixed effects	Infection route: Ingestion	1.000	1.003
+			Infection route: Inhalation	1.002	1.007
+			Infection route: Skin	1.000	1.001
+			Generation time (h)	1.001	1.001
+			Proteome size	1.001	1.005
+			Focal trait	1.000	1.001
+		(Co)variances	Species, phylogenetic	1.001	1.001
+			Residual	1.000	1.002
+	Secretion systems	Fixed effects	Infection route: Ingestion	1.000	1.000
+			Infection route: Inhalation	1.000	1.002
+			Infection route: Skin	1.000	1.000
+			Generation time (h)	1.000	1.000
+			Proteome size	1.000	1.000
+			Focal trait	1.001	1.004
+		(Co)variances	Species, phylogenetic	1.002	1.004
+			Residual	1.000	1.001
+	Secretome	Fixed effects	Infection route: Ingestion	1.001	1.002
+			Infection route: Inhalation	1.000	1.000
+			Infection route: Skin	1.000	1.000
+			Generation time (h)	1.000	1.001
+			Proteome size	1.000	1.000
+			Focal trait	1.000	1.000
+		(Co)variances	Species, phylogenetic	1.001	1.001
+			Residual	1.000	1.003
+	Virulence factors	Fixed effects	Infection route: Ingestion	1.000	1.000
+			Infection route: Inhalation	1.000	1.000
+			Infection route: Skin	1.000	1.001
+			Generation time (h)	1.000	1.000
+			Proteome size	1.000	1.001
+			Focal trait	1.000	1.000
+		(Co)variances	Species, phylogenetic	1.000	1.000
+			Residual	1.002	1.007
+	Multivariate model	Fixed effects	Infection route: Ingestion	1.003	1.008
+			Infection route: Inhalation	1.000	1.001
+			Infection route: Skin	1.000	1.002
+			Generation time (h)	1.001	1.002
+			z(Proteome size)	1.000	1.000
+			z(Biofilm)	1.001	1.005
+			z(Quorum-sensing)	1.000	1.000
+			z(Antib. degr.)	1.000	1.002
+			z(Secretion systems)	1.001	1.003
+			z(Siderophores)	1.001	1.003
+			z(Secretome)	1.001	1.003
+			z(Virulence Factors)	1.001	1.002
+		(Co)variances	Species, phylogenetic	1.001	1.002
+			Residual	1.000	1.002
