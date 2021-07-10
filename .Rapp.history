@@ -1,19 +1,3 @@
-system(command=paste0("mv ", GENOME, ".PATRIC.spgene.tab ", sps[i],".vf") )
-sps='Campylobacter_ureolyticus_62430'#
-GENOME='883165.3'#
-system(command=paste0('wget -N "ftp://ftp.patricbrc.org/genomes/', GENOME, '/', GENOME, '.PATRIC.spgene.tab"'))#
-system(command=paste0("grep 'Virulence Factor' ", GENOME, ".PATRIC.spgene.tab > tmp.2")) #
-system(command=paste0("head -n 1 ", GENOME, ".PATRIC.spgene.tab > tmp.1"))#
-system(command=paste0("cat tmp.* > ", GENOME, ".PATRIC.spgene.tab"))#
-system(command=paste0("mv ", GENOME, ".PATRIC.spgene.tab ", sps[i],".vf") )
-GENOME = midas.sps[midas.sps$V1 == sps[i],2]#
-#
-system(command=paste0('wget -N "ftp://ftp.patricbrc.org/genomes/', GENOME, '/', GENOME, '.PATRIC.spgene.tab"'))#
-system(command=paste0("grep 'Virulence Factor' ", GENOME, ".PATRIC.spgene.tab > tmp.2")) #
-system(command=paste0("head -n 1 ", GENOME, ".PATRIC.spgene.tab > tmp.1"))#
-system(command=paste0("cat tmp.* > ", GENOME, ".PATRIC.spgene.tab"))#
-system(command=paste0("mv ", GENOME, ".PATRIC.spgene.tab ", sps[i],".vf") )
-getwd()
 cat GENOME
 GENOME
 sps
@@ -1118,140 +1102,198 @@ for(j in 1:length(alphas)){#
   }#
 }
 local_project_dir='/Users/s1687811/Documents/PhD/Research/CooperativePathogenicityVirulence/'#
-#
 setwd(local_project_dir)#
 setwd('./CooperativePathogenicityVirulence_repo/')#
 source('./scripts/sourced_packages.R')#
 library(ape)#
 library(MCMCglmm)#
 library(dmetar)#
-library(esc)#
-# CFR DATASET ----#
-d.cfr<- read.table('./output/1_processed_tables/4.1_assembled_CFR_SPECIES_annotation.txt', header=TRUE,#
-                   sep = '\t',#
-                   colClasses = c('character', 'character', 'character',#
-                                  'numeric', 'numeric',#
-                                  'character', 'character', 'character',#
-                                  'numeric', 'numeric',#
-                                  rep('character', 4), rep('numeric', 8)))#
+library(esc)
+# Annotations summarised at species level#
+d<- read.table('./output/1_processed_tables/2.1_assembled_SPECIES_annotation.txt', header=TRUE, sep = '\t',#
+               colClasses = c(rep('character', 4),#
+                              rep('numeric', 9)))#
 #
-d.cfr<- rename(d.cfr,#
-               supfam_id = matching_supfam_id,#
-               nb_cds = total_cds)#
-# This reproduces Figure 3a of Leggett et al#
-# So the CFR in the data must indeed be a PERCENTAGE#
-# Also confirms the data I have scrapped for infective dose is correct#
- ggplot(d.cfr, aes(x = log(infective_dose), y = case_fatality_rate, col = infection_route))+#
-   geom_point()+#
-   scale_color_manual(values = c('lightgrey', 'darkgrey', 'black'))
-# PHYLOGENY#
-tree<- read.tree('./data/5_phylogeny_files/supfam_cfr_tree.newick')#
-tree$tip.label#
-tree<- drop.tip(tree, tree$tip.label[!tree$tip.label %in% d.cfr$supfam_id])#
-tree$tip.label<- d.cfr$species_id[match(tree$tip.label, d.cfr$supfam_id)]#
-tree<- chronopl(tree, lambda = 1)#
-#plot(tree) # ultrametricised tree#
-tree<-makeNodeLabel(tree)#
-Ainv<-inverseA(tree, scale=FALSE)$Ainv#
-# TRANSFORM RESPONSE#
-# Legget's data are %death, but no actual number is given.#
-# Can't analyse with binomial regression#
-# So went for a log+1 gaussian response instead#
+d<- rename(d,#
+           nb_extracellular = secretome,#
+           species.patric = species,#
+           vf = is_victor_vf,#
+           nb_cds = total_cds,#
+           ab_degradation = antibiotic_degradation) %>%#
+  rename(species = species_id)#
 #
-d.cfr$log_cfr_plus1<- log(d.cfr$case_fatality_rate + 1)
-# PRIOR AND RUN SPECS#
-prior <- list(R = list(R1 = list(V = diag(1), nu = 0.002)), # non-pylo / residual#
-              G = list(G1 = list(V = diag(1), nu = 1, alpha.mu = 0, alpha.V = 100))) # phylo#
+d$pathogen<- as.factor(d$pathogen)#
+# Detail annotation at gene level#
+d.annot<- read.csv('./output/1_processed_tables/2.2_assembled_GENES_annotation.txt', header=TRUE, sep = '\t',#
+               colClasses = c(rep('character', 7),#
+                              rep('numeric', 8)))#
 #
+head(d.annot)#
+#
+sum(is.na(d.annot$secretome)) # all genes are annotated#
+#
+d.annot2<- d.annot %>%#
+  filter(!is.na(secretome)) %>% # in fact no case of this#
+  mutate(is_coop = biofilm+antibiotic_degradation+quorum_sensing+siderophores+secretion_system+secretome)%>%#
+  mutate(is_coop = ifelse(is_coop == 0, is_coop, 1)) %>%#
+  select(-genus, -species, -product_patric, -total_cds) %>%#
+  rename(is_vf = is_victor_vf,#
+         species = species_id)#
+#
+head(d.annot2)
+ctab.all<- function(focus_trait){#
+  tab<- d.annot2 %>% #
+    select(focus_trait, is_vf)%>%#
+    rename(cooperative = 1) %>%#
+    group_by(cooperative, is_vf) %>%#
+    table()#
+  or<- esc_2x2(grp1yes = tab[2,2],#
+               grp1no = tab[2,1],#
+               grp2yes = tab[1,2],#
+               grp2no = tab[1,1],#
+               es.type = 'or')#
+  chi<- chisq.test(tab)#
+  return(list(tab = tab, or = or, chi = chi))#
+}#
+#
+ctab.all.secretome<- ctab.all('secretome')#
+ctab.all.biofilm<- ctab.all('biofilm')#
+ctab.all.sid<- ctab.all('siderophores')  # marginally #
+ctab.all.qs<- ctab.all('quorum_sensing')#
+ctab.all.ab<- ctab.all('antibiotic_degradation') # approx may be incorrect # ns#
+ctab.all.ssyst<- ctab.all('secretion_system')    # approx may be incorrect#
+ctab.all.any<- ctab.all('is_coop') #
+# 2 - ACCOUNTING FOR PHYLOGENY ----#
+# 2.1 - CONTINGENCY TABLES ----#
+#
+# WORKS WITH ENVIRONMENT DATAFRAME 'd.annot2'#
+#
+# Code wrappers:#
+# get_conttable:#
+#   makes a contingency table for a given trait for a given species#
+# get_effects:  #
+#   run metabin() on each 2x2 table#
+#   extarcts individual species effects, SE and CI --> then used in PMM#
+#   also runs a meta-analysis, although not phylogenetic#
+# NOTE: I use basic 'MH' method. Using  GLMM method gives different results for the meta-analysis but the individual effects exacted are the same#
+get_conttable<- function(focal_trait = ''){#
+  d.annot2[,c('species', focal_trait, 'is_vf')] %>%#
+    rename(renamed_focal_trait = 2) %>%#
+    mutate(treatment_outcome = paste(renamed_focal_trait, is_vf, sep = '_')) %>%#
+    select(species, treatment_outcome) %>%#
+    group_by(species, treatment_outcome) %>%#
+    table() %>%#
+    as.data.frame() %>%#
+    spread(treatment_outcome, Freq) %>%#
+    rename(coop0_vf0 = `0_0`,#
+           coop0_vf1 = `0_1`,#
+           coop1_vf0 = `1_0`,#
+           coop1_vf1 = `1_1`)#
+}#
+get_effects<- function(ctab=''){#
+  m<- metabin(data = ctab,#
+              event.e = coop1_vf1,#
+              n.e = coop1_vf1+coop1_vf0,#
+              event.c = coop0_vf1,#
+              n.c = coop0_vf1+coop0_vf0,#
+              sm = "or",#
+              incr = 0.5, MH.exact = FALSE,#
+              method = 'MH', #
+              allstudies = FALSE)#
+  ctab$logOR = m$TE#
+  ctab$se_logOR = m$seTE#
+  ctab$ci_l = m$lower#
+  ctab$ci_u = m$upper#
+  ctab$z = m$zval#
+  ctab$pval = m$pval#
+  return(list(df = ctab, meta.out = m))#
+}
+# Make contingency tables#
+ctab.iscoop<- get_conttable(focal_trait = 'is_coop')#
+ctab.secretome<- get_conttable(focal_trait = 'secretome')#
+ctab.ab<- get_conttable(focal_trait = 'antibiotic_degradation')#
+ctab.qs<- get_conttable(focal_trait = 'quorum_sensing')#
+ctab.sid<- get_conttable(focal_trait = 'siderophores')#
+ctab.ssyst<- get_conttable(focal_trait = 'secretion_system')#
+ctab.biofilm<- get_conttable(focal_trait = 'biofilm')#
+#
+library(meta)#
+#
+# Run metabin to extract effects#
+effects.iscoop<- get_effects(ctab.iscoop)#
+effects.secretome<- get_effects(ctab.secretome)#
+effects.ab<- get_effects(ctab.ab)#
+effects.qs<- get_effects(ctab.qs)#
+effects.sid<- get_effects(ctab.sid)#
+effects.ssyst<- get_effects(ctab.ssyst)#
+effects.biofilm<- get_effects(ctab.biofilm)#
+# ASSEMBLE ALL OUTPUT#
+df.all<- rbind(#
+  cbind(effects.iscoop$df,cooperative_trait = 'is_coop'),#
+  cbind(effects.secretome$df,cooperative_trait = 'secretome'),#
+  cbind(effects.ab$df,cooperative_trait = 'ab'),#
+  cbind(effects.qs$df,cooperative_trait = 'qs'),#
+  cbind(effects.sid$df,cooperative_trait = 'sid'),#
+  cbind(effects.ssyst$df,cooperative_trait = 'ssyst'),#
+  cbind(effects.biofilm$df,cooperative_trait = 'biofilm'))#
+df.all$species.ide = df.all$species#
+unique(df.all$species)
+library(MCMCglmm)#
+library(ape)#
+#
+midas.tree<- read.tree('./data/5_phylogeny_files/midas_tree_renamed.newick')
 div = 2#
 nitt = 10500000/div#
 burnin = 500000/div#
 thin = ceiling(5000/div)#
 nitt#
-(nitt-burnin)/thin
-# REPLICATE LEGGET ----#
-m3.legget <- MCMCglmm(#
-  log_cfr_plus1  ~ -1 + infection_route + generation_time_h,#
-  random = ~species_id,#
-  ginverse = list(species_id= Ainv), #
-  data = d.cfr,#
-  prior = prior,#
-  family = c("gaussian"),#
-  start = list(QUASI = FALSE), #
-  DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,verbose = FALSE)#
+(nitt-burnin)/thin#
+a <- 1000#
+prior.a <- list(R = list(V = diag(1), nu = 0.002), # residual variance = non-phylo variance#
+                G = list(G1 = list(V = diag(1), nu = 1, alpha.mu = 0, alpha.V = diag(1)*a),  # phylogeny#
+                         G2 = list(V = diag(1), nu = 1, alpha.mu = 0, alpha.V = diag(1)*a) # measurement error, estimate it rather than fix it to 1#
+                         ))
+run_meta<- function(df = '', focal_trait, prior = ''){#
+  df.tmp = df[df$cooperative_trait %in% focal_trait,]#
+  phylogeny<- drop.tip(midas.tree, midas.tree$tip.label[which(!midas.tree$tip.label %in% df.tmp$species)])#
+  phylogeny<- chronopl(phylogeny, lambda = 0)#
+  phylogeny<-makeNodeLabel(phylogeny)#
+  Ainv<-inverseA(phylogeny, scale=FALSE)$Ainv#
+  randomtest <- MCMCglmm(logOR ~ 1,#
+                         random = ~species + idh(se_logOR):units,   # non-phylo species effect here is residual because one observation per species, and that's also equivalent to "study effect" in a usual meta-analysis#
+                         #random = ~species + se_logOR,             # non-phylo species effect here is residual because one observation per species, and that's also equivalent to "study effect" in a usual meta-analysis#
+                         ginverse = list(species=Ainv),#
+                         family = 'gaussian',#
+                         prior = prior,#
+                         data = df.tmp,#
+                         start = list(QUASI = FALSE),#
+                         verbose = FALSE,#
+                         nitt=nitt, thin=thin, burnin=burnin)#
+  return(randomtest)#
+}
+# Run meta-analysis on each cooperation category#
+meta.a.secretome<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'secretome', prior = prior.a)#
+meta.a.biofilm<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'biofilm', prior = prior.a)#
+meta.a.sid<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'sid', prior = prior.a)#
+meta.a.ab<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'ab', prior = prior.a)#
+meta.a.qs<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'qs', prior = prior.a)#
+meta.a.ssyst<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'ssyst', prior = prior.a)#
 #
-summary(m3.legget)#
-# as reported in Leggett's, Skin & Inhalation have significantly greater CFR#
-# their lower CI bound is higher than upper bound of CI of Ingestion#
-# However we do not recover result that generation time hase an effect#
-# However model strategy is different, their modelled a multivariate response#
-# and I think they transformed data for make up numbers corresponding to the %, because they say they used a binomial response model#
-# Anyway, main effect they report is the strong effect of transmission route#
-# Will include this in my model#
-# UNIVARIATE ----#
-#
-# code wrapper for univariate models with transmission route and growth rate included#
-m3 <-function(df, focal_trait){#
-  d.tmp<- df#
-  colnames(d.tmp)[which(colnames(d.tmp) == focal_trait)]<- 'focal_trait'#
-#
-  m<- MCMCglmm(#
-  log_cfr_plus1  ~ -1 + infection_route + generation_time_h + nb_cds + focal_trait,#
-  random = ~species_id,#
-  ginverse = list(species_id= Ainv), #
-  data = d.tmp,#
-  prior = prior,#
-  family = c("gaussian"),#
-  start = list(QUASI = FALSE), #
-  DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,#
-  verbose = FALSE)#
-  return(m)#
-}#
-m3.bio<- m3(df = d.cfr, focal_trait = 'biofilm')#
-m3.qs<- m3(df = d.cfr, focal_trait = 'quorum_sensing')#
-m3.ab<- m3(df = d.cfr, focal_trait = 'antibiotic_degradation')#
-m3.sid<- m3(df = d.cfr, focal_trait = 'siderophores')#
-m3.ssy<- m3(df = d.cfr, focal_trait = 'secretion_system')#
-m3.sec<- m3(df = d.cfr, focal_trait = 'secretome')#
-m3.vf<- m3(df = d.cfr, focal_trait = 'is_victor_vf')#
-# DIC clearly better when including the transmission route, down to ~170#
-# while DIC ~190 for all models when transmission route is not included#
-# no significance for any of the traits#
-summary(m3.bio) # .#
-summary(m3.qs)#
-summary(m3.ab)#
-summary(m3.sid)#
-summary(m3.ssy)#
-summary(m3.sec)#
-summary(m3.vf)#
-# MULTIVARIATE MODEL ----#
-#
-# z-transform predictors#
-z.transform<- function(x){(x - mean(x))/sd(x)}#
-#
-d.cfr$z_nb_cds<- z.transform(d.cfr$nb_cds)#
-d.cfr$z_biofilm<- z.transform(d.cfr$biofilm)#
-d.cfr$z_quorum_sensing<- z.transform(d.cfr$quorum_sensing)#
-d.cfr$z_antibiotic_degradation<- z.transform(d.cfr$antibiotic_degradation)#
-d.cfr$z_secretion_system<- z.transform(d.cfr$secretion_system)#
-d.cfr$z_siderophores<- z.transform(d.cfr$siderophores)#
-d.cfr$z_secretome<- z.transform(d.cfr$secretome)#
-d.cfr$z_is_victor_vf<- z.transform(d.cfr$is_victor_vf)#
-m3.multi.with_vf<- MCMCglmm(#
-  log_cfr_plus1  ~ -1 + infection_route + generation_time_h + z_nb_cds + z_biofilm + z_quorum_sensing + z_antibiotic_degradation + z_secretion_system + z_siderophores + z_secretome + z_is_victor_vf,#
-  random = ~species_id,#
-  ginverse = list(species_id= Ainv), #
-  data = d.cfr,#
-  prior = prior,#
-  family = c("gaussian"),#
-  start = list(QUASI = FALSE), #
-  DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,#
-  verbose = FALSE)#
-#
-summary(m3.multi.with_vf)#
-plot(m3.multi.with_vf)#
+# Run meta-analysis on grouped categories under a single 'cooperative' category#
+meta.a.coop<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'is_coop', prior = prior.a)#
+# Check how many datapoint there were for in each model#
+# (if a species has two entries of the 2x2 table VF/COOP that are equal to zero, the odds ratio cannot be computed)#
+df = df.all[!is.na(df.all$logOR),]#
+nrow(df[df$cooperative_trait %in% 'is_coop',])#
+nrow(df[df$cooperative_trait %in% 'secretome',])#
+nrow(df[df$cooperative_trait %in% 'biofilm',])#
+nrow(df[df$cooperative_trait %in% 'sid',])#
+nrow(df[df$cooperative_trait %in% 'ab',])#
+nrow(df[df$cooperative_trait %in% 'qs',])#
+nrow(df[df$cooperative_trait %in% 'ssyst',])#
 # SAVE ----#
 #
-#save.image("./output/3_model_output/CompAnalysis_cfr_CHAIN1.RData") #(former cfr_2604.RData)#
-#save.image("./output/3_model_output/CompAnalysis_cfr_CHAIN2.RData")#
-save.image("./output/3_model_output/CompAnalysis_cfr_CHAIN3.RData")
+# We run the analysis chains to then use Gelman-Rubin test to assess convergence#
+#save.image("./output/3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN1.RData")#
+#save.image("./output/3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN2.RData")#
+save.image("./output/3_model_output/CompAnalysis_VirulenceFactors_d118_CHAIN3.RData")

@@ -1453,6 +1453,8 @@ dgl<- dgl %>%
   select(Analysis, Model, Structure, Effect, `Point estimate`, `Upper CI95%`)
 
 
+write.table(dgl, './output/4_summary_tables/TABLE_s4.hm1.csv', sep = '\t', col.names = TRUE,quote = FALSE,  row.names = FALSE)
+
   
 tab.s4<- kable(dgl, "latex",longtable = T, booktabs = T,#align=c(rep('l',times=6)),
                caption = 'Gelman rubin tests of convergence, summaries for all models. Gelman rubin tests were run on three independent chains for each model.') %>%
