@@ -5,8 +5,8 @@
  
  Mostly range of files used in genomes processing pipeline and cooperative traits annotations.
  
-**0_species_info_files**: collated list of gram stains and list of social GO used to perform cooperative GO annotation. Methods to establish social GO comes from Simonet & McNally 2021 (PNAS)
-**1_patric**: fasta, features and virulence factor tables downloaded from PATRIC. 1.2_genomes_human_disease are list of representative genomes listed by PATRIC under pathogen when filtering for human hosts
+**0_species_info_files**: collated list of gram stains and list of social GO used to perform cooperative GO annotation. Methods to establish social GO comes from Simonet & McNally 2021 (PNAS)\\
+**1_patric**: fasta, features and virulence factor tables downloaded from PATRIC. 1.2_genomes_human_disease are list of representative genomes listed by PATRIC under pathogen when filtering for human hosts\\
 **2_midas_files**: files from MIDAS database, used in pipeline
 **3_genomes_processing**: output of genomes processing with PANNZER (GO annotation) and PSORTb (secretome annotation)
 **4_data_cfr_analysis**: self-contained PATRIC + PANNZEER and PSORTB output for the CFR dataset
