@@ -21,7 +21,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
-#local_project_dir=PATH/TO/CLONE/REPO # '/Users/s1687811/Documents/PhD/Research/CooperativePathogenicityVirulence/'
+#local_project_dir=PATH/TO/CLONE/REPO # local_project_dir='/Users/s1687811/Documents/PhD/Research/CooperativePathogenicityVirulence/'
 
 setwd(local_project_dir)
 setwd('./CooperativePathogenicityVirulence_repo/')
@@ -51,7 +51,8 @@ d.cfr<- rename(d.cfr,
 # Also confirms the data I have scrapped for infective dose is correct
  ggplot(d.cfr, aes(x = log(infective_dose), y = case_fatality_rate, col = infection_route))+
    geom_point()+
-   scale_color_manual(values = c('lightgrey', 'darkgrey', 'black'))
+   scale_color_manual(values = c('lightgrey', 'darkgrey', 'black'))+
+   theme_bw()
 
 
  
@@ -76,8 +77,14 @@ d.cfr$log_cfr_plus1<- log(d.cfr$case_fatality_rate + 1)
 ggplot(d.cfr, aes(x = infection_route, y = log_cfr_plus1))+
   geom_boxplot()
 
-ggplot(d.cfr, aes(x = infection_route, y = log_cfr_plus1, fill = gram_profile))+
+
+ggplot(d.cfr, aes(x = infection_route, y = generation_time_h))+
   geom_boxplot()
+
+
+ggplot(d.cfr, aes(x = secretome, y = generation_time_h, col = infection_route))+
+  geom_point()
+
 
 
 # PRIOR AND RUN SPECS
