@@ -109,7 +109,8 @@ m3.legget <- MCMCglmm(
   prior = prior,
   family = c("gaussian"),
   start = list(QUASI = FALSE), 
-  DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin)
+  DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,
+  verbose = FALSE)
 
 summary(m3.legget)
 
@@ -121,7 +122,6 @@ summary(m3.legget)
 # and I think they transformed data for make up numbers corresponding to the %, because they say they used a binomial response model
 # Anyway, main effect they report is the strong effect of transmission route
 # Will include this in my model
-
 
 
 # UNIVARIATE ----
@@ -141,12 +141,11 @@ m3 <-function(df, focal_trait){
   family = c("gaussian"),
   start = list(QUASI = FALSE), 
   DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,
-  verbose = FALSE)
+  verbose = TRUE)
   
   return(m)
   
 }
-
 
 m3.bio<- m3(df = d.cfr, focal_trait = 'biofilm')
 m3.qs<- m3(df = d.cfr, focal_trait = 'quorum_sensing')
@@ -167,6 +166,47 @@ summary(m3.sid)
 summary(m3.ssy)
 summary(m3.sec)
 summary(m3.vf)
+
+
+# Checking whether growth rate might not be a confounding factor here, as the number of cooperative genes might affect growth rate
+
+m3.noGrowth <-function(df, focal_trait){
+  
+  d.tmp<- df
+  colnames(d.tmp)[which(colnames(d.tmp) == focal_trait)]<- 'focal_trait'
+  
+  m<- MCMCglmm(
+    log_cfr_plus1  ~ -1 + infection_route + nb_cds + focal_trait,
+    random = ~species_id,
+    ginverse = list(species_id= Ainv), 
+    data = d.tmp,
+    prior = prior,
+    family = c("gaussian"),
+    start = list(QUASI = FALSE), 
+    DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,
+    verbose = FALSE)
+  
+  return(m)
+  
+}
+
+m3.bio.noGrowth<- m3.noGrowth(df = d.cfr, focal_trait = 'biofilm')
+m3.qs.noGrowth<- m3.noGrowth(df = d.cfr, focal_trait = 'quorum_sensing')
+m3.ab.noGrowth<- m3.noGrowth(df = d.cfr, focal_trait = 'antibiotic_degradation')
+m3.sid.noGrowth<- m3.noGrowth(df = d.cfr, focal_trait = 'siderophores')
+m3.ssy.noGrowth<- m3.noGrowth(df = d.cfr, focal_trait = 'secretion_system')
+m3.sec.noGrowth<- m3.noGrowth(df = d.cfr, focal_trait = 'secretome')
+m3.vf.noGrowth<- m3.noGrowth(df = d.cfr, focal_trait = 'is_victor_vf')
+
+summary(m3.bio.noGrowth)
+summary(m3.qs.noGrowth)
+summary(m3.ab.noGrowth)
+summary(m3.sid.noGrowth)
+summary(m3.ssy.noGrowth)
+summary(m3.sec.noGrowth)
+summary(m3.vf.noGrowth)
+
+# --> No difference
 
 
 # MULTIVARIATE MODEL ----
@@ -199,12 +239,28 @@ summary(m3.multi.with_vf)
 plot(m3.multi.with_vf)
 
 
+# Checking whether growth rate might not be a confounding factor here, as the number of cooperative genes might affect growth rate
+m3.multi.with_vf.NOgrowthRate<- MCMCglmm(
+  log_cfr_plus1  ~ -1 + infection_route + z_nb_cds + z_biofilm + z_quorum_sensing + z_antibiotic_degradation + z_secretion_system + z_siderophores + z_secretome + z_is_victor_vf,
+  random = ~species_id,
+  ginverse = list(species_id= Ainv), 
+  data = d.cfr,
+  prior = prior,
+  family = c("gaussian"),
+  start = list(QUASI = FALSE), 
+  DIC = TRUE, nitt = nitt, thin = thin, burnin = burnin,
+  verbose = FALSE)
+
+
+summary(m3.multi.with_vf.NOgrowthRate)
+
 
 # SAVE ----
 
-#save.image("./output/3_model_output/CompAnalysis_cfr_CHAIN1.RData") #(former cfr_2604.RData)
+#save.image("./output/3_model_output/CompAnalysis_cfr_CHAIN1.RData")
 #save.image("./output/3_model_output/CompAnalysis_cfr_CHAIN2.RData")
 #save.image("./output/3_model_output/CompAnalysis_cfr_CHAIN3.RData")
+
 
 # GELMAN-RUBIN tests ----
 

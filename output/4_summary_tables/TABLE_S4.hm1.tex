@@ -1,145 +1,110 @@
+\begin{table}
 
-\begin{longtable}[t]{llllll}
-\caption{\label{tab:}Gelman rubin tests of convergence, summaries for all models. Gelman rubin tests were run on three independent chains for each model.}\\
+\caption{\label{tab:}Model summaries of virulence comparative analyses (case fatality rate). This includes: one model replicating Leggett's et al (2017) main results (non-cooperative traits), 6 univariate models with each cooperative traits as predictor, one univariate model with number of virulence factors as predictor, and one multivariate model with all predictors included)}
+\centering
+\begin{tabular}[t]{llllllll}
 \toprule
-Analysis & Model & Structure & Effect & Point estimate & Upper CI95\%\\
+Model & Structure & Effect & Posterior
+ mean & CI95\% lower & CI95\% upper & Effective
+ sampling & pMCMC\\
 \midrule
-\endfirsthead
-\caption[]{Gelman rubin tests of convergence, summaries for all models. Gelman rubin tests were run on three independent chains for each model. \textit{(continued)}}\\
-\toprule
-Analysis & Model & Structure & Effect & Point estimate & Upper CI95\%\\
-\midrule
-\endhead
-
-\endfoot
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Non-cooperative traits}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & 0.816 & 0.102 & 1.532 & 2000 & 0.041\\
+\hspace{1em} &  & Infection route: Inhalation & 3.122 & 2.104 & 4.096 & 1875 & 5.00e-04\\
+\hspace{1em} &  & Infection route: Skin & 2.717 & 1.700 & 3.606 & 2000 & 1.00e-03\\
+\hspace{1em} &  & Generation time (h) & -0.036 & -0.104 & 0.032 & 2043 & 0.304\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.347 & 0.000 & 1.392 & 2000 & \\
+\hspace{1em} &  & Residual & 1.540 & 0.790 & 2.397 & 1890 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Secretome}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & -0.049 & -1.307 & 1.266 & 2000 & 0.971\\
+\hspace{1em} &  & Infection route: Inhalation & 2.182 & 0.867 & 3.772 & 2000 & 7.00e-03\\
+\hspace{1em} &  & Infection route: Skin & 1.948 & 0.554 & 3.195 & 2000 & 6.00e-03\\
+\hspace{1em} &  & Generation time (h) & -0.022 & -0.088 & 0.050 & 2133 & 0.531\\
+\hspace{1em} &  & Proteome size & 0.000 & -0.000 & 0.001 & 2000 & 0.069\\
+\hspace{1em} &  & Focal trait & -0.015 & -0.046 & 0.017 & 2000 & 0.302\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.444 & 0.000 & 1.743 & 2000 & \\
+\hspace{1em} &  & Residual & 1.429 & 0.656 & 2.220 & 2000 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Biofilm}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & -0.080 & -1.495 & 1.245 & 2275 & 0.924\\
+\hspace{1em} &  & Infection route: Inhalation & 2.316 & 0.872 & 3.798 & 2160 & 3.00e-03\\
+\hspace{1em} &  & Infection route: Skin & 1.983 & 0.633 & 3.419 & 2175 & 0.012\\
+\hspace{1em} &  & Generation time (h) & -0.019 & -0.090 & 0.053 & 2000 & 0.583\\
+\hspace{1em} &  & Proteome size & 0.000 & -0.000 & 0.001 & 2145 & 0.194\\
+\hspace{1em} &  & Focal trait & 0.050 & -0.305 & 0.378 & 2000 & 0.748\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.481 & 0.000 & 1.717 & 2000 & \\
+\hspace{1em} &  & Residual & 1.457 & 0.680 & 2.305 & 1992 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Siderophores}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & 0.226 & -1.233 & 1.517 & 2000 & 0.712\\
+\hspace{1em} &  & Infection route: Inhalation & 2.592 & 1.295 & 4.197 & 2000 & 2.00e-03\\
+\hspace{1em} &  & Infection route: Skin & 2.335 & 0.965 & 3.810 & 2000 & 4.00e-03\\
+\hspace{1em} &  & Generation time (h) & -0.033 & -0.101 & 0.042 & 2000 & 0.373\\
+\hspace{1em} &  & Proteome size & 0.000 & -0.000 & 0.000 & 2000 & 0.986\\
+\hspace{1em} &  & Focal trait & 0.010 & -0.008 & 0.029 & 2000 & 0.255\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.397 & 0.000 & 1.504 & 2000 & \\
+\hspace{1em} &  & Residual & 1.452 & 0.787 & 2.289 & 1781 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Antibiotic degradation}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & 0.021 & -1.350 & 1.285 & 2168 & 0.965\\
+\hspace{1em} &  & Infection route: Inhalation & 2.310 & 0.822 & 3.659 & 2245 & 4.00e-03\\
+\hspace{1em} &  & Infection route: Skin & 1.985 & 0.729 & 3.334 & 1970 & 5.00e-03\\
+\hspace{1em} &  & Generation time (h) & -0.024 & -0.085 & 0.052 & 2000 & 0.463\\
+\hspace{1em} &  & Proteome size & 0.000 & -0.000 & 0.001 & 2199 & 0.067\\
+\hspace{1em} &  & Focal trait & -0.046 & -0.138 & 0.058 & 1849 & 0.352\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.359 & 0.000 & 1.442 & 1758 & \\
+\hspace{1em} &  & Residual & 1.486 & 0.729 & 2.250 & 2000 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Quorum sensing}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & -0.075 & -1.344 & 1.265 & 2000 & 0.931\\
+\hspace{1em} &  & Infection route: Inhalation & 2.240 & 0.695 & 3.737 & 1680 & 5.00e-03\\
+\hspace{1em} &  & Infection route: Skin & 1.992 & 0.621 & 3.302 & 2000 & 8.00e-03\\
+\hspace{1em} &  & Generation time (h) & -0.023 & -0.094 & 0.051 & 2140 & 0.518\\
+\hspace{1em} &  & Proteome size & 0.000 & -0.000 & 0.001 & 2000 & 0.118\\
+\hspace{1em} &  & Focal trait & -0.020 & -0.092 & 0.060 & 2000 & 0.613\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.452 & 0.000 & 1.643 & 2000 & \\
+\hspace{1em} &  & Residual & 1.478 & 0.722 & 2.333 & 2000 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Secretion systems}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & 0.059 & -1.269 & 1.456 & 2000 & 0.886\\
+\hspace{1em} &  & Infection route: Inhalation & 2.422 & 0.929 & 3.841 & 2000 & 3.00e-03\\
+\hspace{1em} &  & Infection route: Skin & 2.058 & 0.821 & 3.602 & 2000 & 2.00e-03\\
+\hspace{1em} &  & Generation time (h) & -0.018 & -0.084 & 0.058 & 2000 & 0.602\\
+\hspace{1em} &  & Proteome size & 0.000 & -0.000 & 0.000 & 2000 & 0.330\\
+\hspace{1em} &  & Focal trait & 0.014 & -0.025 & 0.058 & 2147 & 0.480\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.473 & 0.000 & 1.742 & 2259 & \\
+\hspace{1em} &  & Residual & 1.442 & 0.695 & 2.210 & 2000 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Virulence factors}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & -0.153 & -1.680 & 1.143 & 2000 & 0.837\\
+\hspace{1em} &  & Infection route: Inhalation & 2.310 & 0.925 & 3.981 & 2154 & 4.00e-03\\
+\hspace{1em} &  & Infection route: Skin & 1.987 & 0.630 & 3.265 & 2156 & 7.00e-03\\
+\hspace{1em} &  & Generation time (h) & -0.020 & -0.087 & 0.058 & 2000 & 0.566\\
+\hspace{1em} &  & Proteome size & 0.000 & -0.000 & 0.000 & 2000 & 0.172\\
+\hspace{1em} &  & Focal trait & 0.001 & -0.004 & 0.006 & 2000 & 0.654\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.592 & 0.000 & 2.032 & 1862 & \\
+\hspace{1em} &  & Residual & 1.383 & 0.610 & 2.176 & 2000 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Multivariate model}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & 0.645 & -0.230 & 1.507 & 2134 & 0.159\\
+\hspace{1em} &  & Infection route: Inhalation & 3.163 & 1.919 & 4.373 & 2000 & 5.00e-04\\
+\hspace{1em} &  & Infection route: Skin & 2.925 & 1.876 & 4.087 & 2000 & 5.00e-04\\
+\hspace{1em} &  & Generation time (h) & -0.028 & -0.103 & 0.044 & 2000 & 0.443\\
+\hspace{1em} &  & z(Proteome size) & -0.041 & -1.054 & 1.027 & 2131 & 0.935\\
+\hspace{1em} &  & z(Biofilm) & -0.551 & -1.507 & 0.535 & 2000 & 0.279\\
+\hspace{1em} &  & z(Quorum-sensing) & 0.180 & -0.421 & 0.782 & 2000 & 0.561\\
+\hspace{1em} &  & z(Antib. degr.) & -0.003 & -0.785 & 0.738 & 2000 & 0.984\\
+\hspace{1em} &  & z(Secretion systems) & 0.271 & -0.229 & 0.842 & 2000 & 0.307\\
+\hspace{1em} &  & z(Siderophores) & 0.022 & -0.793 & 0.862 & 2000 & 0.947\\
+\hspace{1em} &  & z(Secretome) & 0.382 & -0.488 & 1.138 & 2000 & 0.352\\
+\hspace{1em} &  & z(Virulence Factors) & 0.393 & -0.311 & 1.092 & 2000 & 0.261\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.740 & 0.000 & 2.476 & 2000 & \\
+\hspace{1em} &  & Residual & 1.424 & 0.607 & 2.357 & 2000 & \\
 \bottomrule
-\endlastfoot
-\addlinespace[0.3em]
-\multicolumn{6}{l}{\textbf{Virulence factors (phylog. meta-analysis)}}\\
-\hspace{1em} & Secretome & Fixed effects & Intercept & 1.000 & 1.000\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.000 & \vphantom{5} 1.001\\
-\hspace{1em} & Biofilm & Fixed effects & Intercept & 1.000 & \vphantom{1} 1.000\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.000 & \vphantom{5} 1.000\\
-\hspace{1em} & Siderophores & Fixed effects & Intercept & 1.000 & 1.003\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.000 & \vphantom{4} 1.001\\
-\hspace{1em} & Antib. degr & Fixed effects & Intercept & 1.001 & 1.005\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.000 & \vphantom{3} 1.001\\
-\hspace{1em} & Quorum-sensing & Fixed effects & Intercept & 1.000 & \vphantom{1} 1.000\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.000 & \vphantom{4} 1.000\\
-\hspace{1em} & Secretion systems & Fixed effects & Intercept & 1.000 & 1.001\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.000 & \vphantom{3} 1.000\\
-\addlinespace[0.3em]
-\multicolumn{6}{l}{\textbf{Pathogenicity (Binomial response phylog. comparative analysis)}}\\
-\hspace{1em} & Secretome & Fixed effects & Intercept & 1.001 & 1.001\\
-\hspace{1em} &  &  & Proteome size & 1.000 & \vphantom{3} 1.001\\
-\hspace{1em} &  &  & Focal trait & 1.001 & 1.003\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.001 & 1.003\\
-\hspace{1em} & Biofilm & Fixed effects & Intercept & 1.000 & 1.000\\
-\hspace{1em} &  &  & Proteome size & 1.000 & \vphantom{3} 1.000\\
-\hspace{1em} &  &  & Focal trait & 1.000 & \vphantom{3} 1.000\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.001 & \vphantom{2} 1.002\\
-\hspace{1em} & Siderophores & Fixed effects & Intercept & 1.000 & 1.001\\
-\hspace{1em} &  &  & Proteome size & 1.000 & \vphantom{2} 1.001\\
-\hspace{1em} &  &  & Focal trait & 1.001 & 1.001\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.000 & \vphantom{2} 1.001\\
-\hspace{1em} & Antib. degr & Fixed effects & Intercept & 1.000 & 1.001\\
-\hspace{1em} &  &  & Proteome size & 1.000 & \vphantom{1} 1.001\\
-\hspace{1em} &  &  & Focal trait & 1.000 & \vphantom{2} 1.001\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.001 & \vphantom{1} 1.002\\
-\hspace{1em} & Quorum-sensing & Fixed effects & Intercept & 1.000 & 1.000\\
-\hspace{1em} &  &  & Proteome size & 1.001 & 1.003\\
-\hspace{1em} &  &  & Focal trait & 1.002 & \vphantom{1} 1.009\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.002 & \vphantom{1} 1.004\\
-\hspace{1em} & Secretion systems & Fixed effects & Intercept & 1.000 & 1.000\\
-\hspace{1em} &  &  & Proteome size & 1.000 & 1.002\\
-\hspace{1em} &  &  & Focal trait & 1.001 & 1.002\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.002 & 1.006\\
-\hspace{1em} & Virulence factors & Fixed effects & Intercept & 1.000 & 1.000\\
-\hspace{1em} &  &  & Proteome size & 1.002 & 1.003\\
-\hspace{1em} &  &  & Focal trait & 1.004 & 1.016\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.001 & 1.004\\
-\hspace{1em} & Multivariate model & Fixed effects & Intercept & 1.000 & 1.003\\
-\hspace{1em} &  &  & z(Proteome size) & 1.000 & \vphantom{1} 1.000\\
-\hspace{1em} &  &  & z(Biofilm) & 1.000 & 1.000\\
-\hspace{1em} &  &  & z(Antib. degr.) & 1.000 & 1.000\\
-\hspace{1em} &  &  & z(Quorum-sensing) & 1.000 & \vphantom{1} 1.000\\
-\hspace{1em} &  &  & z(Secretion systems) & 1.000 & 1.000\\
-\hspace{1em} &  &  & z(Siderophores) & 1.000 & 1.001\\
-\hspace{1em} &  &  & z(Secretome) & 1.000 & 1.000\\
-\hspace{1em} &  &  & z(Virulence Factors) & 1.004 & 1.017\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.000 & \vphantom{1} 1.001\\
-\addlinespace[0.3em]
-\multicolumn{6}{l}{\textbf{Virulence (Gaussian response phylog. comparative analysis)}}\\
-\hspace{1em} & Biofilm & Fixed effects & Infection route: Ingestion & 1.000 & 1.000\\
-\hspace{1em} &  &  & Infection route: Inhalation & 1.000 & \vphantom{3} 1.000\\
-\hspace{1em} &  &  & Infection route: Skin & 1.000 & \vphantom{4} 1.000\\
-\hspace{1em} &  &  & Generation time (h) & 1.000 & \vphantom{2} 1.000\\
-\hspace{1em} &  &  & Proteome size & 1.003 & 1.011\\
-\hspace{1em} &  &  & Focal trait & 1.002 & 1.009\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.000 & \vphantom{2} 1.000\\
-\hspace{1em} &  &  & Residual & 1.000 & \vphantom{1} 1.000\\
-\hspace{1em} & Quorum-sensing & Fixed effects & Infection route: Ingestion & 1.000 & 1.000\\
-\hspace{1em} &  &  & Infection route: Inhalation & 1.000 & \vphantom{2} 1.000\\
-\hspace{1em} &  &  & Infection route: Skin & 1.000 & \vphantom{3} 1.000\\
-\hspace{1em} &  &  & Generation time (h) & 1.000 & \vphantom{1} 1.001\\
-\hspace{1em} &  &  & Proteome size & 1.000 & \vphantom{2} 1.000\\
-\hspace{1em} &  &  & Focal trait & 1.000 & \vphantom{2} 1.000\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.000 & 1.001\\
-\hspace{1em} &  &  & Residual & 1.000 & \vphantom{1} 1.001\\
-\hspace{1em} & Antib. degr & Fixed effects & Infection route: Ingestion & 1.000 & 1.000\\
-\hspace{1em} &  &  & Infection route: Inhalation & 1.001 & 1.003\\
-\hspace{1em} &  &  & Infection route: Skin & 1.000 & \vphantom{2} 1.000\\
-\hspace{1em} &  &  & Generation time (h) & 1.001 & \vphantom{1} 1.001\\
-\hspace{1em} &  &  & Proteome size & 1.001 & 1.004\\
-\hspace{1em} &  &  & Focal trait & 1.000 & \vphantom{1} 1.001\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.000 & \vphantom{1} 1.000\\
-\hspace{1em} &  &  & Residual & 1.000 & 1.000\\
-\hspace{1em} & Siderophores & Fixed effects & Infection route: Ingestion & 1.000 & 1.003\\
-\hspace{1em} &  &  & Infection route: Inhalation & 1.002 & 1.007\\
-\hspace{1em} &  &  & Infection route: Skin & 1.000 & \vphantom{1} 1.001\\
-\hspace{1em} &  &  & Generation time (h) & 1.001 & 1.001\\
-\hspace{1em} &  &  & Proteome size & 1.001 & 1.005\\
-\hspace{1em} &  &  & Focal trait & 1.000 & 1.001\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.001 & \vphantom{1} 1.001\\
-\hspace{1em} &  &  & Residual & 1.000 & \vphantom{1} 1.002\\
-\hspace{1em} & Secretion systems & Fixed effects & Infection route: Ingestion & 1.000 & 1.000\\
-\hspace{1em} &  &  & Infection route: Inhalation & 1.000 & 1.002\\
-\hspace{1em} &  &  & Infection route: Skin & 1.000 & \vphantom{1} 1.000\\
-\hspace{1em} &  &  & Generation time (h) & 1.000 & \vphantom{1} 1.000\\
-\hspace{1em} &  &  & Proteome size & 1.000 & \vphantom{1} 1.000\\
-\hspace{1em} &  &  & Focal trait & 1.001 & 1.004\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.002 & 1.004\\
-\hspace{1em} &  &  & Residual & 1.000 & 1.001\\
-\hspace{1em} & Secretome & Fixed effects & Infection route: Ingestion & 1.001 & 1.002\\
-\hspace{1em} &  &  & Infection route: Inhalation & 1.000 & \vphantom{1} 1.000\\
-\hspace{1em} &  &  & Infection route: Skin & 1.000 & 1.000\\
-\hspace{1em} &  &  & Generation time (h) & 1.000 & 1.001\\
-\hspace{1em} &  &  & Proteome size & 1.000 & 1.000\\
-\hspace{1em} &  &  & Focal trait & 1.000 & \vphantom{1} 1.000\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.001 & 1.001\\
-\hspace{1em} &  &  & Residual & 1.000 & 1.003\\
-\hspace{1em} & Virulence factors & Fixed effects & Infection route: Ingestion & 1.000 & 1.000\\
-\hspace{1em} &  &  & Infection route: Inhalation & 1.000 & 1.000\\
-\hspace{1em} &  &  & Infection route: Skin & 1.000 & 1.001\\
-\hspace{1em} &  &  & Generation time (h) & 1.000 & 1.000\\
-\hspace{1em} &  &  & Proteome size & 1.000 & 1.001\\
-\hspace{1em} &  &  & Focal trait & 1.000 & 1.000\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.000 & 1.000\\
-\hspace{1em} &  &  & Residual & 1.002 & 1.007\\
-\hspace{1em} & Multivariate model & Fixed effects & Infection route: Ingestion & 1.003 & 1.008\\
-\hspace{1em} &  &  & Infection route: Inhalation & 1.000 & 1.001\\
-\hspace{1em} &  &  & Infection route: Skin & 1.000 & 1.002\\
-\hspace{1em} &  &  & Generation time (h) & 1.001 & 1.002\\
-\hspace{1em} &  &  & z(Proteome size) & 1.000 & 1.000\\
-\hspace{1em} &  &  & z(Biofilm) & 1.001 & 1.005\\
-\hspace{1em} &  &  & z(Quorum-sensing) & 1.000 & 1.000\\
-\hspace{1em} &  &  & z(Antib. degr.) & 1.000 & 1.002\\
-\hspace{1em} &  &  & z(Secretion systems) & 1.001 & 1.003\\
-\hspace{1em} &  &  & z(Siderophores) & 1.001 & 1.003\\
-\hspace{1em} &  &  & z(Secretome) & 1.001 & 1.003\\
-\hspace{1em} &  &  & z(Virulence Factors) & 1.001 & 1.002\\
-\hspace{1em} &  & (Co)variances & Species, phylogenetic & 1.001 & 1.002\\
-\hspace{1em} &  &  & Residual & 1.000 & 1.002\\*
-\multicolumn{6}{l}{\rule{0pt}{1em}CI95\%: 95\% confidence interval}\\
-\multicolumn{6}{l}{\rule{0pt}{1em}z(): For multivariate model, predictors were z-transformed}\\
-\end{longtable}
+\multicolumn{8}{l}{\rule{0pt}{1em}CI95\%: 95\% credible interval of the posterior distribution}\\
+\multicolumn{8}{l}{\rule{0pt}{1em}pMCMC: taken as twice the posterior probability that the estimate is negative}\\
+\multicolumn{8}{l}{\rule{0pt}{1em}z(): For multivariate model, predictors were z-transformed}\\
+\end{tabular}
+\end{table}

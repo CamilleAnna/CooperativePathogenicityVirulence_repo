@@ -1,0 +1,94 @@
+\begin{table}
+
+\caption{\label{tab:}Summaries of CFR models similar to those described in table S4, but ommiting the growth rate predictor.}
+\centering
+\begin{tabular}[t]{llllllll}
+\toprule
+Model & Structure & Effect & Posterior
+ mean & CI95\% lower & CI95\% upper & Effective
+ sampling & pMCMC\\
+\midrule
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Secretome}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & -0.156 & -1.386 & 1.071 & 2000 & 0.813\\
+\hspace{1em} &  & Infection route: Inhalation & 1.976 & 0.500 & 3.201 & 2000 & 9.00e-03\\
+\hspace{1em} &  & Infection route: Skin & 1.729 & 0.600 & 2.779 & 1827 & 3.00e-03\\
+\hspace{1em} &  & Proteome size & 0.000 & 0.000 & 0.001 & 1653 & 0.039\\
+\hspace{1em} &  & Focal trait & -0.015 & -0.046 & 0.017 & 1904 & 0.307\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.395 & 0.000 & 1.536 & 1784 & \\
+\hspace{1em} &  & Residual & 1.429 & 0.681 & 2.243 & 2000 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Biofilm}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & -0.204 & -1.514 & 0.967 & 2000 & 0.773\\
+\hspace{1em} &  & Infection route: Inhalation & 2.145 & 0.839 & 3.399 & 2000 & 1.00e-03\\
+\hspace{1em} &  & Infection route: Skin & 1.755 & 0.665 & 2.776 & 1789 & 6.00e-03\\
+\hspace{1em} &  & Proteome size & 0.000 & -0.000 & 0.001 & 1987 & 0.137\\
+\hspace{1em} &  & Focal trait & 0.062 & -0.269 & 0.407 & 2000 & 0.721\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.456 & 0.000 & 1.644 & 2330 & \\
+\hspace{1em} &  & Residual & 1.455 & 0.652 & 2.245 & 2000 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Siderophores}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & -0.015 & -1.350 & 1.168 & 1794 & 0.986\\
+\hspace{1em} &  & Infection route: Inhalation & 2.224 & 0.768 & 3.379 & 2000 & 3.00e-03\\
+\hspace{1em} &  & Infection route: Skin & 1.937 & 0.940 & 3.135 & 2000 & 4.00e-03\\
+\hspace{1em} &  & Proteome size & 0.000 & -0.000 & 0.001 & 2000 & 0.685\\
+\hspace{1em} &  & Focal trait & 0.008 & -0.010 & 0.026 & 2321 & 0.393\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.386 & 0.000 & 1.563 & 2000 & \\
+\hspace{1em} &  & Residual & 1.441 & 0.661 & 2.184 & 2000 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Antibiotic degradation}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & -0.093 & -1.317 & 1.021 & 2000 & 0.888\\
+\hspace{1em} &  & Infection route: Inhalation & 2.099 & 0.879 & 3.325 & 2000 & 2.00e-03\\
+\hspace{1em} &  & Infection route: Skin & 1.735 & 0.736 & 2.864 & 2071 & 2.00e-03\\
+\hspace{1em} &  & Proteome size & 0.000 & -0.000 & 0.001 & 2000 & 0.045\\
+\hspace{1em} &  & Focal trait & -0.045 & -0.139 & 0.049 & 2000 & 0.357\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.321 & 0.000 & 1.243 & 2152 & \\
+\hspace{1em} &  & Residual & 1.455 & 0.756 & 2.197 & 1649 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Quorum sensing}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & -0.168 & -1.465 & 1.076 & 2044 & 0.826\\
+\hspace{1em} &  & Infection route: Inhalation & 2.053 & 0.664 & 3.321 & 2000 & 2.00e-03\\
+\hspace{1em} &  & Infection route: Skin & 1.757 & 0.590 & 2.780 & 2450 & 0.010\\
+\hspace{1em} &  & Proteome size & 0.000 & -0.000 & 0.001 & 2000 & 0.085\\
+\hspace{1em} &  & Focal trait & -0.019 & -0.090 & 0.054 & 2000 & 0.615\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.400 & 0.000 & 1.576 & 2000 & \\
+\hspace{1em} &  & Residual & 1.443 & 0.705 & 2.193 & 2170 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Secretion systems}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & -0.032 & -1.374 & 1.122 & 2000 & 0.990\\
+\hspace{1em} &  & Infection route: Inhalation & 2.253 & 0.977 & 3.543 & 2000 & 4.00e-03\\
+\hspace{1em} &  & Infection route: Skin & 1.862 & 0.840 & 2.954 & 2000 & 4.00e-03\\
+\hspace{1em} &  & Proteome size & 0.000 & -0.000 & 0.000 & 2000 & 0.272\\
+\hspace{1em} &  & Focal trait & 0.016 & -0.029 & 0.054 & 2000 & 0.449\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.421 & 0.000 & 1.502 & 2000 & \\
+\hspace{1em} &  & Residual & 1.423 & 0.657 & 2.169 & 1723 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Virulence factors}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & -0.276 & -1.578 & 1.018 & 2000 & 0.694\\
+\hspace{1em} &  & Infection route: Inhalation & 2.117 & 0.894 & 3.430 & 2000 & 1.00e-03\\
+\hspace{1em} &  & Infection route: Skin & 1.789 & 0.693 & 2.838 & 2000 & 1.00e-03\\
+\hspace{1em} &  & Proteome size & 0.000 & -0.000 & 0.000 & 2000 & 0.089\\
+\hspace{1em} &  & Focal trait & 0.001 & -0.004 & 0.006 & 2000 & 0.717\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.542 & 0.000 & 1.818 & 1872 & \\
+\hspace{1em} &  & Residual & 1.399 & 0.597 & 2.212 & 2000 & \\
+\addlinespace[0.3em]
+\multicolumn{8}{l}{\textbf{Multivariate model}}\\
+\hspace{1em} & Fixed effect & Infection route: Ingestion & 0.612 & -0.352 & 1.382 & 1854 & 0.155\\
+\hspace{1em} &  & Infection route: Inhalation & 3.038 & 1.930 & 4.318 & 2000 & 5.00e-04\\
+\hspace{1em} &  & Infection route: Skin & 2.731 & 1.741 & 3.757 & 2000 & 5.00e-04\\
+\hspace{1em} &  & z(Proteome size) & 0.038 & -1.027 & 0.946 & 2000 & 0.936\\
+\hspace{1em} &  & z(Biofilm) & -0.574 & -1.557 & 0.437 & 1934 & 0.236\\
+\hspace{1em} &  & z(Quorum-sensing) & 0.218 & -0.353 & 0.802 & 2000 & 0.462\\
+\hspace{1em} &  & z(Antib. degr.) & 0.009 & -0.734 & 0.765 & 2000 & 0.984\\
+\hspace{1em} &  & z(Secretion systems) & 0.281 & -0.303 & 0.772 & 1835 & 0.311\\
+\hspace{1em} &  & z(Siderophores) & 0.034 & -0.749 & 0.864 & 2000 & 0.941\\
+\hspace{1em} &  & z(Secretome) & 0.316 & -0.460 & 1.047 & 2000 & 0.392\\
+\hspace{1em} &  & z(Virulence Factors) & 0.384 & -0.277 & 1.063 & 1495 & 0.256\\
+\hspace{1em} & (Co)variance & Species, phylogenetic & 0.687 & 0.000 & 2.466 & 2000 & \\
+\hspace{1em} &  & Residual & 1.431 & 0.554 & 2.304 & 1544 & \\
+\bottomrule
+\multicolumn{8}{l}{\rule{0pt}{1em}CI95\%: 95\% credible interval of the posterior distribution}\\
+\multicolumn{8}{l}{\rule{0pt}{1em}pMCMC: taken as twice the posterior probability that the estimate is negative}\\
+\multicolumn{8}{l}{\rule{0pt}{1em}z(): For multivariate model, predictors were z-transformed}\\
+\end{tabular}
+\end{table}

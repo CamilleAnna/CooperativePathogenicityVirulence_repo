@@ -1,29 +1,8 @@
-effect	post.mean	l-95% CI	u-95% CI	eff.samp	pMCMC	model_name
-species	2.19	1.616	2.892	2000	NA	secretome
-se_logOR.units	0.009	8.5e-10	0.036	2000	NA	secretome
-units	0.013	2.1e-04	0.05	2000	NA	secretome
-(Intercept)	1.43	0.606	2.247	2000	5e-04	secretome
-species	2.869	2.011	3.785	2000	NA	biofilm
-se_logOR.units	0.015	2.9e-11	0.056	2000	NA	biofilm
-units	0.019	1.8e-04	0.074	2000	NA	biofilm
-(Intercept)	2.453	1.412	3.401	2000	5e-04	biofilm
-species	4.04	2.528	5.828	2000	NA	siderophores
-se_logOR.units	0.035	1.7e-09	0.122	1875.642	NA	siderophores
-units	0.038	1.6e-04	0.157	2000	NA	siderophores
-(Intercept)	2.326	1.053	3.526	2000	0.001	siderophores
-species	3.034	2.117	3.968	2000	NA	antibiotic degradation
-se_logOR.units	0.009	4.6e-09	0.035	2000	NA	antibiotic degradation
-units	0.013	2.2e-04	0.048	2000	NA	antibiotic degradation
-(Intercept)	2.419	1.326	3.407	2144.716	5e-04	antibiotic degradation
-species	2.565	1.717	3.582	2000	NA	quorum-sensing
-se_logOR.units	0.008	2.5e-10	0.03	2000	NA	quorum-sensing
-units	0.014	2.0e-04	0.055	2000	NA	quorum-sensing
-(Intercept)	3.229	2.22	4.318	2000	5e-04	quorum-sensing
-species	3.781	2.493	5.264	1813.506	NA	secretion systems
-se_logOR.units	0.019	2.5e-10	0.077	1873.317	NA	secretion systems
-units	0.039	1.5e-04	0.152	2000	NA	secretion systems
-(Intercept)	2.647	1.455	3.839	2000	5e-04	secretion systems
-species	2.375	1.715	3.205	2000	NA	cooperation (any)
-se_logOR.units	0.016	4.7e-08	0.066	2000	NA	cooperation (any)
-units	0.02	2.1e-04	0.08	2000	NA	cooperation (any)
-(Intercept)	1.347	0.508	2.187	2155.378	0.003	cooperation (any)
+Trait	(VF,Coop)	(VF,non-Coop)	(non-VF,Coop)	(non-VF,non-Coop)	OR	l-95% CI	u-95% CI	Chisq	df	pvalue
+Secretome	122	4600	4391	358049	2.16	1.8	2.59	71.16	1	3.3e-17
+Biofilm	48	864	4465	361785	4.5	3.36	6.03	119.24	1	9.3e-28
+Siderophore	14	542	4499	362107	2.08	1.22	3.54	6.59	1	0.01
+QS	9	151	4504	362498	4.8	2.45	9.4	21.98	1	2.7e-06
+Antib. degr.	12	522	4501	362127	1.85	1.04	3.28	3.76	1	0.05
+Secr. Syst.	27	448	4486	362201	4.87	3.3	7.18	74.12	1	7.3e-18
+All	229	6859	4284	355790	2.77	2.42	3.17	236.85	1	1.9e-53

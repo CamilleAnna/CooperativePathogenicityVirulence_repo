@@ -19,7 +19,8 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
-#local_project_dir=PATH/TO/CLONE/REPO # '/Users/s1687811/Documents/PhD/Research/CooperativePathogenicityVirulence/'
+#local_project_dir=PATH/TO/CLONE/REPO #
+#local_project_dir='/Users/s1687811/Documents/PhD/Research/CooperativePathogenicityVirulence/'
 
 setwd(local_project_dir)
 setwd('./CooperativePathogenicityVirulence_repo/')
@@ -55,7 +56,6 @@ d.annot<- read.csv('./output/1_processed_tables/2.2_assembled_GENES_annotation.t
                               rep('numeric', 8)))
 
 head(d.annot)
-
 sum(is.na(d.annot$secretome)) # all genes are annotated
 
 d.annot2<- d.annot %>%
@@ -67,6 +67,7 @@ d.annot2<- d.annot %>%
          species = species_id)
 
 head(d.annot2)
+
 
 
 # 1 - QUICK OVERAL CHI-SQUARE ----
@@ -81,7 +82,8 @@ ctab.all<- function(focus_trait){
   tab<- d.annot2 %>% 
     select(focus_trait, is_vf)%>%
     rename(cooperative = 1) %>%
-    group_by(cooperative, is_vf) %>%
+    #group_by(cooperative, is_vf) %>%
+    group_by(is_vf, cooperative) %>%
     table()
   
   
@@ -104,6 +106,19 @@ ctab.all.qs<- ctab.all('quorum_sensing')
 ctab.all.ab<- ctab.all('antibiotic_degradation') # approx may be incorrect # ns
 ctab.all.ssyst<- ctab.all('secretion_system')    # approx may be incorrect
 ctab.all.any<- ctab.all('is_coop') 
+
+
+# to see how this is exactly done: example with biofilms
+#or
+(48/4465)/(864/361785) # 4.05
+#logOR
+log((48/4465)/(864/361785)) # 1.504409
+#SE
+log((48/4465)/(864/361785)) + 1.96*(sqrt((1/48)+(1/4465)+(1/864)+(1/361785))) # 1.79
+# upper and lower CI = exp(log(OR) + 1.96*SE)
+exp(log((48/4465)/(864/361785)) + 1.96*(sqrt((1/48)+(1/4465)+(1/864)+(1/361785)))) # 6.028857
+exp(log((48/4465)/(864/361785)) - 1.96*(sqrt((1/48)+(1/4465)+(1/864)+(1/361785)))) # 3.361075
+
 
 
 # 2 - ACCOUNTING FOR PHYLOGENY ----
@@ -136,17 +151,20 @@ get_conttable<- function(focal_trait = ''){
            coop1_vf0 = `1_0`,
            coop1_vf1 = `1_1`)
 }
+
 get_effects<- function(ctab=''){
   
-  m<- metabin(data = ctab,
+  m<- metabin(data = ctab, 
               event.e = coop1_vf1,
-              n.e = coop1_vf1+coop1_vf0,
-              event.c = coop0_vf1,
-              n.c = coop0_vf1+coop0_vf0,
+              n.e = coop1_vf1+coop0_vf1,
+              event.c = coop1_vf0,
+              n.c = coop1_vf0+coop0_vf0,
               sm = "or",
               incr = 0.5, MH.exact = FALSE,
               method = 'MH', 
               allstudies = FALSE)
+  
+  
   
   ctab$logOR = m$TE
   ctab$se_logOR = m$seTE
@@ -159,7 +177,7 @@ get_effects<- function(ctab=''){
   
 }
 
-# Make contingency tables
+# Make contingency tables with get_conttable(), which are then fed to get_effects() to get each species-level OR and standard error estimates
 ctab.iscoop<- get_conttable(focal_trait = 'is_coop')
 ctab.secretome<- get_conttable(focal_trait = 'secretome')
 ctab.ab<- get_conttable(focal_trait = 'antibiotic_degradation')
@@ -168,9 +186,9 @@ ctab.sid<- get_conttable(focal_trait = 'siderophores')
 ctab.ssyst<- get_conttable(focal_trait = 'secretion_system')
 ctab.biofilm<- get_conttable(focal_trait = 'biofilm')
 
+
 library(meta)
 
-# Run metabin to extract effects
 effects.iscoop<- get_effects(ctab.iscoop)
 effects.secretome<- get_effects(ctab.secretome)
 effects.ab<- get_effects(ctab.ab)
@@ -191,8 +209,17 @@ df.all<- rbind(
   cbind(effects.biofilm$df,cooperative_trait = 'biofilm'))
 
 
-df.all$species.ide = df.all$species
-unique(df.all$species)
+# ~~~~~~~~~~ TMP DELETE? fisher test use output of ctab.all() instead?  ~~~~~~~~~~~
+library(exact2x2)
+example1<-matrix(c(361785, 4465, 864, 48),2,2,dimnames=list(c("Not coop","Coop"),c("not VF","VF")))
+example1
+fisher.test(example1)
+fisher.exact(example1,tsmethod="minlike")
+fisher.exact(example1,tsmethod="central")
+blaker.exact(example1)
+exact2x2(example1, plot = TRUE, alternative = 'greater')
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 # SANITY CHECK ON THE PROCESS USED TO COMPUTE OR AND CI
@@ -200,7 +227,7 @@ t<- df.all[df.all$cooperative_trait == 'sid',] # Try on siderophore
 t2<- t[-which(rowSums(t[,2:5] == 0)>1),]  # filter those with > 1 zero cell
 t2[which(rowSums(t2[,2:5] == 0) > 0), 2:5]<- t2[which(rowSums(t2[,2:5] == 0) > 0), 2:5]+0.5 # add 0.5 to studies with a zero cell
 
-t2$myOR<- (t2$coop1_vf1/t2$coop1_vf0)/(t2$coop0_vf1/t2$coop0_vf0) # compute OR
+t2$myOR<- (t2$coop1_vf1/t2$coop0_vf1)/(t2$coop1_vf0/t2$coop0_vf0) # compute OR
 t2$mylogOR<- log(t2$myOR) # transform OR into log(or)
 t2$mySE<- sqrt((1/t2$coop0_vf0)+ (1/t2$coop0_vf1) + (1/t2$coop1_vf0) + (1/t2$coop1_vf1)) # compute SE
 
@@ -217,7 +244,6 @@ sorted_forest<- function(df, trait){
   df$species<- factor(df$species, df$species[order(df$logOR)])
   
   #df$species<- factor(df$species, df$species[rev(order(df$ci_u - df$ci_l))])
-  
   
   p<- ggplot(df, aes(x = logOR, y = species))+
     #geom_errorbarh(aes(xmin = ci_l, xmax = ci_u))+
@@ -247,7 +273,6 @@ pdf('./output/2_figures/additional_figs/VF_ForestFunnel_VICTOR_dataset118.pdf', 
 grid.arrange(p.sf.iscoop, p.sf.secretome, p.sf.ab, p.sf.qs,
              p.sf.sid, p.sf.ssyst, p.sf.biofilm, ncol = 3)
 
-
 ggplot(df.all, aes(x = logOR, y = 1/se_logOR))+
   geom_point(alpha = 0.5)+
   geom_vline(xintercept = 0, linetype = 'dashed', col = 'darkgrey')+
@@ -258,13 +283,17 @@ dev.off()
 
 # 2.3 - META-ANALYSIS ON ODD RATIO ----
 
+df.all$species.ide = df.all$species
+unique(df.all$species)
+
+
 library(MCMCglmm)
 library(ape)
 
 midas.tree<- read.tree('./data/5_phylogeny_files/midas_tree_renamed.newick')
 
 
-div = 2000
+div = 2
 nitt = 10500000/div
 burnin = 500000/div
 thin = ceiling(5000/div)
@@ -316,15 +345,7 @@ meta.a.ssyst<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'ssyst
 meta.a.coop<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'is_coop', prior = prior.a)
 
 
-meta.a.secretome.1<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'secretome', prior = prior.a)
-meta.a.secretome.2<- run_meta(df = df.all[!is.na(df.all$logOR),], focal_trait = 'secretome', prior = prior.a)
-
-summary(meta.a.secretome.1)$solutions
-summary(meta.a.secretome.2)$solutions
-
-
-
-# Check how many datapoint there were for in each model
+# Check how many datapoint there were for in each model to report in manuscript main text
 # (if a species has two entries of the 2x2 table VF/COOP that are equal to zero, the odds ratio cannot be computed)
 df = df.all[!is.na(df.all$logOR),]
 nrow(df[df$cooperative_trait %in% 'is_coop',])
@@ -372,7 +393,6 @@ round(exp(summary(meta.a.coop)$solutions), 2)  # all classes together
 # GELMAN-RUBIN TESTS ----
 
 # --> in figures script
-
 
 
 
